@@ -10,18 +10,26 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
+/**
+ * Сервис для администрирования пользователей и их регистрации и авторизации.
+ */
 public class AdminService {
-
     private final PlayerService playerService;
-    private final Scanner scanner = new Scanner(System.in);
     private final Logger log = LoggerFactory.getLogger(AdminService.class);
 
+    /**
+     * Конструктор класса AdminService.
+     *
+     * @param playerService Сервис управления данными игроков.
+     */
     public AdminService(PlayerService playerService) {
         this.playerService = playerService;
     }
 
-    // Метод для регистрации игрока
-    public void registerPlayer() {
+    /**
+     * Регистрирует нового игрока.
+     */
+    public void registerPlayer(Scanner scanner) {
         System.out.print("Введите имя: ");
         String username = scanner.nextLine();
         System.out.print("Введите пароль: ");
@@ -47,8 +55,13 @@ public class AdminService {
         }
     }
 
-    // Метод для авторизации игрока
-    public Player login(Player loggedInPlayer) {
+    /**
+     * Авторизует игрока.
+     *
+     * @param loggedInPlayer Игрок, который вошел в систему.
+     * @return Игрок, который вошел в систему после авторизации.
+     */
+    public Player login(Player loggedInPlayer,Scanner scanner) {
         System.out.print("Введите логин: ");
         String username = scanner.nextLine();
         System.out.print("Введите пароль: ");

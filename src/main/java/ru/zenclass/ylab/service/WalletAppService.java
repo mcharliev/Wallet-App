@@ -2,9 +2,12 @@ package ru.zenclass.ylab.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.zenclass.ylab.exception.NotEnoughMoneyException;
+import ru.zenclass.ylab.exception.TransactionAlreadyExistException;
 import ru.zenclass.ylab.model.Player;
 
 import java.util.Scanner;
+import java.util.UUID;
 
 
 public class WalletAppService {
@@ -46,16 +49,16 @@ public class WalletAppService {
                 switch (choice) {
                     case 1 ->
                         // Вход пользователя
-                            loggedInPlayer = adminService.login(loggedInPlayer);
+                            loggedInPlayer = adminService.login(loggedInPlayer, scanner);
                     case 2 ->
                         // Регистрация пользователя
-                            adminService.registerPlayer();
+                            adminService.registerPlayer(scanner);
                     case 3 -> {
                         // Выход из приложения
                         isRunning = false;
                         log.info("Пользователь " + loggedInPlayer.getUsername() + " завершил работу приложения");
                     }
-                     default -> System.out.println("Недопустимый выбор. Попробуйте еще раз.");
+                    default -> System.out.println("Недопустимый выбор. Попробуйте еще раз.");
                 }
             } else {
                 System.out.println("Недопустимый ввод. Пожалуйста, введите число.");
@@ -83,12 +86,19 @@ public class WalletAppService {
                         // Опция 1: Текущий баланс игрока
                         transactionService.showPlayerBalance(loggedInPlayer.getId());
                     }
-                    case 2 ->
+                    case 2 -> {
                         // Опция 2: Дебет/снятие средств
-                            transactionService.addDebitTransaction(loggedInPlayer, scanner);
+                        try {
+                            transactionService.addDebitTransaction(loggedInPlayer, scanner, UUID.randomUUID().toString());
+                        } catch (NotEnoughMoneyException e) {
+                            System.out.println(("Недостаточно средств на счете для выполнения дебетовой операции."));
+                        }catch (TransactionAlreadyExistException e){
+                            System.out.println(("Ошибка: Идентификатор транзакции не уникален."));
+                        }
+                    }
                     case 3 ->
                         // Опция 3: Кредит на игрока
-                            transactionService.addCreditTransaction(loggedInPlayer, scanner);
+                            transactionService.addCreditTransaction(loggedInPlayer, scanner, UUID.randomUUID().toString());
                     case 4 ->
                         // Опция 4: Просмотр истории пополнения/снятия средств
                             transactionService.viewTransactionHistory(loggedInPlayer.getId());
