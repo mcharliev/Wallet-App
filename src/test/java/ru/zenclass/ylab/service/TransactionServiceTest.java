@@ -123,7 +123,6 @@ class TransactionServiceTest {
         when(playerService.findPlayerById(anyString())).thenReturn(player);
         when(transactionRepository.getAllTransactions()).thenReturn(Collections.singletonList(transaction));
 
-
         String input = "50\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);

@@ -4,20 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="09c75f03-dd9d-4699-abee-2e0de9641810" name="Changes" comment="Написана основная логика">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/exception/NotEnoughMoneyException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/zenclass/ylab/service/AdminServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/zenclass/ylab/service/PlayerServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/zenclass/ylab/service/TransactionServiceTest.java" afterDir="false" />
+    <list default="true" id="09c75f03-dd9d-4699-abee-2e0de9641810" name="Changes" comment="Дописал тесты">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/exception/TransactionAlreadyExistException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/exception/TransactionAlreadyExistException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/AdminService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/PlayerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/PlayerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/WalletAppService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/WalletAppService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/zenclass/ylab/AppTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +26,13 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -49,17 +43,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "nodejs_package_manager_path": "npm"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="ru.zenclass.ylab.service" />
@@ -150,9 +144,9 @@
       <list>
         <item itemvalue="JUnit.TransactionServiceTest" />
         <item itemvalue="JUnit.PlayerServiceTest" />
+        <item itemvalue="JUnit.AdminServiceTest.testRegisterPlayerAlreadyExists" />
         <item itemvalue="JUnit.AdminServiceTest" />
         <item itemvalue="Application.WalletApp" />
-        <item itemvalue="JUnit.AdminServiceTest.testRegisterPlayerAlreadyExists" />
       </list>
     </recent_temporary>
   </component>
@@ -167,6 +161,7 @@
       <workItem from="1696600298056" duration="5859000" />
       <workItem from="1696669845660" duration="23716000" />
       <workItem from="1696757028457" duration="10125000" />
+      <workItem from="1696782761150" duration="308000" />
     </task>
     <task id="LOCAL-00001" summary="Написана основная логика">
       <created>1696757839705</created>
