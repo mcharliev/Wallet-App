@@ -1,7 +1,7 @@
 package ru.zenclass.ylab.exception;
 
-public class AlreadyExistTransactionException extends RuntimeException {
-    public AlreadyExistTransactionException(String message) {
+public class TransactionAlreadyExistException extends RuntimeException {
+    public TransactionAlreadyExistException(String message) {
         super(message);
     }
 }
