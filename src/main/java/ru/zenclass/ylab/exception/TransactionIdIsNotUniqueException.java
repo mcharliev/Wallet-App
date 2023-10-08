@@ -1,7 +1,7 @@
 package ru.zenclass.ylab.exception;
 
-public class TransactionIdIsNotUniqueException extends RuntimeException {
-    public TransactionIdIsNotUniqueException(String message) {
+public class TransactionIdIsNotUnique extends RuntimeException {
+    public TransactionIdIsNotUnique(String message) {
         super(message);
     }
 }

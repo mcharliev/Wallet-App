@@ -4,44 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="09c75f03-dd9d-4699-abee-2e0de9641810" name="Changes" comment="Написана основная логика">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/exception/NotEnoughMoneyException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/zenclass/ylab/service/AdminServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/zenclass/ylab/service/PlayerServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/zenclass/ylab/service/TransactionServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/exception/TransactionAlreadyExistException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/exception/TransactionAlreadyExistException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/AdminService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/PlayerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/PlayerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/WalletAppService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/zenclass/ylab/service/WalletAppService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/zenclass/ylab/AppTest.java" beforeDir="false" />
-    </list>
+    <list default="true" id="09c75f03-dd9d-4699-abee-2e0de9641810" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="CoverageOptionsProvider">
-    <option name="myAddOrReplace" value="0" />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Enum" />
-        <option value="JUnit5 Test Class" />
-        <option value="Class" />
-        <option value="AnnotationType" />
-      </list>
-    </option>
-  </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2WOOjevdaFCxqRKbBMWfZRLIP57" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -53,109 +20,9 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "nodejs_package_manager_path": "npm"
+    "WebServerToolWindowFactoryState": "false"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="ru.zenclass.ylab.service" />
-    </key>
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-    </key>
-    <key name="CreateTestDialog.RecentsKey">
-      <recent name="ru.zenclass.ylab.service" />
-    </key>
-  </component>
-  <component name="RunManager" selected="JUnit.TransactionServiceTest">
-    <configuration name="WalletApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ru.zenclass.ylab.WalletApp" />
-      <module name="Wallet-Service" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ru.zenclass.ylab.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="AdminServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Wallet-Service" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ru.zenclass.ylab.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="ru.zenclass.ylab.service" />
-      <option name="MAIN_CLASS_NAME" value="ru.zenclass.ylab.service.AdminServiceTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="AdminServiceTest.testRegisterPlayerAlreadyExists" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Wallet-Service" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ru.zenclass.ylab.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="ru.zenclass.ylab.service" />
-      <option name="MAIN_CLASS_NAME" value="ru.zenclass.ylab.service.AdminServiceTest" />
-      <option name="METHOD_NAME" value="testRegisterPlayerAlreadyExists" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PlayerServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Wallet-Service" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ru.zenclass.ylab.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="ru.zenclass.ylab.service" />
-      <option name="MAIN_CLASS_NAME" value="ru.zenclass.ylab.service.PlayerServiceTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TransactionServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Wallet-Service" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ru.zenclass.ylab.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="ru.zenclass.ylab.service" />
-      <option name="MAIN_CLASS_NAME" value="ru.zenclass.ylab.service.TransactionServiceTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="JUnit.TransactionServiceTest" />
-        <item itemvalue="JUnit.PlayerServiceTest" />
-        <item itemvalue="JUnit.AdminServiceTest" />
-        <item itemvalue="Application.WalletApp" />
-        <item itemvalue="JUnit.AdminServiceTest.testRegisterPlayerAlreadyExists" />
-      </list>
-    </recent_temporary>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -164,22 +31,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1696600296751</updated>
-      <workItem from="1696600298056" duration="5859000" />
-      <workItem from="1696669845660" duration="23716000" />
-      <workItem from="1696757028457" duration="10125000" />
     </task>
-    <task id="LOCAL-00001" summary="Написана основная логика">
-      <created>1696757839705</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1696757839705</updated>
-    </task>
-    <option name="localTasksCounter" value="2" />
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -191,17 +44,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Написана основная логика" />
-    <option name="LAST_COMMIT_MESSAGE" value="Написана основная логика" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Wallet_Service$AdminServiceTest_testRegisterPlayerAlreadyExists.ic" NAME="AdminServiceTest.testRegisterPlayerAlreadyExists Coverage Results" MODIFIED="1696769866913" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>ru.zenclass.ylab.service.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/Wallet_Service$TransactionServiceTest_testShowPlayerBalance.ic" NAME="TransactionServiceTest.testShowPlayerBalance Coverage Results" MODIFIED="1696766077943" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>ru.zenclass.ylab.service.*</FILTER>
-    </SUITE>
   </component>
 </project>
