@@ -3,7 +3,6 @@ package ru.zenclass.ylab.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.zenclass.ylab.exception.NotEnoughMoneyException;
-import ru.zenclass.ylab.exception.TransactionAlreadyExistException;
 import ru.zenclass.ylab.exception.TransactionIdIsNotUniqueException;
 import ru.zenclass.ylab.model.Player;
 import ru.zenclass.ylab.model.Transaction;
@@ -26,7 +25,6 @@ public class TransactionService {
 
     /**
      * Конструктор класса TransactionService.
-     *
      * @param transactionRepository Репозиторий для хранения транзакций.
      * @param playerService         Сервис для управления данными игроков.
      */
@@ -37,53 +35,56 @@ public class TransactionService {
 
     /**
      * Добавляет дебетовую транзакцию для игрока.
-     *
      * @param player        Игрок, для которого создается транзакция.
      * @param scanner       Scanner для ввода суммы дебетовой операции.
      * @param transactionId Уникальный идентификатор транзакции.
      */
-    public void addDebitTransaction(Player player, Scanner scanner,String transactionId) {
+    public void addDebitTransaction(Player player, Scanner scanner, String transactionId) {
         System.out.print("Введите сумму дебетовой операции: ");
         if (scanner.hasNextBigDecimal()) {
             BigDecimal debitAmount = scanner.nextBigDecimal();
             scanner.nextLine(); // Очистка буфера после ввода суммы
 
-            // Проверка, достаточно ли средств на счете игрока для выполнения дебетовой операции
-            if (debitAmount.compareTo(player.getBalance()) <= 0) {
-                // Проверка уникальности идентификатора транзакции
-                if (containsTransaction(transactionId)) {
-                    // Создаем объект транзакции
-                    Transaction transaction = new Transaction();
-                    transaction.setId(transactionId);
-                    transaction.setType(TransactionType.DEBIT);
-                    transaction.setAmount(debitAmount);
-                    transaction.setLocalDateTime(LocalDateTime.now());
+            try {
+                // Проверка, достаточно ли средств на счете игрока для выполнения дебетовой операции
+                if (debitAmount.compareTo(player.getBalance()) <= 0) {
+                    // Проверка уникальности идентификатора транзакции
+                    if (containsTransaction(transactionId)) {
+                        // Создаем объект транзакции
+                        Transaction transaction = new Transaction();
+                        transaction.setId(transactionId);
+                        transaction.setType(TransactionType.DEBIT);
+                        transaction.setAmount(debitAmount);
+                        transaction.setLocalDateTime(LocalDateTime.now());
 
-                    // Добавляем транзакцию в репозиторий
-                    transactionRepository.addTransaction(transaction);
+                        // Добавляем транзакцию в репозиторий
+                        transactionRepository.addTransaction(transaction);
 
-                    // Обновляем баланс игрока
-                    BigDecimal newBalance = player.getBalance().subtract(debitAmount);
-                    player.setBalance(newBalance);
-                    player.setTransaction(transaction);
+                        // Обновляем баланс игрока
+                        BigDecimal newBalance = player.getBalance().subtract(debitAmount);
+                        player.setBalance(newBalance);
+                        player.setTransaction(transaction);
 
-                    // Сохраняем обновленные данные игрока в репозитории
-                    playerService.updatePlayer(player);
+                        // Сохраняем обновленные данные игрока в репозитории
+                        playerService.updatePlayer(player);
 
-                    // Выводим сообщение о успешной операции
-                    System.out.println("------------------------------------------------------------------");
-                    System.out.println("Дебетовая операция выполнена успешно.");
-                    System.out.println("Баланс на счету игрока составляет: " + player.getBalance());
-                    System.out.println("------------------------------------------------------------------");
+                        // Выводим сообщение о успешной операции
+                        System.out.println("------------------------------------------------------------------");
+                        System.out.println("Дебетовая операция выполнена успешно.");
+                        System.out.println("Баланс на счету игрока составляет: " + player.getBalance());
+                        System.out.println("------------------------------------------------------------------");
 
-                    // Производим аудит действий игрока
-                    log.info("Пользователь " + player.getUsername() + " успешно совершил дебетовую операцию," +
-                            " на сумму: " + debitAmount);
+                        // Производим аудит действий игрока
+                        log.info("Пользователь " + player.getUsername() + " успешно совершил дебетовую операцию," +
+                                " на сумму: " + debitAmount);
+                    } else {
+                        throw new TransactionIdIsNotUniqueException("Ошибка: Идентификатор транзакции не уникален.");
+                    }
                 } else {
-                    throw new TransactionAlreadyExistException();
+                    throw new NotEnoughMoneyException("Недостаточно средств на счете для выполнения дебетовой операции.");
                 }
-            } else {
-                throw new NotEnoughMoneyException();
+            } catch (NotEnoughMoneyException | TransactionIdIsNotUniqueException e) {
+                System.out.println("Ошибка: " + e.getMessage());
             }
         } else {
             System.out.println("Недопустимый ввод. Пожалуйста, введите число.");
@@ -93,7 +94,6 @@ public class TransactionService {
 
     /**
      * Добавляет кредитную транзакцию для игрока.
-     *
      * @param player        Игрок, для которого создается транзакция.
      * @param scanner       Scanner для ввода суммы кредитной операции.
      * @param transactionId Уникальный идентификатор транзакции.
@@ -145,7 +145,6 @@ public class TransactionService {
 
     /**
      * Просматривает историю операций пополнения/снятия средств игрока.
-     *
      * @param id Идентификатор игрока, для которого нужно просмотреть историю.
      */
     public void viewTransactionHistory(String id) {

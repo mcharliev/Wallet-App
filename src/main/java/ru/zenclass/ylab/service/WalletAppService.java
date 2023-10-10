@@ -9,20 +9,32 @@ import ru.zenclass.ylab.model.Player;
 import java.util.Scanner;
 import java.util.UUID;
 
-
+/**
+ * Сервис для управления взаимодействием с пользовательским интерфейсом и выполнения операций.
+ */
 public class WalletAppService {
-    private final AdminService adminService;
+    private final PlayerService playerService;
     private final TransactionService transactionService;
     private Player loggedInPlayer;
     private Boolean isRunning = true;
     private final Logger log = LoggerFactory.getLogger(WalletAppService.class);
 
-
-    public WalletAppService(AdminService adminService, TransactionService transactionService) {
-        this.adminService = adminService;
+    /**
+     * Конструктор класса WalletAppService.
+     *
+     * @param playerService      Сервис для администрирования пользователей.
+     * @param transactionService Сервис для выполнения транзакций.
+     */
+    public WalletAppService(PlayerService playerService, TransactionService transactionService) {
+        this.playerService = playerService;
         this.transactionService = transactionService;
     }
 
+    /**
+     * Запускает работу приложения.
+     *
+     * @param scanner Сканнер для ввода данных пользователя.
+     */
     public void run(Scanner scanner) {
         while (isRunning) {
             // Вход в стартовое меню
@@ -36,6 +48,11 @@ public class WalletAppService {
         }
     }
 
+    /**
+     * Обрабатывает меню входа пользователя (логин, регистрация, выход).
+     *
+     * @param scanner Сканнер для ввода данных пользователя.
+     */
     private void handleLoginMenu(Scanner scanner) {
         if (loggedInPlayer == null) {
             System.out.println("Меню:");
@@ -49,10 +66,10 @@ public class WalletAppService {
                 switch (choice) {
                     case 1 ->
                         // Вход пользователя
-                            loggedInPlayer = adminService.login(loggedInPlayer, scanner);
+                            loggedInPlayer = playerService.login(loggedInPlayer, scanner);
                     case 2 ->
                         // Регистрация пользователя
-                            adminService.registerPlayer(scanner);
+                            playerService.registerPlayer(scanner);
                     case 3 -> {
                         // Выход из приложения
                         isRunning = false;
@@ -67,6 +84,11 @@ public class WalletAppService {
         }
     }
 
+    /**
+     * Обрабатывает меню операций пользователя (баланс, дебет, кредит, история, выход).
+     *
+     * @param scanner Сканнер для ввода данных пользователя.
+     */
     private void handleOperationsMenu(Scanner scanner) {
         boolean isOperationsMenuActive = true;
         while (isOperationsMenuActive) {
@@ -86,16 +108,9 @@ public class WalletAppService {
                         // Опция 1: Текущий баланс игрока
                         transactionService.showPlayerBalance(loggedInPlayer.getId());
                     }
-                    case 2 -> {
+                    case 2 ->
                         // Опция 2: Дебет/снятие средств
-                        try {
                             transactionService.addDebitTransaction(loggedInPlayer, scanner, UUID.randomUUID().toString());
-                        } catch (NotEnoughMoneyException e) {
-                            System.out.println(("Недостаточно средств на счете для выполнения дебетовой операции."));
-                        }catch (TransactionAlreadyExistException e){
-                            System.out.println(("Ошибка: Идентификатор транзакции не уникален."));
-                        }
-                    }
                     case 3 ->
                         // Опция 3: Кредит на игрока
                             transactionService.addCreditTransaction(loggedInPlayer, scanner, UUID.randomUUID().toString());
