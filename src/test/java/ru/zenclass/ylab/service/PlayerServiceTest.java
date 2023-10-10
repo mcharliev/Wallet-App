@@ -104,7 +104,6 @@ public class PlayerServiceTest {
         assertEquals("updatedPassword", players.get(0).getPassword());
         assertEquals(BigDecimal.TEN, players.get(0).getBalance());
     }
-
 }
 
 
