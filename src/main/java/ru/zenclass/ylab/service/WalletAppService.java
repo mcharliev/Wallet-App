@@ -106,7 +106,7 @@ public class WalletAppService {
                 switch (choice) {
                     case 1 -> {
                         // Опция 1: Текущий баланс игрока
-                        transactionService.showPlayerBalance(loggedInPlayer.getId());
+//                        transactionService.showPlayerBalance(loggedInPlayer.getId());
                     }
                     case 2 ->
                         // Опция 2: Дебет/снятие средств
@@ -114,9 +114,9 @@ public class WalletAppService {
                     case 3 ->
                         // Опция 3: Кредит на игрока
                             transactionService.addCreditTransaction(loggedInPlayer, scanner, UUID.randomUUID().toString());
-                    case 4 ->
+//                    case 4 ->
                         // Опция 4: Просмотр истории пополнения/снятия средств
-                            transactionService.viewTransactionHistory(loggedInPlayer.getId());
+//                            transactionService.viewTransactionHistory(loggedInPlayer.getId());
                     case 5 -> {
                         // Опция 5: Выйти из приложения
                         isOperationsMenuActive = false;

@@ -48,6 +48,20 @@
           <version>5.3.1</version>
           <scope>test</scope>
       </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.5.4</version>
+    </dependency>
+
+      <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-core</artifactId>
+        <version>4.20.0</version>
+      </dependency>
+
   </dependencies>
 
   <build>

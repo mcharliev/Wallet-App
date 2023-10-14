@@ -1,22 +1,17 @@
-version: "3.1"
+version: "3.9"
 
 services:
-  postgres:
-    image: 'postgres:14'
-    ports:
-      - "5432:5432"
-    container_name: 'java-postgres'
+  pg_db:
+    image: postgres:14
+    restart: always
     environment:
-      - POSTGRES_DB=appartmants_db
+      - POSTGRES_DB=wallet_service_db
       - POSTGRES_USER=Merdan
       - POSTGRES_PASSWORD=353062
+    volumes:
+      - db:/var/lib/postgresql/data postgres
+    ports:
+      - "5415:5432"
 
-  app:
-      build: ./
-      container_name: 'java-app'
-      ports:
-        - "8080:8080"
-
-
-
-
+volumes:
+  db:

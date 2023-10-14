@@ -1,5 +1,6 @@
 package ru.zenclass.ylab;
 
+import ru.zenclass.ylab.liquibase.LiquibaseMigrationRunner;
 import ru.zenclass.ylab.repository.PlayerRepository;
 import ru.zenclass.ylab.repository.TransactionRepository;
 import ru.zenclass.ylab.service.PlayerService;
@@ -19,6 +20,8 @@ public class WalletApp {
      * @param args Аргументы командной строки (не используются).
      */
     public static void main(String[] args) {
+        LiquibaseMigrationRunner migrationRunner = new LiquibaseMigrationRunner();
+        migrationRunner.runMigrations();
         // Создание репозиториев и сервисов
         TransactionRepository transactionRepository = new TransactionRepository();
         PlayerRepository playerRepository = new PlayerRepository();

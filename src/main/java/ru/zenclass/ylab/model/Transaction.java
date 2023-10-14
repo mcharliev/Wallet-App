@@ -2,13 +2,14 @@ package ru.zenclass.ylab.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Класс, представляющий сущность "транзакция" с информацией о её идентификаторе, типе,
  * сумме и времени выполнения.
  */
 public class Transaction {
-    private String id;                   // Идентификатор транзакции
+    private Long id;                   // Идентификатор транзакции
     private TransactionType type;        // Тип транзакции (дебетовая или кредитная)
     private BigDecimal amount;           // Сумма транзакции
     private LocalDateTime localDateTime; // Дата и время выполнения транзакции
@@ -17,7 +18,7 @@ public class Transaction {
      * Получить идентификатор транзакции.
      * @return Идентификатор транзакции.
      */
-    public String getId() {
+    public long getId() {
         return id;
     }
 
@@ -25,7 +26,7 @@ public class Transaction {
      * Установить идентификатор транзакции.
      * @param id Идентификатор транзакции.
      */
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -82,12 +83,15 @@ public class Transaction {
      * @return Строковое представление объекта транзакции.
      */
     @Override
-    public String toString() {
-        return "Transaction{" +
-                "id='" + id + '\'' +
-                ", type=" + type +
-                ", amount=" + amount +
-                ", localDateTime=" + localDateTime +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction that = (Transaction) o;
+        return id == that.id && type == that.type && Objects.equals(amount, that.amount) && Objects.equals(localDateTime, that.localDateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, amount, localDateTime);
     }
 }

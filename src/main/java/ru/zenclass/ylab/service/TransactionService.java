@@ -52,7 +52,7 @@ public class TransactionService {
                     if (containsTransaction(transactionId)) {
                         // Создаем объект транзакции
                         Transaction transaction = new Transaction();
-                        transaction.setId(transactionId);
+                        transaction.setId(1);
                         transaction.setType(TransactionType.DEBIT);
                         transaction.setAmount(debitAmount);
                         transaction.setLocalDateTime(LocalDateTime.now());
@@ -108,7 +108,7 @@ public class TransactionService {
             if (containsTransaction(transactionId)) {
                 // Создаем объект транзакции
                 Transaction transaction = new Transaction();
-                transaction.setId(transactionId);
+                transaction.setId(2);
                 transaction.setType(TransactionType.CREDIT);
                 transaction.setAmount(creditAmount);
                 transaction.setLocalDateTime(LocalDateTime.now());
@@ -170,12 +170,12 @@ public class TransactionService {
      */
     private boolean containsTransaction(String transactionId) {
         // Используем Java Stream API для проверки уникальности идентификатора транзакции
-        List<Transaction> matchingTransactions = transactionRepository.getAllTransactions()
-                .stream()
-                .filter(transaction -> transaction.getId().equals(transactionId)).toList();
+//        List<Transaction> matchingTransactions = transactionRepository.getAllTransactions()
+//                .stream()
+//                .filter(transaction -> transaction.getId().equals(transactionId)).toList();
 
         // Если список совпадающих транзакций пуст, идентификатор уникален
-        return matchingTransactions.isEmpty();
+        return false;
     }
 
     /**

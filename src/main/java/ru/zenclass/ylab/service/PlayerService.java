@@ -77,7 +77,7 @@ public class PlayerService {
             Player player = new Player();
             player.setUsername(username);
             player.setPassword(password);
-            player.setId(UUID.randomUUID().toString());
+            player.setId(4L);
             player.setBalance(BigDecimal.valueOf(0));
             playerRepository.addPlayer(player);
 

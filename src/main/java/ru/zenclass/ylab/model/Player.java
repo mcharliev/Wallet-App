@@ -11,7 +11,7 @@ import java.util.List;
  * пароле, балансе и списке транзакций.
  */
 public class Player {
-    private String id;                    // Идентификатор игрока
+    private long id;                    // Идентификатор игрока
     private String username;              // Имя игрока
     private String password;              // Пароль игрока
     private BigDecimal balance;           // Баланс игрока
@@ -21,7 +21,7 @@ public class Player {
      * Получить идентификатор игрока.
      * @return Идентификатор игрока.
      */
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -29,7 +29,7 @@ public class Player {
      * Установить идентификатор игрока.
      * @param id Идентификатор игрока.
      */
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

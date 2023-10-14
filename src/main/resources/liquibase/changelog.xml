@@ -6,6 +6,13 @@
          https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
         logicalFilePath="db/changelog.xml">
 
-    <include file="001-create-table.xml" relativeToChangelogFile="true"/>
-    <include file="002-insert-data.xml" relativeToChangelogFile="true"/>
+    <include file="001-create-migration-scheme.xml"  relativeToChangelogFile="true"/>
+    <include file="002-create-wallet-service-scheme.xml"  relativeToChangelogFile="true"/>
+    <include file="003-create-player-table.xml"  relativeToChangelogFile="true"/>
+    <include file="004-create-transaction-table.xml"  relativeToChangelogFile="true"/>
+    <include file="005-create-sequence-players.xml"  relativeToChangelogFile="true"/>
+    <include file="006-create-sequence-transactions.xml"  relativeToChangelogFile="true"/>
+    <include file="007-into-players.xml"  relativeToChangelogFile="true"/>
+    <include file="008-into-transactions.xml"  relativeToChangelogFile="true"/>
+
 </databaseChangeLog>
