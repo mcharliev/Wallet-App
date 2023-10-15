@@ -52,7 +52,7 @@ public class TransactionService {
                     if (containsTransaction(transactionId)) {
                         // Создаем объект транзакции
                         Transaction transaction = new Transaction();
-                        transaction.setId(1);
+                        transaction.setId(1L);
                         transaction.setType(TransactionType.DEBIT);
                         transaction.setAmount(debitAmount);
                         transaction.setLocalDateTime(LocalDateTime.now());
@@ -63,7 +63,7 @@ public class TransactionService {
                         // Обновляем баланс игрока
                         BigDecimal newBalance = player.getBalance().subtract(debitAmount);
                         player.setBalance(newBalance);
-                        player.setTransaction(transaction);
+//                        player.setTransaction(transaction);
 
                         // Сохраняем обновленные данные игрока в репозитории
                         playerService.updatePlayer(player);
@@ -108,7 +108,7 @@ public class TransactionService {
             if (containsTransaction(transactionId)) {
                 // Создаем объект транзакции
                 Transaction transaction = new Transaction();
-                transaction.setId(2);
+                transaction.setId(2L);
                 transaction.setType(TransactionType.CREDIT);
                 transaction.setAmount(creditAmount);
                 transaction.setLocalDateTime(LocalDateTime.now());
@@ -119,7 +119,7 @@ public class TransactionService {
                 // Обновляем баланс игрока
                 BigDecimal newBalance = player.getBalance().add(creditAmount);
                 player.setBalance(newBalance);
-                player.setTransaction(transaction);
+//                player.setTransaction(transaction);
 
                 // Сохраняем обновленные данные игрока в репозитории
                 playerService.updatePlayer(player);
@@ -147,20 +147,20 @@ public class TransactionService {
      * Просматривает историю операций пополнения/снятия средств игрока.
      * @param id Идентификатор игрока, для которого нужно просмотреть историю.
      */
-    public void viewTransactionHistory(String id) {
+    public void viewTransactionHistory(Long id) {
         Player foundPlayer = playerService.findPlayerById(id);
-        if (foundPlayer.getTransaction() == null) {
-            System.out.println("------------------------------------------------------------------");
-            System.out.println("У игрока: " + foundPlayer.getUsername() + " нету платежной истории");
-            System.out.println("------------------------------------------------------------------");
-        } else {
-            System.out.println("------------------------------------------------------------------");
-            System.out.println("История игрока: " + foundPlayer.getUsername() + " " + foundPlayer.getTransaction());
-            System.out.println("------------------------------------------------------------------");
-
-            // Производим аудит действий игрока
-            log.info("Пользователь " + foundPlayer.getUsername() + " запросил историю по своим операциям");
-        }
+//        if (foundPlayer.getTransaction() == null) {
+//            System.out.println("------------------------------------------------------------------");
+//            System.out.println("У игрока: " + foundPlayer.getUsername() + " нету платежной истории");
+//            System.out.println("------------------------------------------------------------------");
+//        } else {
+//            System.out.println("------------------------------------------------------------------");
+//            System.out.println("История игрока: " + foundPlayer.getUsername() + " " + foundPlayer.getTransaction());
+//            System.out.println("------------------------------------------------------------------");
+//
+//            // Производим аудит действий игрока
+//            log.info("Пользователь " + foundPlayer.getUsername() + " запросил историю по своим операциям");
+//        }
     }
 
     /**
@@ -182,7 +182,7 @@ public class TransactionService {
      * Показывает текущий баланс игрока.
      * @param id Идентификатор игрока, для которого нужно показать баланс.
      */
-    public void showPlayerBalance(String id){
+    public void showPlayerBalance(Long id){
         Player foundPlayer = playerService.findPlayerById(id);
         System.out.println("------------------------------------------------------------------");
         System.out.println("Баланс на счету игрока составляет: " + foundPlayer.getBalance());

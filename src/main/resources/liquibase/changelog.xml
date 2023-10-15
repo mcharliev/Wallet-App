@@ -12,7 +12,7 @@
     <include file="004-create-transaction-table.xml"  relativeToChangelogFile="true"/>
     <include file="005-create-sequence-players.xml"  relativeToChangelogFile="true"/>
     <include file="006-create-sequence-transactions.xml"  relativeToChangelogFile="true"/>
-    <include file="007-into-players.xml"  relativeToChangelogFile="true"/>
-    <include file="008-into-transactions.xml"  relativeToChangelogFile="true"/>
+    <include file="007-insert-into-players.xml"  relativeToChangelogFile="true"/>
+    <include file="008-insert-into-transactions.xml"  relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

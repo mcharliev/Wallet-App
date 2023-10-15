@@ -6,11 +6,5 @@ package ru.zenclass.ylab.exception;
  */
 public class PlayerAlreadyExistException extends RuntimeException {
 
-    /**
-     * Конструктор с сообщением об ошибке.
-     * @param message Сообщение об ошибке.
-     */
-    public PlayerAlreadyExistException(String message) {
-        super(message);
-    }
+
 }
