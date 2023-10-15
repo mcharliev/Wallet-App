@@ -12,6 +12,7 @@ import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.exception.MigrationException;
 
 import java.sql.Connection;
+import java.sql.Statement;
 
 
 /**
@@ -39,6 +40,9 @@ public class LiquibaseMigrationRunner {
      */
     public void runMigrations() {
         try (Connection connection = connectionManager.getConnection()) {
+            try (Statement stmt = connection.createStatement()) {
+                stmt.execute("CREATE SCHEMA IF NOT EXISTS migration;");
+            }
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             database.setLiquibaseSchemaName("migration");
             Liquibase liquibase = new Liquibase("liquibase/changelog.xml", new ClassLoaderResourceAccessor(), database);

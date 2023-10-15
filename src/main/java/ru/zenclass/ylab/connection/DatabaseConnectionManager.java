@@ -24,6 +24,13 @@ public class DatabaseConnectionManager {
     public DatabaseConnectionManager() {
         this.properties = loadProperties();
     }
+    public DatabaseConnectionManager(String url, String username, String password,String driver) {
+        this.properties = new Properties();
+        properties.setProperty("url", url);
+        properties.setProperty("username", username);
+        properties.setProperty("password", password);
+        properties.setProperty("driver",driver);
+    }
 
     /**
      * Загружает свойства из файла для настройки подключения к базе данных.
