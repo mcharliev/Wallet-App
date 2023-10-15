@@ -23,4 +23,11 @@ public class Player {
     private BigDecimal balance;           // Баланс игрока
     private final List<Transaction> transactions = new ArrayList<>(); // Список транзакций игрока
 
+    /**
+     * Добавить транзакцию в список транзакций игрока.
+     * @param transaction Транзакция для добавления.
+     */
+    public void setTransaction(Transaction transaction) {
+        this.transactions.add(transaction);
+    }
 }

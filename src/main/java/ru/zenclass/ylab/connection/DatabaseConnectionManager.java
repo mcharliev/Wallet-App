@@ -1,20 +1,36 @@
 package ru.zenclass.ylab.connection;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.io.FileInputStream;
-import java.io.IOException;
+
+
+/**
+ * Класс для управления подключениями к базе данных.
+ * <p>
+ * Он предоставляет методы для установления соединения с базой данных на основе свойств,
+ * загруженных из файла properties.
+ * </p>
+ */
 
 public class DatabaseConnectionManager {
 
+    // Свойства для настройки подключения к базе данных
     private final Properties properties;
 
     public DatabaseConnectionManager() {
-        properties = loadProperties();
+        this.properties = loadProperties();
     }
 
+    /**
+     * Загружает свойства из файла для настройки подключения к базе данных.
+     *
+     * @return Properties, содержащий параметры для подключения.
+     * @throws RuntimeException если происходит ошибка при чтении файла свойств.
+     */
     private Properties loadProperties() {
         Properties props = new Properties();
         try (FileInputStream input = new FileInputStream("src/main/resources/application.properties")) {
@@ -25,13 +41,23 @@ public class DatabaseConnectionManager {
         return props;
     }
 
+    /**
+     * Устанавливает соединение с базой данных на основе свойств, загруженных из файла.
+     *
+     * @return Connection - объект соединения с базой данных.
+     * @throws ClassNotFoundException если драйвер базы данных не найден.
+     * @throws SQLException           если происходит ошибка при установке соединения с базой данных.
+     */
     public Connection getConnection() throws ClassNotFoundException, SQLException {
         String driver = properties.getProperty("driver");
         String url = properties.getProperty("url");
         String username = properties.getProperty("username");
         String password = properties.getProperty("password");
 
+        // Регистрация драйвера JDBC
         Class.forName(driver);
+
+        // Установка соединения с базой данных
         return DriverManager.getConnection(url, username, password);
     }
 }

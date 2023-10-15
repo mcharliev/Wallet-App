@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * Класс, представляющий сущность "транзакция" с информацией о её идентификаторе, типе,

@@ -1,17 +1,16 @@
 package ru.zenclass.ylab.service;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.zenclass.ylab.exception.NotEnoughMoneyException;
-import ru.zenclass.ylab.exception.TransactionAlreadyExistException;
 import ru.zenclass.ylab.model.Player;
 
 import java.util.Scanner;
-import java.util.UUID;
 
 /**
  * Сервис для управления взаимодействием с пользовательским интерфейсом и выполнения операций.
  */
+@RequiredArgsConstructor
 public class WalletAppService {
     private final PlayerService playerService;
     private final TransactionService transactionService;
@@ -19,16 +18,6 @@ public class WalletAppService {
     private Boolean isRunning = true;
     private final Logger log = LoggerFactory.getLogger(WalletAppService.class);
 
-    /**
-     * Конструктор класса WalletAppService.
-     *
-     * @param playerService      Сервис для администрирования пользователей.
-     * @param transactionService Сервис для выполнения транзакций.
-     */
-    public WalletAppService(PlayerService playerService, TransactionService transactionService) {
-        this.playerService = playerService;
-        this.transactionService = transactionService;
-    }
 
     /**
      * Запускает работу приложения.
@@ -106,17 +95,17 @@ public class WalletAppService {
                 switch (choice) {
                     case 1 -> {
                         // Опция 1: Текущий баланс игрока
-//                        transactionService.showPlayerBalance(loggedInPlayer.getId());
+                        transactionService.showPlayerBalance(loggedInPlayer.getId());
                     }
                     case 2 ->
                         // Опция 2: Дебет/снятие средств
-                            transactionService.addDebitTransaction(loggedInPlayer, scanner, UUID.randomUUID().toString());
+                            transactionService.addDebitTransaction(loggedInPlayer, scanner);
                     case 3 ->
                         // Опция 3: Кредит на игрока
-                            transactionService.addCreditTransaction(loggedInPlayer, scanner, UUID.randomUUID().toString());
-//                    case 4 ->
+                            transactionService.addCreditTransaction(loggedInPlayer, scanner);
+                    case 4 ->
                         // Опция 4: Просмотр истории пополнения/снятия средств
-//                            transactionService.viewTransactionHistory(loggedInPlayer.getId());
+                            transactionService.viewTransactionHistory(loggedInPlayer.getId(),loggedInPlayer.getUsername());
                     case 5 -> {
                         // Опция 5: Выйти из приложения
                         isOperationsMenuActive = false;

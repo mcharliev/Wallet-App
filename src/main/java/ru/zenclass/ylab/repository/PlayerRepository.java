@@ -4,173 +4,142 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
-import ru.zenclass.ylab.exception.PlayerNotFoundException;
 import ru.zenclass.ylab.model.Player;
-import ru.zenclass.ylab.service.PlayerService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
- * Репозиторий для управления данными игроков в базе данных.
- * <p>
- * PlayerRepository предоставляет методы для выполнения основных операций CRUD (создание, чтение, обновление, удаление)
- * для объектов Player, хранящихся в базе данных.
- * </p>
+ * Репозиторий для работы с объектами типа {@link Player} в базе данных.
+ * Предоставляет функции для добавления, поиска и обновления информации об игроках.
  */
 @RequiredArgsConstructor
 public class PlayerRepository {
-
-    /**
-     * Менеджер соединения с базой данных, используется для получения соединений с БД.
-     */
     private final DatabaseConnectionManager connectionManager;
     private final Logger log = LoggerFactory.getLogger(PlayerRepository.class);
-
 
     /**
      * Добавляет нового игрока в базу данных.
      *
-     * @param player объект игрока для добавления.
-     * @throws RuntimeException при возникновении ошибок во время выполнения SQL-запроса.
+     * @param player объект игрока, который следует добавить
      */
     public void addPlayer(Player player) {
-        //SQL-запрос для добавление игрока в таблицу players используем players_seq.NEXTVAL для генерации ID
+        // SQL-запрос для вставки нового игрока в таблицу.
         String sql = "INSERT INTO wallet_service.players (id, username, password, balance) VALUES (nextval('wallet_service.players_seq'), ?, ?, ?) RETURNING id";
+
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            // Устанавливаем только значения username, password и balance
+            // Установка значений для параметров SQL-запроса.
             preparedStatement.setString(1, player.getUsername());
             preparedStatement.setString(2, player.getPassword());
             preparedStatement.setBigDecimal(3, player.getBalance());
 
+            // Выполнение запроса и обработка результата.
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    // Получаем сгенерированный ID и устанавливаем его для объекта player
+                    // Устанавливаем ID, сгенерированный базой данных, для объекта игрока.
                     long generatedId = resultSet.getLong(1);
                     player.setId(generatedId);
                 }
             }
-
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException("Ошибка при добавлении игрока", e);
         }
     }
 
     /**
-     * Извлекает список всех игроков из базы данных.
+     * Ищет игрока в базе данных по его ID.
      *
-     * @return список всех игроков.
-     * @throws RuntimeException при возникновении ошибок во время выполнения SQL-запроса.
+     * @param id идентификатор игрока
+     * @return {@link Optional} объект игрока, если он найден, иначе пустой {@link Optional}
      */
-    public List<Player> getAllPlayers() {
-        List<Player> players = new ArrayList<>();
-        // SQL-запрос для получения всех игроков из таблицы players
-        String sql = "SELECT * FROM wallet_service.players";
-
-// Создание соединения с базой данных, подготовка и выполнение SQL-запроса
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            // Обработка результатов запроса
-            while (resultSet.next()) {
-                Player player = new Player();
-                player.setId(resultSet.getLong("id"));
-                player.setUsername(resultSet.getString("username"));
-                player.setPassword(resultSet.getString("password"));
-                player.setBalance(resultSet.getBigDecimal("balance"));
-                players.add(player);
-            }
-
-        } catch (SQLException | ClassNotFoundException e) {
-            // Обработка возможных исключений при работе с базой данных
-            throw new RuntimeException("Ошибка при получении списка игроков", e);
-        }
-        return players;
-    }
-
-    /**
-     * Ищет и возвращает игрока по его идентификатору из базы данных.
-     *
-     * @param id идентификатор игрока для поиска.
-     * @return найденный игрок.
-     * @throws PlayerNotFoundException если игрок с указанным идентификатором не найден.
-     * @throws RuntimeException        при возникновении ошибок во время выполнения SQL-запроса.
-     */
-    public Player findPlayerById(Long id) {
-        // SQL-запрос для поиска игрока по идентификатору
+    public Optional<Player> findPlayerById(Long id) {
+        // SQL-запрос для поиска игрока по ID.
         String sql = "SELECT * FROM wallet_service.players WHERE id = ?";
 
-       // Создание соединения с базой данных и подготовка SQL-запроса для выполнения
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            // Установка параметра id для SQL-запроса
+            // Установка ID игрока как параметра для запроса.
             preparedStatement.setLong(1, id);
 
-            // Выполнение запроса и получение результатов
+            // Выполнение запроса и проверка, существует ли такой игрок.
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    Player player = new Player();
-                    player.setId(resultSet.getLong("id"));
-                    player.setUsername(resultSet.getString("username"));
-                    player.setPassword(resultSet.getString("password"));
-                    player.setBalance(resultSet.getBigDecimal("balance"));
-                    return player;
+                    return getPlayer(resultSet);
                 } else {
-                    // Если игрок не найден, выбросить исключение
-                    throw new PlayerNotFoundException("Игрок с идентификатором: " + id + " не найден!");
+                    return Optional.empty(); // Если игрок не найден, возвращаем пустой Optional.
                 }
             }
-
         } catch (SQLException | ClassNotFoundException e) {
-            // Обработка возможных исключений при работе с базой данных
-            throw new RuntimeException("Ошибка при поиске игрока", e);
+            log.error("Ошибка при поиске игрока id: " + id, e);
+            throw new RuntimeException("Ошибка при поиске игрока id: " + id, e);
         }
     }
-    /**
-     * Ищет и возвращает игрока по его имени (username) из базы данных.
-     *
-     * @param username имя игрока для поиска.
-     * @return Optional, содержащий найденного игрока или пустой, если игрок не найден.
-     * @throws RuntimeException при возникновении ошибок во время выполнения SQL-запроса.
-     */
+
     public Optional<Player> findPlayerByUsername(String username) {
-        // SQL-запрос для поиска игрока по имени (username)
+        // SQL-запрос для поиска игрока по имени пользователя.
         String sql = "SELECT * FROM wallet_service.players WHERE username = ?";
 
-        // Создание соединения с базой данных и подготовка SQL-запроса для выполнения
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            // Установка параметра username для SQL-запроса
+            // Устанавливаем имя пользователя как параметр для запроса.
             preparedStatement.setString(1, username);
 
-            // Выполнение запроса и получение результатов
+            // Выполнение запроса и проверка, существует ли такой игрок.
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    Player player = new Player();
-                    player.setId(resultSet.getLong("id"));
-                    player.setUsername(resultSet.getString("username"));
-                    player.setPassword(resultSet.getString("password"));
-                    player.setBalance(resultSet.getBigDecimal("balance"));
-                    return Optional.of(player);
+                    return getPlayer(resultSet);
                 }
             }
-
         } catch (SQLException | ClassNotFoundException e) {
-            // Логирование ошибки
             log.error("Ошибка при поиске игрока по имени: " + username, e);
-            // Выбрасываем исключение дальше, чтобы уведомить вызывающий метод о проблеме
             throw new RuntimeException("Ошибка при поиске игрока по имени: " + username, e);
         }
-        return Optional.empty(); // Если игрок не найден
+
+        return Optional.empty(); // Если игрок не найден, возвращаем пустой Optional.
+    }
+
+    /**
+     * Обновляет информацию о балансе игрока в базе данных.
+     *
+     * @param player объект игрока с новой информацией о балансе
+     */
+    public void updatePlayer(Player player) {
+        // SQL-запрос для обновления баланса игрока.
+        String sql = "UPDATE wallet_service.players SET balance = ? WHERE id = ?";
+
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            // Устанавливаем новый баланс и ID игрока для обновления.
+            preparedStatement.setBigDecimal(1, player.getBalance());
+            preparedStatement.setLong(2, player.getId());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            log.error("Ошибка при обновлении игрока: " + player.getUsername(), e);
+            throw new RuntimeException("Ошибка при обновлении игрока: " + player.getUsername(), e);
+        }
+    }
+
+    /**
+     * Преобразует результат SQL-запроса (строку из {@link ResultSet}) в объект {@link Player}.
+     * @param resultSet результат SQL-запроса
+     * @return {@link Optional} объект игрока, извлеченный из текущей строки {@link ResultSet}
+     * @throws SQLException в случае ошибки при извлечении данных из {@link ResultSet}
+     */
+    private Optional<Player> getPlayer(ResultSet resultSet) throws SQLException {
+        Player player = new Player();
+        player.setId(resultSet.getLong("id"));
+        player.setUsername(resultSet.getString("username"));
+        player.setPassword(resultSet.getString("password"));
+        player.setBalance(resultSet.getBigDecimal("balance"));
+        return Optional.of(player);
     }
 }
