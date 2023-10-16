@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.service;
+package ru.zenclass.ylab.service.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -62,5 +62,46 @@ public class PlayerRepositoryTest {
         assertEquals(player.getUsername(), foundPlayer.getUsername());
         assertEquals(player.getPassword(), foundPlayer.getPassword());
         assertEquals(player.getBalance(), foundPlayer.getBalance());
+    }
+    @Test
+    void testFindPlayerByUsername() {
+        Player player = new Player();
+        player.setUsername("userByUsername");
+        player.setPassword("passwordByUsername");
+        player.setBalance(new BigDecimal("200.00"));
+
+        repository.addPlayer(player);
+
+        // Пытаемся найти игрока по имени пользователя
+        Optional<Player> foundPlayerOpt = repository.findPlayerByUsername(player.getUsername());
+        assertTrue(foundPlayerOpt.isPresent());
+
+        Player foundPlayer = foundPlayerOpt.get();
+        assertEquals(player.getUsername(), foundPlayer.getUsername());
+        assertEquals(player.getPassword(), foundPlayer.getPassword());
+        assertEquals(player.getBalance(), foundPlayer.getBalance());
+    }
+    @Test
+    void testUpdatePlayer() {
+        Player player = new Player();
+        player.setUsername("testUsername");
+        player.setPassword("testPassword");
+        player.setBalance(new BigDecimal("300.00"));
+
+        repository.addPlayer(player);
+
+        // Проверяем начальный баланс
+        Optional<Player> initialPlayerOpt = repository.findPlayerById(player.getId());
+        assertTrue(initialPlayerOpt.isPresent());
+        assertEquals(new BigDecimal("300.00"), initialPlayerOpt.get().getBalance());
+
+        // Изменяем баланс и обновляем в базе данных
+        player.setBalance(new BigDecimal("400.00"));
+        repository.updatePlayer(player);
+
+        // Проверяем обновленный баланс
+        Optional<Player> updatedPlayerOpt = repository.findPlayerById(player.getId());
+        assertTrue(updatedPlayerOpt.isPresent());
+        assertEquals(new BigDecimal("400.00"), updatedPlayerOpt.get().getBalance());
     }
 }

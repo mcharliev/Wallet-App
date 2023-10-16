@@ -36,14 +36,17 @@ public class LiquibaseMigrationRunner {
      * Метод создает соединение с базой данных, устанавливает соответствующие параметры для Liquibase и
      * выполняет миграции, определенные в файле changelog.xml.
      * </p>
+     *
      * @throws MigrationException если произошла ошибка при выполнении миграции.
      */
     public void runMigrations() {
-        try (Connection connection = connectionManager.getConnection()) {
-            try (Statement stmt = connection.createStatement()) {
-                stmt.execute("CREATE SCHEMA IF NOT EXISTS migration;");
-            }
+        try (Connection connection = connectionManager.getConnection();
+             Statement stmt = connection.createStatement()
+        ) {
+            //создаю схему migration для служебных таблиц liquibase
+            stmt.execute("CREATE SCHEMA IF NOT EXISTS migration;");
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            //задаю схему в которой будут хранится служебные таблицы liquibase
             database.setLiquibaseSchemaName("migration");
             Liquibase liquibase = new Liquibase("liquibase/changelog.xml", new ClassLoaderResourceAccessor(), database);
             liquibase.update();
