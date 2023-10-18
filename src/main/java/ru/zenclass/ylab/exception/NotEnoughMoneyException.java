@@ -5,7 +5,4 @@ package ru.zenclass.ylab.exception;
  * на счете для выполнения определенной операции.
  */
 public class NotEnoughMoneyException extends RuntimeException {
-    public NotEnoughMoneyException(String message) {
-        super(message);
-    }
 }

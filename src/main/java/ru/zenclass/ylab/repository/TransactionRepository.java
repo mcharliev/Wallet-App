@@ -1,29 +1,24 @@
 package ru.zenclass.ylab.repository;
 
-import ru.zenclass.ylab.model.Transaction;
 
-import java.util.ArrayList;
+import ru.zenclass.ylab.model.Transaction;
 import java.util.List;
 
-/**
- * Репозиторий для хранения данных о транзакциях.
- */
-public class TransactionRepository {
-    private final List<Transaction> transactions = new ArrayList<>();
+public interface TransactionRepository {
 
     /**
-     * Добавляет транзакцию в репозиторий.
-     * @param transaction Транзакция для добавления.
+     * Добавляет новую транзакцию в базу данных.
+     *
+     * @param transaction объект транзакции для добавления
+     * @param playerId идентификатор игрока, для которого добавляется транзакция
      */
-    public void addTransaction(Transaction transaction) {
-        transactions.add(transaction);
-    }
+    void addTransaction(Transaction transaction, Long playerId);
 
     /**
-     * Возвращает список всех транзакций.
-     * @return Список всех транзакций.
+     * Получает все транзакции, связанные с определенным игроком, из базы данных.
+     *
+     * @param playerId идентификатор игрока, для которого требуется получить транзакции
+     * @return список транзакций {@link Transaction} для заданного игрока
      */
-    public List<Transaction> getAllTransactions(){
-        return transactions;
-    }
+    List<Transaction> getAllTransactionsByPlayerId(Long playerId);
 }

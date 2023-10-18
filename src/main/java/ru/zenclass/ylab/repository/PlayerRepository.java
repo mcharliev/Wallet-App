@@ -1,45 +1,35 @@
 package ru.zenclass.ylab.repository;
 
-import ru.zenclass.ylab.exception.PlayerNotFoundException;
 import ru.zenclass.ylab.model.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
-/**
- * Репозиторий для хранения данных игроков.
- */
-public class PlayerRepository {
-    private final List<Player> players = new ArrayList<>();
+public interface PlayerRepository {
+    /**
+     * Добавляет нового игрока в базу данных.
+     * @param player объект игрока, который следует добавить
+     */
+    void addPlayer(Player player);
 
     /**
-     * Добавляет игрока в репозиторий.
-     * @param player Игрок для добавления.
+     * Ищет игрока в базе данных по его ID.
+     * @param id идентификатор игрока
+     * @return {@link Optional} объект игрока, если он найден, иначе пустой {@link Optional}
      */
-    public void addPlayer(Player player) {
-        players.add(player);
-    }
+    Optional<Player> findPlayerById(Long id);
 
     /**
-     * Возвращает список всех игроков.
-     * @return Список всех игроков.
+     * Ищет игрока в базе данных по его имени пользователя.
+     * @param username имя игрока
+     * @return {@link Optional} объект игрока, если он найден, иначе пустой {@link Optional}
      */
-    public List<Player> getAllPlayers(){
-        return players;
-    }
+    Optional<Player> findPlayerByUsername(String username);
 
     /**
-     * Находит игрока по его идентификатору.
-     * @param id Идентификатор игрока для поиска.
-     * @return Найденный игрок.
-     * @throws PlayerNotFoundException если игрок не найден.
+     * Обновляет информацию о балансе игрока в базе данных.
+     * @param player объект игрока с новой информацией о балансе
      */
-    public Player findPlayerById(String id) {
-        for (Player player : players) {
-            if (player.getId().equals(id)) {
-                return player;
-            }
-        }
-        throw new PlayerNotFoundException("Игрок с именем: " + id + " не найден!");
-    }
+    void updatePlayer(Player player);
+
 }
+
