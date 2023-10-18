@@ -13,6 +13,7 @@ import ru.zenclass.ylab.exception.MigrationException;
 
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.Properties;
 
 
 /**
@@ -29,6 +30,11 @@ public class LiquibaseMigrationRunner {
 
     // Менеджер соединений с базой данных
     private final DatabaseConnectionManager connectionManager;
+    private final Properties properties;
+    public LiquibaseMigrationRunner(DatabaseConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+        this.properties = connectionManager.getProperties();
+    }
 
     /**
      * Запускает миграции на базе данных с использованием Liquibase.
@@ -40,6 +46,8 @@ public class LiquibaseMigrationRunner {
      * @throws MigrationException если произошла ошибка при выполнении миграции.
      */
     public void runMigrations() {
+        String changeLog = properties.getProperty("change.log");
+        String liquibaseSchema = properties.getProperty("liquibase.schema");
         try (Connection connection = connectionManager.getConnection();
              Statement stmt = connection.createStatement()
         ) {
@@ -47,12 +55,12 @@ public class LiquibaseMigrationRunner {
             stmt.execute("CREATE SCHEMA IF NOT EXISTS migration;");
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             //задаю схему в которой будут хранится служебные таблицы liquibase
-            database.setLiquibaseSchemaName("migration");
-            Liquibase liquibase = new Liquibase("liquibase/changelog.xml", new ClassLoaderResourceAccessor(), database);
+            database.setLiquibaseSchemaName(liquibaseSchema);
+            Liquibase liquibase = new Liquibase(changeLog, new ClassLoaderResourceAccessor(), database);
             liquibase.update();
             log.info("Миграции успешно выполнены!");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Ошибка при выполнении миграций", e);
             throw new MigrationException("Ошибка: миграции не выполнены!");
         }
     }

@@ -3,7 +3,9 @@ package ru.zenclass.ylab;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.liquibase.LiquibaseMigrationRunner;
 import ru.zenclass.ylab.repository.PlayerRepository;
+import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
 import ru.zenclass.ylab.repository.TransactionRepository;
+import ru.zenclass.ylab.repository.TransactionRepositoryImpl;
 import ru.zenclass.ylab.service.PlayerService;
 import ru.zenclass.ylab.service.TransactionService;
 import ru.zenclass.ylab.service.WalletAppService;
@@ -28,8 +30,8 @@ public class WalletApp {
         migrationRunner.runMigrations();
 
         // Инициализация репозиториев и сервисов для управления данными игроков и транзакций
-        PlayerRepository playerRepository = new PlayerRepository(connectionManager);
-        TransactionRepository transactionRepository = new TransactionRepository(connectionManager);
+        PlayerRepository playerRepository = new PlayerRepositoryImpl(connectionManager);
+        TransactionRepository transactionRepository = new TransactionRepositoryImpl(connectionManager);
         PlayerService playerService = new PlayerService(playerRepository);
 
         // Создание основного сервиса приложения и передача ему инициализированных сервисов

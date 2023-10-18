@@ -11,7 +11,9 @@ import ru.zenclass.ylab.model.Player;
 import ru.zenclass.ylab.model.Transaction;
 import ru.zenclass.ylab.model.TransactionType;
 import ru.zenclass.ylab.repository.PlayerRepository;
+import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
 import ru.zenclass.ylab.repository.TransactionRepository;
+import ru.zenclass.ylab.repository.TransactionRepositoryImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -44,8 +46,8 @@ public class TransactionRepositoryTest {
         migrationRunner.runMigrations();
 
         // Инициализация репозитория
-        transactionRepository = new TransactionRepository(connectionManager);
-        playerRepository = new PlayerRepository(connectionManager);
+        transactionRepository = new TransactionRepositoryImpl(connectionManager);
+        playerRepository = new PlayerRepositoryImpl(connectionManager);
     }
 
     @Test

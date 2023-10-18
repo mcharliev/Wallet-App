@@ -13,7 +13,6 @@ import ru.zenclass.ylab.repository.TransactionRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Сервис для обработки транзакций.
@@ -34,56 +33,29 @@ public class TransactionService {
      * Метод для добавления дебетовой транзакции.
      *
      * @param player  Игрок, который хочет выполнить дебетовую операцию.
-     * @param scanner Сканер для ввода данных от пользователя.
      */
-    public void addDebitTransaction(Player player, Scanner scanner) {
-        // Считываем сумму дебетовой операции.
-        System.out.print("Введите сумму дебетовой операции: ");
+    public void addDebitTransaction(Player player, BigDecimal debitAmount) {
 
-        // Проверяем, что пользователь ввел число.
-        if (scanner.hasNextBigDecimal()) {
-            BigDecimal debitAmount = scanner.nextBigDecimal();
-            scanner.nextLine(); // Очищаем буфер от лишних символов.
+        if (debitAmount.compareTo(player.getBalance()) <= 0) {
+            Transaction transaction = new Transaction();
+            transaction.setId(1L);
+            transaction.setType(TransactionType.DEBIT);
+            transaction.setAmount(debitAmount);
+            transaction.setLocalDateTime(LocalDateTime.now());
 
-            try {
-                // Проверяем, что на счету игрока достаточно средств для дебетовой операции.
-                if (debitAmount.compareTo(player.getBalance()) <= 0) {
-                    // Создаем новую дебетовую транзакцию.
-                    Transaction transaction = new Transaction();
-                    transaction.setId(1L);
-                    transaction.setType(TransactionType.DEBIT);
-                    transaction.setAmount(debitAmount);
-                    transaction.setLocalDateTime(LocalDateTime.now());
+            transactionRepository.addTransaction(transaction, player.getId());
 
-                    // Добавляем транзакцию в репозиторий.
-                    transactionRepository.addTransaction(transaction, player.getId());
+            BigDecimal newBalance = player.getBalance().subtract(debitAmount);
+            player.setBalance(newBalance);
+            player.setTransaction(transaction);
 
-                    // Обновляем баланс игрока после дебетовой операции.
-                    BigDecimal newBalance = player.getBalance().subtract(debitAmount);
-                    player.setBalance(newBalance);
-                    player.setTransaction(transaction);
+            playerService.updatePlayer(player);
 
-                    // Обновляем информацию о игроке в базе данных.
-                    playerService.updatePlayer(player);
-
-                    System.out.println("------------------------------------------------------------------");
-                    System.out.println("Дебетовая операция выполнена успешно.");
-                    System.out.println("Баланс на счету игрока составляет: " + player.getBalance());
-                    System.out.println("------------------------------------------------------------------");
-
-                    log.info("Пользователь " + player.getUsername() + " успешно совершил дебетовую операцию," +
-                            " на сумму: " + debitAmount);
-                } else {
-                    // Генерируем исключение, если на счету недостаточно средств.
-                    throw new NotEnoughMoneyException();
-                }
-                // Сразу ловлю исключение и вывожу сообщение об ошибке, чтобы приложение не упало
-            } catch (NotEnoughMoneyException e) {
-                System.out.println("Недостаточно средств на счете для выполнения дебетовой операции.");
-            }
+            log.info("Пользователь " + player.getUsername() + " успешно совершил дебетовую операцию," +
+                    " на сумму: " + debitAmount);
         } else {
-            System.out.println("Недопустимый ввод. Пожалуйста, введите число.");
-            scanner.nextLine();
+            log.info("Ошибка дебетовой операции, недосточно средств на счету игрока ");
+            throw new NotEnoughMoneyException();
         }
     }
 
@@ -91,47 +63,27 @@ public class TransactionService {
      * Метод для добавления кредитной транзакции.
      *
      * @param player  Игрок, который хочет выполнить кредитную операцию.
-     * @param scanner Сканер для ввода данных от пользователя.
      */
-    public void addCreditTransaction(Player player, Scanner scanner) {
-        // Считываем сумму кредитной операции.
-        System.out.print("Введите сумму кредитной операции: ");
+    public void addCreditTransaction(Player player, BigDecimal creditAmount) {
+        // Создаем новую кредитную транзакцию.
+        Transaction transaction = new Transaction();
+        transaction.setType(TransactionType.CREDIT);
+        transaction.setAmount(creditAmount);
+        transaction.setLocalDateTime(LocalDateTime.now());
 
-        if (scanner.hasNextBigDecimal()) {
-            BigDecimal creditAmount = scanner.nextBigDecimal();
-            scanner.nextLine();
+        // Добавляем транзакцию в репозиторий.
+        transactionRepository.addTransaction(transaction, player.getId());
 
-            // Создаем новую кредитную транзакцию.
-            Transaction transaction = new Transaction();
-            transaction.setType(TransactionType.CREDIT);
-            transaction.setAmount(creditAmount);
-            transaction.setLocalDateTime(LocalDateTime.now());
+        // Обновляем баланс игрока после кредитования.
+        BigDecimal newBalance = player.getBalance().add(creditAmount);
+        player.setBalance(newBalance);
+        player.setTransaction(transaction);
 
-            // Добавляем транзакцию в репозиторий.
-            transactionRepository.addTransaction(transaction, player.getId());
+        // Обновляем информацию о игроке в базе данных.
+        playerService.updatePlayer(player);
 
-            // Обновляем баланс игрока после кредитования.
-            BigDecimal newBalance = player.getBalance().add(creditAmount);
-            player.setBalance(newBalance);
-            player.setTransaction(transaction);
-
-            // Обновляем информацию о игроке в базе данных.
-            playerService.updatePlayer(player);
-
-            System.out.println("------------------------------------------------------------------");
-            System.out.println("Операция кредитования выполнена успешно.");
-            System.out.println("Баланс на счету игрока составляет: " + player.getBalance());
-            System.out.println("------------------------------------------------------------------");
-
-            log.info("Пользователь " + player.getUsername() + " успешно совершил кредитную операцию," +
-                    " на сумму: " + creditAmount);
-
-        } else {
-            System.out.println("------------------------------------------------------------------");
-            System.out.println("Недопустимый ввод. Пожалуйста, введите число.");
-            System.out.println("------------------------------------------------------------------");
-            scanner.nextLine();
-        }
+        log.info("Пользователь " + player.getUsername() + " успешно совершил кредитную операцию," +
+                " на сумму: " + creditAmount);
     }
 
     /**

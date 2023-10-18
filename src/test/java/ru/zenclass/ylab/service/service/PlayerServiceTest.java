@@ -2,64 +2,48 @@ package ru.zenclass.ylab.service.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
-import ru.zenclass.ylab.exception.PlayerAlreadyExistException;
 import ru.zenclass.ylab.liquibase.LiquibaseMigrationRunner;
 import ru.zenclass.ylab.model.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
+import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
 import ru.zenclass.ylab.service.PlayerService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-@Testcontainers
+
 public class PlayerServiceTest {
 
-    // Запуск контейнера PostgreSQL перед выполнением тестов
-    @Container
-    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
-
-    private PlayerService playerService;
+    private  PlayerService playerService;
+    @Mock
     private PlayerRepository playerRepository;
 
     @BeforeEach
     void setUp() {
-        // Получаем данные для подключения к контейнеру PostgreSQL
-        String jdbcUrl = postgres.getJdbcUrl();
-        String username = postgres.getUsername();
-        String password = postgres.getPassword();
-        String driver = postgres.getDriverClassName();
-
-        // Подготовка DatabaseConnectionManager с данными для подключения к тестовой БД
-        DatabaseConnectionManager connectionManager = new DatabaseConnectionManager(jdbcUrl, username, password, driver);
-
-        // Запуск миграций Liquibase
-        LiquibaseMigrationRunner migrationRunner = new LiquibaseMigrationRunner(connectionManager);
-        migrationRunner.runMigrations();
-
-        // Инициализация репозитория и сервиса
-        playerRepository = new PlayerRepository(connectionManager);
+        MockitoAnnotations.initMocks(this);
         playerService = new PlayerService(playerRepository);
     }
 
     @Test
     void testFindPlayerById() {
         Player player = new Player();
+        player.setId(1L);
         player.setUsername("testUser");
         player.setPassword("testPassword");
         player.setBalance(new BigDecimal("100.00"));
 
-        playerRepository.addPlayer(player);
+        Mockito.when(playerRepository.findPlayerById(player.getId())).thenReturn(Optional.of(player));
 
         Player foundPlayer = playerService.findPlayerById(player.getId());
         assertEquals(player.getUsername(), foundPlayer.getUsername());
@@ -72,12 +56,12 @@ public class PlayerServiceTest {
         player.setPassword("loginPassword");
         player.setBalance(new BigDecimal("100.00"));
 
-        playerRepository.addPlayer(player);
+        Mockito.when(playerRepository.findPlayerByUsername(player.getUsername())).thenReturn(Optional.of(player));
 
-        Scanner scanner = mock(Scanner.class);
-        when(scanner.nextLine()).thenReturn("loginUser", "loginPassword");
-        Player loggedInPlayer = playerService.login(new Player(), scanner);
+        Optional<Player> loggedInPlayerOpt = playerService.login("loginUser", "loginPassword");
 
+        assertTrue(loggedInPlayerOpt.isPresent());
+        Player loggedInPlayer = loggedInPlayerOpt.get();
         assertEquals(player.getUsername(), loggedInPlayer.getUsername());
         assertEquals(player.getPassword(), loggedInPlayer.getPassword());
         assertEquals(player.getBalance(), loggedInPlayer.getBalance());
@@ -88,43 +72,42 @@ public class PlayerServiceTest {
         Player existingPlayer = new Player();
         existingPlayer.setUsername("existingUser");
         existingPlayer.setPassword("existingPassword");
-        playerRepository.addPlayer(existingPlayer);
 
-        Scanner scanner = mock(Scanner.class);
-        when(scanner.nextLine()).thenReturn("existingUser", "anotherPassword");
+        Mockito.when(playerRepository.findPlayerByUsername(existingPlayer.getUsername())).thenReturn(Optional.of(existingPlayer));
 
         // Проверяем, что при попытке регистрации пользователя с существующим именем выводится нужное сообщение
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
-        playerService.registerPlayer(scanner);
+        Optional<Player> registeredPlayerOpt = playerService.registerPlayer("existingUser", "anotherPassword");
 
+        assertFalse(registeredPlayerOpt.isPresent());
         String expectedOutput = "Пользователь с таким именем уже существует. Пожалуйста, выберите другое имя.";
         assertTrue(outContent.toString().contains(expectedOutput));
     }
     @Test
     void testUnsuccessfulLogin() {
-        Scanner scanner = mock(Scanner.class);
-        when(scanner.nextLine()).thenReturn("nonexistentUser", "wrongPassword");
-
-        // Проверяем, что при попытке авторизации с неверными данными выводится нужное сообщение
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
-        playerService.login(new Player(), scanner);
+        Optional<Player> loggedInPlayerOpt = playerService.login("nonexistentUser", "wrongPassword");
 
-        String expectedOutput = "Ошибка авторизации. Пожалуйста, проверьте введенные данные.";
+        assertFalse(loggedInPlayerOpt.isPresent());
+
+        String expectedOutput = "Ошибка авторизации пользователя с именем nonexistentUser";
         assertTrue(outContent.toString().contains(expectedOutput));
     }
 
     @Test
     void testUpdatePlayer() {
         Player player = new Player();
+        player.setId(1L);
         player.setUsername("updateUser");
         player.setPassword("updatePassword");
         player.setBalance(new BigDecimal("100.00"));
 
-        playerRepository.addPlayer(player);
+        Mockito.when(playerRepository.findPlayerById(player.getId())).thenReturn(Optional.of(player));
+        Mockito.doNothing().when(playerRepository).updatePlayer(Mockito.any(Player.class));
 
         player.setBalance(new BigDecimal("150.00"));
         playerService.updatePlayer(player);

@@ -3,8 +3,11 @@ package ru.zenclass.ylab.service;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.zenclass.ylab.exception.NotEnoughMoneyException;
 import ru.zenclass.ylab.model.Player;
 
+import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -49,20 +52,42 @@ public class WalletAppService {
             System.out.println("2. Регистрация");
             System.out.println("3. Выйти из приложения");
             System.out.print("Выберите действие (1-3): ");
+
             if (scanner.hasNextInt()) {
                 int choice = scanner.nextInt();
                 scanner.nextLine();
                 switch (choice) {
-                    case 1 ->
+                    case 1 -> {
                         // Вход пользователя
-                            loggedInPlayer = playerService.login(loggedInPlayer, scanner);
-                    case 2 ->
+                        System.out.print("Введите логин: ");
+                        String username = scanner.nextLine();
+                        System.out.print("Введите пароль: ");
+                        String password = scanner.nextLine();
+
+                        Optional<Player> optionalPlayer = playerService.login(username, password);
+                        if (optionalPlayer.isPresent()) {
+                            loggedInPlayer = optionalPlayer.get();
+                            System.out.println("Авторизация успешна. Добро пожаловать, " + loggedInPlayer.getUsername() + "!");
+                        } else {
+                            System.out.println("Ошибка авторизации. Пожалуйста, проверьте введенные данные.");
+                        }
+                    }
+                    case 2 -> {
                         // Регистрация пользователя
-                            playerService.registerPlayer(scanner);
+                        System.out.print("Введите имя: ");
+                        String username = scanner.nextLine();
+                        System.out.print("Введите пароль: ");
+                        String password = scanner.nextLine();
+                        playerService.registerPlayer(username, password);
+                    }
                     case 3 -> {
                         // Выход из приложения
                         isRunning = false;
-                        log.info("Пользователь " + loggedInPlayer.getUsername() + " завершил работу приложения");
+                        if(loggedInPlayer != null) {
+                            log.info("Пользователь " + loggedInPlayer.getUsername() + " завершил работу приложения");
+                        } else {
+                            log.info("Пользователь завершил работу приложения");
+                        }
                     }
                     default -> System.out.println("Недопустимый выбор. Попробуйте еще раз.");
                 }
@@ -97,12 +122,38 @@ public class WalletAppService {
                         // Опция 1: Текущий баланс игрока
                         transactionService.showPlayerBalance(loggedInPlayer.getId());
                     }
-                    case 2 ->
-                        // Опция 2: Дебет/снятие средств
-                            transactionService.addDebitTransaction(loggedInPlayer, scanner);
-                    case 3 ->
-                        // Опция 3: Кредит на игрока
-                            transactionService.addCreditTransaction(loggedInPlayer, scanner);
+                    case 2 -> {
+                        System.out.print("Введите сумму дебетовой операции: ");
+                        if (scanner.hasNextBigDecimal()) {
+                            BigDecimal debitAmount = scanner.nextBigDecimal();
+                            scanner.nextLine();
+                            try {
+                                transactionService.addDebitTransaction(loggedInPlayer, debitAmount);
+                                System.out.println("Дебетовая операция выполнена успешно.");
+                                System.out.println("Баланс на счету игрока составляет: " + loggedInPlayer.getBalance());
+                            } catch (NotEnoughMoneyException e) {
+                                System.out.println("Недостаточно средств на счете для выполнения дебетовой операции.");
+                            }
+                        } else {
+                            System.out.println("Недопустимый ввод. Пожалуйста, введите число.");
+                            scanner.nextLine();
+                        }
+                    }
+                    case 3 -> {
+                        System.out.print("Введите сумму кредитной операции: ");
+                        if (scanner.hasNextBigDecimal()) {
+                            BigDecimal creditAmount = scanner.nextBigDecimal();
+                            scanner.nextLine();
+                            transactionService.addCreditTransaction(loggedInPlayer, creditAmount);
+                            System.out.println("Операция кредитования выполнена успешно.");
+                            System.out.println("Баланс на счету игрока составляет: " + loggedInPlayer.getBalance());
+                        } else {
+                            System.out.println("------------------------------------------------------------------");
+                            System.out.println("Недопустимый ввод. Пожалуйста, введите число.");
+                            System.out.println("------------------------------------------------------------------");
+                            scanner.nextLine();
+                        }
+                    }
                     case 4 ->
                         // Опция 4: Просмотр истории пополнения/снятия средств
                             transactionService.viewTransactionHistory(loggedInPlayer.getId(),loggedInPlayer.getUsername());

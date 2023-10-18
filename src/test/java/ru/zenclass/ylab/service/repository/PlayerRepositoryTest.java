@@ -8,6 +8,7 @@ import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.liquibase.LiquibaseMigrationRunner;
 import ru.zenclass.ylab.model.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
+import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -39,10 +40,11 @@ public class PlayerRepositoryTest {
         migrationRunner.runMigrations();
 
         // Инициализация репозитория
-        repository = new PlayerRepository(connectionManager);
+        repository = new PlayerRepositoryImpl(connectionManager);
     }
+
     @Test
-    void testAddAndFindPlayer() {
+    void testAddPlayer() {
         Player player = new Player();
         player.setId(1L);
         player.setUsername("testUser");
@@ -53,16 +55,8 @@ public class PlayerRepositoryTest {
 
         // Проверяем, что у игрока появился ID после добавления
         assertNotNull(player.getId());
-
-        // Пытаемся найти игрока по ID
-        Optional<Player> foundPlayerOpt = repository.findPlayerById(player.getId());
-        assertTrue(foundPlayerOpt.isPresent());
-
-        Player foundPlayer = foundPlayerOpt.get();
-        assertEquals(player.getUsername(), foundPlayer.getUsername());
-        assertEquals(player.getPassword(), foundPlayer.getPassword());
-        assertEquals(player.getBalance(), foundPlayer.getBalance());
     }
+
     @Test
     void testFindPlayerByUsername() {
         Player player = new Player();
@@ -81,6 +75,12 @@ public class PlayerRepositoryTest {
         assertEquals(player.getPassword(), foundPlayer.getPassword());
         assertEquals(player.getBalance(), foundPlayer.getBalance());
     }
+    @Test
+    void testFindNonExistentPlayerByUsername() {
+        Optional<Player> notFoundPlayerOpt = repository.findPlayerByUsername("nonExistentUsername");
+        assertFalse(notFoundPlayerOpt.isPresent());
+    }
+
     @Test
     void testUpdatePlayer() {
         Player player = new Player();
@@ -103,5 +103,23 @@ public class PlayerRepositoryTest {
         Optional<Player> updatedPlayerOpt = repository.findPlayerById(player.getId());
         assertTrue(updatedPlayerOpt.isPresent());
         assertEquals(new BigDecimal("400.00"), updatedPlayerOpt.get().getBalance());
+    }
+    @Test
+    void testFindPlayerById() {
+        Player player = new Player();
+        player.setId(1L);
+        player.setUsername("testUser");
+        player.setPassword("testPassword");
+        player.setBalance(new BigDecimal("100.00"));
+
+        repository.addPlayer(player);
+
+        Optional<Player> foundPlayerOpt = repository.findPlayerById(player.getId());
+        assertTrue(foundPlayerOpt.isPresent());
+
+        Player foundPlayer = foundPlayerOpt.get();
+        assertEquals(player.getUsername(), foundPlayer.getUsername());
+        assertEquals(player.getPassword(), foundPlayer.getPassword());
+        assertEquals(player.getBalance(), foundPlayer.getBalance());
     }
 }

@@ -3,7 +3,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
 
-    <changeSet id="008-insert-into-transactions" author="Merdan">
+    <changeSet id="007-insert-into-transactions" author="Merdan">
 
         <insert schemaName="wallet_service" tableName="transactions">
             <column name="id" value="1"/>

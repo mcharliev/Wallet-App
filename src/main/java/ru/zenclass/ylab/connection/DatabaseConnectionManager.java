@@ -2,6 +2,7 @@ package ru.zenclass.ylab.connection;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,18 +19,28 @@ import java.util.Properties;
 
 public class DatabaseConnectionManager {
 
-    // Свойства для настройки подключения к базе данных
     private final Properties properties;
 
     public DatabaseConnectionManager() {
         this.properties = loadProperties();
     }
-    public DatabaseConnectionManager(String url, String username, String password,String driver) {
+
+
+    public DatabaseConnectionManager(String url, String username, String password, String driver) {
         this.properties = new Properties();
+
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("test-application.properties")) {
+            if (input != null) {
+                this.properties.load(input);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка при загрузке тестовых свойств", e);
+        }
+
         properties.setProperty("url", url);
         properties.setProperty("username", username);
         properties.setProperty("password", password);
-        properties.setProperty("driver",driver);
+        properties.setProperty("driver", driver);
     }
 
     /**
@@ -66,6 +77,10 @@ public class DatabaseConnectionManager {
 
         // Установка соединения с базой данных
         return DriverManager.getConnection(url, username, password);
+    }
+
+    public Properties getProperties() {
+        return properties;
     }
 }
 
