@@ -1,6 +1,5 @@
 package ru.zenclass.ylab.repository;
 
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
@@ -24,6 +23,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     private final DatabaseConnectionManager connectionManager;
     private final Logger log = LoggerFactory.getLogger(PlayerRepositoryImpl.class);
+
 
     /**
      * Добавляет нового игрока в базу данных.

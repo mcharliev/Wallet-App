@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.model.Transaction;
-import ru.zenclass.ylab.model.TransactionType;
+import ru.zenclass.ylab.model.enums.TransactionType;
 
 import java.sql.*;
 import java.util.ArrayList;

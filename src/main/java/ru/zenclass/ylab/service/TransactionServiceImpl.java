@@ -7,7 +7,7 @@ import ru.zenclass.ylab.exception.NotEnoughMoneyException;
 import ru.zenclass.ylab.exception.PlayerNotFoundException;
 import ru.zenclass.ylab.model.Player;
 import ru.zenclass.ylab.model.Transaction;
-import ru.zenclass.ylab.model.TransactionType;
+import ru.zenclass.ylab.model.enums.TransactionType;
 import ru.zenclass.ylab.repository.TransactionRepository;
 
 import java.math.BigDecimal;

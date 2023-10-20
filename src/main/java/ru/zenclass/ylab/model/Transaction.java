@@ -1,6 +1,7 @@
 package ru.zenclass.ylab.model;
 
 import lombok.*;
+import ru.zenclass.ylab.model.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
