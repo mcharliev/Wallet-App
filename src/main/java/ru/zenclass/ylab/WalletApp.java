@@ -7,7 +7,8 @@ import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
 import ru.zenclass.ylab.repository.TransactionRepository;
 import ru.zenclass.ylab.repository.TransactionRepositoryImpl;
 import ru.zenclass.ylab.service.PlayerService;
-import ru.zenclass.ylab.service.TransactionService;
+import ru.zenclass.ylab.service.PlayerServiceImpl;
+import ru.zenclass.ylab.service.TransactionServiceImpl;
 import ru.zenclass.ylab.service.WalletAppService;
 
 import java.util.Scanner;
@@ -32,11 +33,11 @@ public class WalletApp {
         // Инициализация репозиториев и сервисов для управления данными игроков и транзакций
         PlayerRepository playerRepository = new PlayerRepositoryImpl(connectionManager);
         TransactionRepository transactionRepository = new TransactionRepositoryImpl(connectionManager);
-        PlayerService playerService = new PlayerService(playerRepository);
+        PlayerService playerService = new PlayerServiceImpl(playerRepository);
 
         // Создание основного сервиса приложения и передача ему инициализированных сервисов
         WalletAppService walletAppService = new WalletAppService(playerService,
-                new TransactionService(transactionRepository, playerService));
+                new TransactionServiceImpl(transactionRepository, playerService));
 
         // Инициализация ввода данных и запуск основного сервиса приложения
         try (Scanner scanner = new Scanner(System.in)) {

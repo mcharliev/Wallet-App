@@ -8,7 +8,9 @@ import ru.zenclass.ylab.model.Player;
 import ru.zenclass.ylab.model.Transaction;
 import ru.zenclass.ylab.repository.TransactionRepository;
 import ru.zenclass.ylab.service.PlayerService;
+import ru.zenclass.ylab.service.PlayerServiceImpl;
 import ru.zenclass.ylab.service.TransactionService;
+import ru.zenclass.ylab.service.TransactionServiceImpl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -19,6 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
 public class TransactionServiceTest {
 
     private TransactionRepository transactionRepository;
@@ -28,8 +31,8 @@ public class TransactionServiceTest {
     @BeforeEach
     void setUp() {
         transactionRepository = Mockito.mock(TransactionRepository.class);
-        playerService = Mockito.mock(PlayerService.class);
-        transactionService = new TransactionService(transactionRepository, playerService);
+        playerService = Mockito.mock(PlayerServiceImpl.class);
+        transactionService = new TransactionServiceImpl(transactionRepository, playerService);
     }
 
     @Test
