@@ -25,7 +25,6 @@ public class DatabaseConnectionManager {
         this.properties = loadProperties();
     }
 
-
     public DatabaseConnectionManager(String url, String username, String password, String driver) {
         this.properties = new Properties();
 
@@ -36,7 +35,6 @@ public class DatabaseConnectionManager {
         } catch (IOException e) {
             throw new RuntimeException("Ошибка при загрузке тестовых свойств", e);
         }
-
         properties.setProperty("url", url);
         properties.setProperty("username", username);
         properties.setProperty("password", password);

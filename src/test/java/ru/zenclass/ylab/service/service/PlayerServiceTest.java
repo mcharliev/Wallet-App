@@ -5,15 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.zenclass.ylab.connection.DatabaseConnectionManager;
-import ru.zenclass.ylab.liquibase.LiquibaseMigrationRunner;
 import ru.zenclass.ylab.model.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
-import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
 import ru.zenclass.ylab.service.PlayerService;
+import ru.zenclass.ylab.service.PlayerServiceImpl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -25,14 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerServiceTest {
 
-    private  PlayerService playerService;
+    private PlayerService playerService;
     @Mock
     private PlayerRepository playerRepository;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        playerService = new PlayerService(playerRepository);
+        playerService = new PlayerServiceImpl(playerRepository);
     }
 
     @Test

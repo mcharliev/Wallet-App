@@ -16,8 +16,12 @@ import java.util.Optional;
  * Репозиторий для работы с объектами типа {@link Player} в базе данных.
  * Предоставляет функции для добавления, поиска и обновления информации об игроках.
  */
-@RequiredArgsConstructor
+
 public class PlayerRepositoryImpl implements PlayerRepository {
+    public PlayerRepositoryImpl(DatabaseConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     private final DatabaseConnectionManager connectionManager;
     private final Logger log = LoggerFactory.getLogger(PlayerRepositoryImpl.class);
 
