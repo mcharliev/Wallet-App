@@ -1,7 +1,7 @@
 package ru.zenclass.ylab.repository;
 
 
-import ru.zenclass.ylab.model.Transaction;
+import ru.zenclass.ylab.model.entity.Transaction;
 import java.util.List;
 
 public interface TransactionRepository {

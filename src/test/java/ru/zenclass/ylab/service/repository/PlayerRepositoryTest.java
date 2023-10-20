@@ -6,7 +6,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.liquibase.LiquibaseMigrationRunner;
-import ru.zenclass.ylab.model.Player;
+import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
 import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
 

@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.zenclass.ylab.exception.NotEnoughMoneyException;
 import ru.zenclass.ylab.exception.PlayerNotFoundException;
-import ru.zenclass.ylab.model.Player;
-import ru.zenclass.ylab.model.Transaction;
+import ru.zenclass.ylab.model.entity.Player;
+import ru.zenclass.ylab.model.entity.Transaction;
 import ru.zenclass.ylab.model.enums.TransactionType;
 import ru.zenclass.ylab.repository.TransactionRepository;
 

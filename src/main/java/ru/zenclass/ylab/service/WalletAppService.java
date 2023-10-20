@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.zenclass.ylab.exception.NotEnoughMoneyException;
-import ru.zenclass.ylab.model.Player;
+import ru.zenclass.ylab.model.entity.Player;
 
 import java.math.BigDecimal;
 import java.util.Optional;

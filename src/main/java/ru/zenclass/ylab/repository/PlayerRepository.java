@@ -1,6 +1,6 @@
 package ru.zenclass.ylab.repository;
 
-import ru.zenclass.ylab.model.Player;
+import ru.zenclass.ylab.model.entity.Player;
 
 import java.util.Optional;
 

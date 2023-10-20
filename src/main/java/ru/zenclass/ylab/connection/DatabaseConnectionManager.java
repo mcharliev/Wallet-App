@@ -1,6 +1,7 @@
 package ru.zenclass.ylab.connection;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -49,7 +50,10 @@ public class DatabaseConnectionManager {
      */
     private Properties loadProperties() {
         Properties props = new Properties();
-        try (FileInputStream input = new FileInputStream("src/main/resources/application.properties")) {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {
+            if (input == null) {
+                throw new FileNotFoundException("Файл 'application.properties' не найден по данному пути");
+            }
             props.load(input);
         } catch (IOException e) {
             throw new RuntimeException("Ошибка при загрузке свойств", e);

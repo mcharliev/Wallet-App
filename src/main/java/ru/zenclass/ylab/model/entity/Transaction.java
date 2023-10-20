@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.model;
+package ru.zenclass.ylab.model.entity;
 
 import lombok.*;
 import ru.zenclass.ylab.model.enums.TransactionType;

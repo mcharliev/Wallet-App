@@ -1,6 +1,6 @@
 package ru.zenclass.ylab.service;
 
-import ru.zenclass.ylab.model.Player;
+import ru.zenclass.ylab.model.entity.Player;
 
 import java.util.Optional;
 
@@ -10,4 +10,6 @@ public interface PlayerService {
     Optional<Player> registerPlayer(String username, String password);
     Optional<Player> login(String username, String password);
 
+
+    void save(Player playerEntity);
 }

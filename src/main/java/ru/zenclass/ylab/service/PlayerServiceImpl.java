@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.zenclass.ylab.exception.PlayerNotFoundException;
-import ru.zenclass.ylab.model.Player;
+import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
 
 import java.math.BigDecimal;
@@ -24,7 +24,7 @@ public class PlayerServiceImpl implements PlayerService {
      * Поиск игрока по его идентификатору.
      *
      * @param id идентификатор игрока.
-     * @return  {@link Player}.
+     * @return {@link Player}.
      * @throws PlayerNotFoundException если игрок с данным идентификатором не найден.
      */
     public Player findPlayerById(Long id) {
@@ -42,7 +42,6 @@ public class PlayerServiceImpl implements PlayerService {
 
     /**
      * Регистрация нового игрока.
-     *
      */
     public Optional<Player> registerPlayer(String username, String password) {
         Optional<Player> optPlayer = playerRepository.findPlayerByUsername(username);
@@ -74,6 +73,11 @@ public class PlayerServiceImpl implements PlayerService {
             log.error("Ошибка авторизации пользователя с именем " + username);
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void save(Player playerEntity) {
+        playerRepository.addPlayer(playerEntity);
     }
 
     /**

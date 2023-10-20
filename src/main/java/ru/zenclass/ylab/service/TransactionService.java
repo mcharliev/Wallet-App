@@ -1,6 +1,6 @@
 package ru.zenclass.ylab.service;
 
-import ru.zenclass.ylab.model.Player;
+import ru.zenclass.ylab.model.entity.Player;
 
 import java.math.BigDecimal;
 
