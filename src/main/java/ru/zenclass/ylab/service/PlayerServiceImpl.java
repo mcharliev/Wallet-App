@@ -52,27 +52,28 @@ public class PlayerServiceImpl implements PlayerService {
             player.setBalance(BigDecimal.ZERO);
             playerRepository.addPlayer(player);
             log.info("Пользователь " + player.getUsername() + " успешно зарегистрировался");
-            System.out.println("------------------------------------------------------------------");
-            System.out.println("Регистрация успешна. Теперь вы можете войти.");
-            System.out.println("------------------------------------------------------------------");
             return Optional.of(player);
         } else {
-            log.error("Ошибка регистрации пользователя");
-            System.out.println("Пользователь с таким именем уже существует. Пожалуйста, выберите другое имя.");
+            log.error("Ошибка регистрации пользователя. Пользователь с таким именем уже существует.");
             return Optional.empty();
         }
     }
 
     public Optional<Player> login(String username, String password) {
         Optional<Player> playerOpt = authenticatePlayer(username, password);
+
         if (playerOpt.isPresent()) {
-            Player player = playerOpt.get();
-            log.info("Пользователь " + player.getUsername() + " прошел авторизацию");
-            return playerOpt;
+            log.info("Пользователь " + username + " прошел авторизацию");
         } else {
             log.error("Ошибка авторизации пользователя с именем " + username);
-            return Optional.empty();
         }
+
+        return playerOpt;
+    }
+
+    @Override
+    public Optional<Player> findPlayerByUsername(String username) {
+        return playerRepository.findPlayerByUsername(username);
     }
 
     @Override
@@ -88,17 +89,7 @@ public class PlayerServiceImpl implements PlayerService {
      * @return {@link Player}, если аутентификация прошла успешно, иначе null.
      */
     private Optional<Player> authenticatePlayer(String username, String password) {
-        // Поиск игрока в репозитории по имени пользователя.
         Optional<Player> optPlayer = playerRepository.findPlayerByUsername(username);
-
-        if (optPlayer.isPresent()) {
-            Player player = optPlayer.get();
-
-            // Проверка соответствия имени пользователя и пароля.
-            if (player.getUsername().equals(username) && player.getPassword().equals(password)) {
-                return optPlayer; // Возвращаем игрока, если данные совпадают.
-            }
-        }
-        return Optional.empty();
+        return optPlayer.filter(player -> player.getPassword().equals(password));
     }
 }

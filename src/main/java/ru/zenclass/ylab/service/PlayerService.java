@@ -9,6 +9,7 @@ public interface PlayerService {
     void updatePlayer(Player updatedPlayer);
     Optional<Player> registerPlayer(String username, String password);
     Optional<Player> login(String username, String password);
+    Optional<Player> findPlayerByUsername(String username);
 
 
     void save(Player playerEntity);

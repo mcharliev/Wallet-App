@@ -20,5 +20,4 @@ public class Transaction {
     private TransactionType type;        // Тип транзакции (дебетовая или кредитная)
     private BigDecimal amount;           // Сумма транзакции
     private LocalDateTime localDateTime; // Дата и время выполнения транзакции
-
 }

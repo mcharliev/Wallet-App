@@ -34,7 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
      *
      * @param player  Игрок, который хочет выполнить дебетовую операцию.
      */
-    public void addDebitTransaction(Player player, BigDecimal debitAmount) {
+    public Transaction addDebitTransaction(Player player, BigDecimal debitAmount) {
 
         if (debitAmount.compareTo(player.getBalance()) <= 0) {
             Transaction transaction = new Transaction();
@@ -43,7 +43,7 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setAmount(debitAmount);
             transaction.setLocalDateTime(LocalDateTime.now());
 
-            transactionRepository.addTransaction(transaction, player.getId());
+            Transaction savedTransaction = transactionRepository.addTransaction(transaction, player.getId());
 
             BigDecimal newBalance = player.getBalance().subtract(debitAmount);
             player.setBalance(newBalance);
@@ -53,6 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
 
             log.info("Пользователь " + player.getUsername() + " успешно совершил дебетовую операцию," +
                     " на сумму: " + debitAmount);
+            return savedTransaction;
         } else {
             log.info("Ошибка дебетовой операции, недосточно средств на счету игрока ");
             throw new NotEnoughMoneyException();
@@ -64,7 +65,7 @@ public class TransactionServiceImpl implements TransactionService {
      *
      * @param player  Игрок, который хочет выполнить кредитную операцию.
      */
-    public void addCreditTransaction(Player player, BigDecimal creditAmount) {
+    public Transaction addCreditTransaction(Player player, BigDecimal creditAmount) {
         // Создаем новую кредитную транзакцию.
         Transaction transaction = new Transaction();
         transaction.setType(TransactionType.CREDIT);
@@ -72,7 +73,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setLocalDateTime(LocalDateTime.now());
 
         // Добавляем транзакцию в репозиторий.
-        transactionRepository.addTransaction(transaction, player.getId());
+        Transaction savedTransaction = transactionRepository.addTransaction(transaction, player.getId());
 
         // Обновляем баланс игрока после кредитования.
         BigDecimal newBalance = player.getBalance().add(creditAmount);
@@ -84,6 +85,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         log.info("Пользователь " + player.getUsername() + " успешно совершил кредитную операцию," +
                 " на сумму: " + creditAmount);
+        return savedTransaction;
     }
 
     /**
@@ -92,19 +94,8 @@ public class TransactionServiceImpl implements TransactionService {
      * @param id       ID игрока.
      * @param username Имя пользователя игрока.
      */
-    public void viewTransactionHistory(Long id, String username) {
-        List<Transaction> allTransactionsByPlayerId = transactionRepository.getAllTransactionsByPlayerId(id);
-
-        if (allTransactionsByPlayerId.isEmpty()) {
-            System.out.println("------------------------------------------------------------------");
-            System.out.println("У игрока: " + username + " нету платежной истории");
-            System.out.println("------------------------------------------------------------------");
-        } else {
-            System.out.println("------------------------------------------------------------------");
-            System.out.println("История игрока: " + username + " " + allTransactionsByPlayerId);
-            System.out.println("------------------------------------------------------------------");
-            log.info("Пользователь " + username + " запросил историю по своим операциям");
-        }
+    public List<Transaction> viewTransactionHistory(Long id, String username) {
+       return  transactionRepository.getAllTransactionsByPlayerId(id);
     }
 
     /**

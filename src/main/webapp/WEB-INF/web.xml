@@ -3,23 +3,30 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-
-    <servlet>
-        <servlet-name>HelloServlet</servlet-name>
-        <servlet-class>ru.zenclass.ylab.servlets.HelloServlet</servlet-class>
-    </servlet>
     <servlet-mapping>
-        <servlet-name>HelloServlet</servlet-name>
-        <url-pattern>/hello</url-pattern>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+   <servlet-mapping>
+        <servlet-name>CreditTransactionServlet</servlet-name>
+        <url-pattern>/credit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DebitTransactionServlet</servlet-name>
+        <url-pattern>/debit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PlayerBalanceServlet</servlet-name>
+        <url-pattern>/balance</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TransactionHistoryServlet</servlet-name>
+        <url-pattern>/transaction-history</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>PlayerServlet</servlet-name>
-        <servlet-class>ru.zenclass.ylab.servlets.PlayerServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>PlayerServlet</servlet-name>
-        <url-pattern>/player</url-pattern>
-    </servlet-mapping>
 
 </web-app>

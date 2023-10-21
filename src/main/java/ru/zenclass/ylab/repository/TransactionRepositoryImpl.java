@@ -27,7 +27,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
      * @param transaction объект транзакции для добавления
      * @param playerId идентификатор игрока, для которого добавляется транзакция
      */
-    public void addTransaction(Transaction transaction, Long playerId) {
+    public Transaction addTransaction(Transaction transaction, Long playerId) {
 
         // SQL-запрос для вставки новой транзакции в таблицу транзакций.
         String sql = "INSERT INTO wallet_service.transactions (id, type, amount, local_date_time, player_id) VALUES (nextval('wallet_service.transactions_seq'), ?, ?, ?, ?) RETURNING id";
@@ -49,11 +49,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     transaction.setId(generatedId);
                 }
             }
-
         } catch (SQLException | ClassNotFoundException e) {
             log.error("Ошибка при добавлении транзакции", e);
             throw new RuntimeException("Ошибка при добавлении транзакции", e);
         }
+        return transaction;
     }
 
     /**

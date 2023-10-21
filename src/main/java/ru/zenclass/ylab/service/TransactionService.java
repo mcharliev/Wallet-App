@@ -1,15 +1,17 @@
 package ru.zenclass.ylab.service;
 
 import ru.zenclass.ylab.model.entity.Player;
+import ru.zenclass.ylab.model.entity.Transaction;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface TransactionService {
-    void addDebitTransaction(Player player, BigDecimal debitAmount);
+    Transaction addDebitTransaction(Player player, BigDecimal debitAmount);
 
-    void addCreditTransaction(Player player, BigDecimal creditAmount);
+    Transaction addCreditTransaction(Player player, BigDecimal creditAmount);
 
-    void viewTransactionHistory(Long id, String username);
+    List<Transaction> viewTransactionHistory(Long id, String username);
 
     void showPlayerBalance(Long id);
 }
