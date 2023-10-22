@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 
-@WebServlet(name = "CreditTransactionServlet", urlPatterns = {"/credit"})
+@WebServlet(name = "CreditTransactionServlet", urlPatterns = {"/transactions/credit"})
 public class CreditTransactionServlet extends BaseTransactionServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -24,15 +24,12 @@ public class CreditTransactionServlet extends BaseTransactionServlet {
         if (creditAmount == null) {
             return;
         }
-        // 3. Процесс кредитной транзакции
         try {
             Transaction savedTransaction = transactionService.addCreditTransaction(player, creditAmount);
             TransactionDTO transactionDTO = TransactionMapper.INSTANCE.toDTO(savedTransaction);
-            // Формируем JSON-ответ.
             String jsonResponse = String.format(
                     "{ \"message\": \"Транзакция успешно выполнена\", \"transaction\": %s }",
                     mapper.writeValueAsString(transactionDTO));
-
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.getWriter().write(jsonResponse);
         } catch (Exception e) {

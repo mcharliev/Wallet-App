@@ -2,7 +2,6 @@ package ru.zenclass.ylab.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
@@ -18,23 +17,27 @@ import ru.zenclass.ylab.service.PlayerServiceImpl;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
-public class RegisterServlet extends HttpServlet {
+
+@WebServlet(name = "RegisterServlet", urlPatterns = {"/players/register"})
+public class RegisterServlet extends BasicRegLogServlet {
 
     private PlayerService playerService;
     private final ObjectMapper mapper = new ObjectMapper();
 
+
     @Override
     public void init() {
+        super.init();
         DatabaseConnectionManager connectionManager = new DatabaseConnectionManager();
         PlayerRepository playerRepository = new PlayerRepositoryImpl(connectionManager);
         this.playerService = new PlayerServiceImpl(playerRepository);
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("application/json");
-        RegisterPlayerDTO registerPlayerDTO = mapper.readValue(req.getReader(), RegisterPlayerDTO.class);
+        RegisterPlayerDTO registerPlayerDTO = getAndValidatePlayerDTO(req, resp);
+        if (registerPlayerDTO == null) {
+            return;
+        }
         Player playerEntity = PlayerMapper.INSTANCE.toPlayerEntity(registerPlayerDTO);
         Optional<Player> registeredPlayerOpt = playerService.registerPlayer(playerEntity.getUsername(), playerEntity.getPassword());
         if (registeredPlayerOpt.isPresent()) {

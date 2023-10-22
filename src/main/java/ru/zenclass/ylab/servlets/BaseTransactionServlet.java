@@ -4,7 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
+import ru.zenclass.ylab.model.dto.AmountDTO;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
 import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
@@ -19,12 +24,14 @@ import ru.zenclass.ylab.util.JwtUtil;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Set;
 
 public abstract class BaseTransactionServlet extends HttpServlet {
     protected ObjectMapper mapper;
     protected final JwtUtil jwtUtil = new JwtUtil();
     protected TransactionService transactionService;
     protected PlayerService playerService;
+    protected Validator validator;
 
     @Override
     public void init() {
@@ -34,9 +41,11 @@ public abstract class BaseTransactionServlet extends HttpServlet {
         this.playerService = new PlayerServiceImpl(playerRepository);
         this.transactionService = new TransactionServiceImpl(transactionRepository, playerService);
         mapper = new ObjectMapper();
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
 
-    public Optional<Player> validateTokenAndGetPlayer(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected Optional<Player> validateTokenAndGetPlayer(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         String token = req.getHeader("Authorization");
         if (token == null || !token.startsWith("Bearer ")) {
@@ -59,6 +68,7 @@ public abstract class BaseTransactionServlet extends HttpServlet {
         }
         return playerOpt;
     }
+
     protected Optional<Player> getPlayerFromRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Optional<Player> playerOpt = validateTokenAndGetPlayer(req, resp);
         if (playerOpt.isEmpty()) {
@@ -66,15 +76,20 @@ public abstract class BaseTransactionServlet extends HttpServlet {
         }
         return playerOpt;
     }
+
     protected Optional<BigDecimal> getAmountFromRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String amountString = req.getParameter("amount");
         try {
-            BigDecimal amount = new BigDecimal(amountString);
-            System.out.println("Received amount: " + amountString);
-            return Optional.of(amount);
-        } catch (NumberFormatException e) {
+            AmountDTO amountDTO = mapper.readValue(req.getReader(), AmountDTO.class);
+            Set<ConstraintViolation<AmountDTO>> violations = validator.validate(amountDTO);
+            if (!violations.isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\": \"Некорректное значение суммы\"}");
+                return Optional.empty();
+            }
+            return Optional.of(amountDTO.getAmount());
+        } catch (IOException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\": \"Некорректное значение суммы\"}");
+            resp.getWriter().write("{\"error\": \"Ошибка чтения данных\"}");
             return Optional.empty();
         }
     }

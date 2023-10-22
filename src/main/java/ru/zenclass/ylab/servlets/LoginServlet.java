@@ -2,7 +2,6 @@ package ru.zenclass.ylab.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
@@ -19,14 +18,15 @@ import ru.zenclass.ylab.util.JwtUtil;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "LoginServlet", urlPatterns = {"/players/login"})
+public class LoginServlet extends BasicRegLogServlet {
 
     private PlayerService playerService;
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void init() {
+        super.init();
         DatabaseConnectionManager connectionManager = new DatabaseConnectionManager();
         PlayerRepository playerRepository = new PlayerRepositoryImpl(connectionManager);
         this.playerService = new PlayerServiceImpl(playerRepository);
@@ -34,17 +34,17 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("application/json");
-        RegisterPlayerDTO registerPlayerDTO = mapper.readValue(req.getReader(), RegisterPlayerDTO.class);
+        RegisterPlayerDTO registerPlayerDTO = getAndValidatePlayerDTO(req, resp);
+        if (registerPlayerDTO == null) {
+            return;
+        }
         Player playerEntity = PlayerMapper.INSTANCE.toPlayerEntity(registerPlayerDTO);
         Optional<Player> playerOpt = playerService.login(playerEntity.getUsername(), playerEntity.getPassword());
         if (playerOpt.isPresent()) {
             Player registeredPlayer = playerOpt.get();
             PlayerDTO playerDTO = PlayerMapper.INSTANCE.toDTO(registeredPlayer);
-
             JwtUtil jwtUtil = new JwtUtil();
             String token = jwtUtil.generateToken(registeredPlayer.getUsername());
-
             String jsonResponse = String.format(
                     "{ \"message\": \"Пользователь '%s' совершил успешный вход\", \"player\": %s, \"token\": \"%s\" }",
                     playerDTO.getUsername(),

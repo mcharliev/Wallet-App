@@ -5,28 +5,29 @@
          version="3.1">
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
-        <url-pattern>/register</url-pattern>
+        <url-pattern>/players/register</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/login</url-pattern>
+        <url-pattern>/players/login</url-pattern>
     </servlet-mapping>
    <servlet-mapping>
         <servlet-name>CreditTransactionServlet</servlet-name>
-        <url-pattern>/credit</url-pattern>
+        <url-pattern>/transactions/credit</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DebitTransactionServlet</servlet-name>
-        <url-pattern>/debit</url-pattern>
+        <url-pattern>/transactions/debit</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>PlayerBalanceServlet</servlet-name>
-        <url-pattern>/balance</url-pattern>
+        <url-pattern>/players/balance</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TransactionHistoryServlet</servlet-name>
-        <url-pattern>/transaction-history</url-pattern>
+        <url-pattern>/transactions/history</url-pattern>
     </servlet-mapping>
-
-
+    <listener>
+        <listener-class>ru.zenclass.ylab.configuration.WalletAppInitializer</listener-class>
+    </listener>
 </web-app>

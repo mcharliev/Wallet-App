@@ -12,22 +12,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-@WebServlet(name = "TransactionHistoryServlet", urlPatterns = {"/transaction-history"})
+@WebServlet(name = "TransactionHistoryServlet", urlPatterns = {"/transactions/history"})
 public class TransactionHistoryServlet extends BaseTransactionServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Optional<Player> playerOpt = validateTokenAndGetPlayer(req, resp);
         if (playerOpt.isEmpty()) {
-            return; // Если токен недействителен или пользователь не найден, метод validateTokenAndGetPlayer уже обработал это.
+            return;
         }
         Player player = playerOpt.get();
-
-        // Запрос истории транзакций
         List<Transaction> transactions = transactionService.viewTransactionHistory(player.getId(), player.getUsername());
         List<TransactionDTO> dtoList = transactions.stream()
                 .map(TransactionMapper.INSTANCE::toDTO).toList();
-
-        // Формируем JSON-ответ
         String jsonResponse;
         if (transactions.isEmpty()) {
             jsonResponse = String.format(

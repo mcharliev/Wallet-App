@@ -8,7 +8,7 @@ import ru.zenclass.ylab.model.entity.Player;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(name = "PlayerBalanceServlet", urlPatterns = {"/balance"})
+@WebServlet(name = "PlayerBalanceServlet", urlPatterns = {"/players/balance"})
 public class PlayerBalanceServlet extends BaseTransactionServlet {
 
     @Override

@@ -25,6 +25,12 @@
     <jackson.version>2.15.3</jackson.version>
     <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
     <mapstruct.version>1.5.3.Final</mapstruct.version>
+    <jjwt.version>0.9.1</jjwt.version>
+    <hibernate.validator.version>7.0.2.Final</hibernate.validator.version>
+    <jboss.logging.version>3.5.0.Final</jboss.logging.version>
+    <classmate.version>1.5.1</classmate.version>
+    <javax.el.version>3.0.1-b09</javax.el.version>
+    <jakarta.validation.api.version>3.0.2</jakarta.validation.api.version>
   </properties>
 
   <dependencies>
@@ -114,7 +120,32 @@
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt</artifactId>
-      <version>0.9.1</version>
+      <version>${jjwt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>${hibernate.validator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>${jboss.logging.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml</groupId>
+      <artifactId>classmate</artifactId>
+      <version>${classmate.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.el</artifactId>
+      <version>${javax.el.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>${jakarta.validation.api.version}</version>
     </dependency>
   </dependencies>
 

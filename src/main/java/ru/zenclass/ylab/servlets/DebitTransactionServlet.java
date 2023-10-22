@@ -12,7 +12,7 @@ import ru.zenclass.ylab.model.mapper.TransactionMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-@WebServlet(name = "DebitTransactionServlet", urlPatterns = {"/debit"})
+@WebServlet(name = "DebitTransactionServlet", urlPatterns = {"/transactions/debit"})
 public class DebitTransactionServlet extends BaseTransactionServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -36,7 +36,7 @@ public class DebitTransactionServlet extends BaseTransactionServlet {
         } catch (NotEnoughMoneyException e) {
             e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\": \"Ошибка при выполнении транзакции\"}");
+            resp.getWriter().write("{\"error\": \"Недостаточно средств на счете\"}");
         }
     }
 }
