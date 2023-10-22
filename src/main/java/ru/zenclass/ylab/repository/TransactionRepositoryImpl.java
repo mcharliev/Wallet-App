@@ -1,6 +1,6 @@
 package ru.zenclass.ylab.repository;
 
-import lombok.RequiredArgsConstructor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
@@ -15,11 +15,15 @@ import java.util.List;
  * Репозиторий для работы с транзакциями в базе данных.
  * Предоставляет функции для добавления транзакций и получения транзакций для определенного игрока.
  */
-@RequiredArgsConstructor
+
 public class TransactionRepositoryImpl implements TransactionRepository {
 
     private final DatabaseConnectionManager connectionManager;
     private final Logger log = LoggerFactory.getLogger(TransactionRepositoryImpl.class);
+
+    public TransactionRepositoryImpl(DatabaseConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     /**
      * Добавляет новую транзакцию в базу данных.

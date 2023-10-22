@@ -1,8 +1,9 @@
 package ru.zenclass.ylab.service;
 
-import lombok.RequiredArgsConstructor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.exception.PlayerNotFoundException;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
@@ -14,11 +15,16 @@ import java.util.Optional;
  * Сервис для управления данными игрока.
  * Этот сервис предоставляет методы для выполнения основных операций, таких как поиск, обновление, регистрация и вход.
  */
-@RequiredArgsConstructor
+
+
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
     private final Logger log = LoggerFactory.getLogger(PlayerServiceImpl.class);
+
+    public PlayerServiceImpl(PlayerRepository playerRepository) {
+        this.playerRepository = playerRepository;
+    }
 
     /**
      * Поиск игрока по его идентификатору.
@@ -43,6 +49,7 @@ public class PlayerServiceImpl implements PlayerService {
     /**
      * Регистрация нового игрока.
      */
+    @Loggable
     public Optional<Player> registerPlayer(String username, String password) {
         Optional<Player> optPlayer = playerRepository.findPlayerByUsername(username);
         if (optPlayer.isEmpty()) {

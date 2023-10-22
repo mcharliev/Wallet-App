@@ -26,7 +26,6 @@ public abstract class BasicRegLogServlet extends HttpServlet {
     protected RegisterPlayerDTO getAndValidatePlayerDTO(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         RegisterPlayerDTO registerPlayerDTO = mapper.readValue(req.getReader(), RegisterPlayerDTO.class);
-
         Set<ConstraintViolation<RegisterPlayerDTO>> violations = validator.validate(registerPlayerDTO);
         if (!violations.isEmpty()) {
             StringBuilder errorMessage = new StringBuilder("Ошибка валидации: ");
@@ -37,7 +36,6 @@ public abstract class BasicRegLogServlet extends HttpServlet {
             resp.getWriter().write(errorMessage.toString());
             return null;
         }
-
         return registerPlayerDTO;
     }
 }

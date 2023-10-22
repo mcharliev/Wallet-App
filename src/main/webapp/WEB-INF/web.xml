@@ -27,6 +27,10 @@
         <servlet-name>TransactionHistoryServlet</servlet-name>
         <url-pattern>/transactions/history</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VersionServlet</servlet-name>
+        <url-pattern>/version</url-pattern>
+    </servlet-mapping>
     <listener>
         <listener-class>ru.zenclass.ylab.configuration.WalletAppInitializer</listener-class>
     </listener>

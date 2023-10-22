@@ -1,6 +1,6 @@
 package ru.zenclass.ylab.service;
 
-import lombok.RequiredArgsConstructor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.zenclass.ylab.exception.NotEnoughMoneyException;
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Сервис для обработки транзакций.
  */
-@RequiredArgsConstructor
+
 public class TransactionServiceImpl implements TransactionService {
 
     // Репозиторий транзакций для работы с данными о транзакциях.
@@ -28,6 +28,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     // Логгер для аудита и мониторинга действий в сервисе.
     private final Logger log = LoggerFactory.getLogger(TransactionServiceImpl.class);
+
+    public TransactionServiceImpl(TransactionRepository transactionRepository, PlayerService playerService) {
+        this.transactionRepository = transactionRepository;
+        this.playerService = playerService;
+    }
 
     /**
      * Метод для добавления дебетовой транзакции.

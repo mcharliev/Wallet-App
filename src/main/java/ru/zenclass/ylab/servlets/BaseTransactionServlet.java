@@ -1,6 +1,7 @@
 package ru.zenclass.ylab.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.SignatureException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,6 +9,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.model.dto.AmountDTO;
 import ru.zenclass.ylab.model.entity.Player;
@@ -54,19 +56,25 @@ public abstract class BaseTransactionServlet extends HttpServlet {
             return Optional.empty();
         }
         token = token.substring(7);
-        String username = jwtUtil.extractUsername(token);
-        if (!jwtUtil.validateToken(token, username)) {
+        try {
+            String username = jwtUtil.extractUsername(token);
+            if (!jwtUtil.validateToken(token, username)) {
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                resp.getWriter().write("{\"error\": \"Токен недействителен\"}");
+                return Optional.empty();
+            }
+            Optional<Player> playerOpt = playerService.findPlayerByUsername(username);
+            if (playerOpt.isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                resp.getWriter().write("{\"error\": \"Пользователь не найден\"}");
+                return Optional.empty();
+            }
+            return playerOpt;
+        } catch (SignatureException ex) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("{\"error\": \"Токен недействителен\"}");
             return Optional.empty();
         }
-        Optional<Player> playerOpt = playerService.findPlayerByUsername(username);
-        if (playerOpt.isEmpty()) {
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            resp.getWriter().write("{\"error\": \"Пользователь не найден\"}");
-            return Optional.empty();
-        }
-        return playerOpt;
     }
 
     protected Optional<Player> getPlayerFromRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
