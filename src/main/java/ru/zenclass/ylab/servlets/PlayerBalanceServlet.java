@@ -25,8 +25,8 @@ public class PlayerBalanceServlet extends BaseTransactionServlet {
      * @throws IOException в случае ошибок ввода-вывода
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Optional<Player> playerOpt = getPlayerFromRequest(req, resp);  // используем готовый метод из базового сервлета
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Optional<Player> playerOpt = getPlayerFromRequest(req, resp);
         if (playerOpt.isEmpty()) {
             return;
         }

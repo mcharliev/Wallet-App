@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import ru.zenclass.ylab.exception.PlayerNotFoundException;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
 import ru.zenclass.ylab.service.PlayerService;
@@ -91,5 +92,38 @@ public class PlayerServiceTest {
         Optional<Player> updatedPlayerOpt = playerRepository.findPlayerById(player.getId());
         assertTrue(updatedPlayerOpt.isPresent());
         assertEquals(new BigDecimal("150.00"), updatedPlayerOpt.get().getBalance());
+    }
+    @Test
+    void testFindPlayerByIdNotFound() {
+        Mockito.when(playerRepository.findPlayerById(1L)).thenReturn(Optional.empty());
+        assertThrows(PlayerNotFoundException.class, () -> {
+            playerService.findPlayerById(1L);
+        });
+    }
+    @Test
+    void testRegisterPlayerSuccess() {
+        Mockito.when(playerRepository.findPlayerByUsername("newUser")).thenReturn(Optional.empty());
+        Optional<Player> registeredPlayerOpt = playerService.registerPlayer("newUser", "newPassword");
+        assertTrue(registeredPlayerOpt.isPresent());
+        assertEquals("newUser", registeredPlayerOpt.get().getUsername());
+        assertEquals("newPassword", registeredPlayerOpt.get().getPassword());
+    }
+
+    @Test
+    void testRegisterPlayerExistingUsername() {
+        Player existingPlayer = new Player();
+        existingPlayer.setUsername("existingUser");
+        existingPlayer.setPassword("existingPassword");
+        Mockito.when(playerRepository.findPlayerByUsername("existingUser")).thenReturn(Optional.of(existingPlayer));
+        Optional<Player> registeredPlayerOpt = playerService.registerPlayer("existingUser", "newPassword");
+        assertFalse(registeredPlayerOpt.isPresent());
+    }
+    @Test
+    void testGetPlayerBalanceInfo() {
+        Player player = new Player();
+        player.setUsername("balanceUser");
+        player.setBalance(new BigDecimal("250.50"));
+        String balanceInfo = playerService.getPlayerBalanceInfo(player);
+        assertTrue(balanceInfo.contains("\"balance\": 250.50"));
     }
 }

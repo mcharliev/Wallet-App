@@ -37,7 +37,7 @@ import java.util.Set;
  */
 public abstract class BaseTransactionServlet extends HttpServlet {
     protected ObjectMapper mapper;
-    protected final JwtUtil jwtUtil = new JwtUtil();
+    protected JwtUtil jwtUtil;
     protected TransactionService transactionService;
     protected PlayerService playerService;
     protected Validator validator;
@@ -53,8 +53,15 @@ public abstract class BaseTransactionServlet extends HttpServlet {
         this.playerService = new PlayerServiceImpl(playerRepository);
         this.transactionService = new TransactionServiceImpl(transactionRepository, playerService);
         mapper = new ObjectMapper();
+        validator = initValidator();
+        this.jwtUtil = createJwtUtil();
+    }
+    protected JwtUtil createJwtUtil() {
+        return new JwtUtil();
+    }
+    public Validator initValidator() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        return factory.getValidator();
     }
 
     /**
@@ -77,6 +84,7 @@ public abstract class BaseTransactionServlet extends HttpServlet {
         try {
             String username = jwtUtil.extractUsername(token);
             if (!jwtUtil.validateToken(token, username)) {
+                System.out.println("Token validation failed for token: " + token + " and username: " + username);
                 resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 resp.getWriter().write("{\"error\": \"Токен недействителен\"}");
                 return Optional.empty();

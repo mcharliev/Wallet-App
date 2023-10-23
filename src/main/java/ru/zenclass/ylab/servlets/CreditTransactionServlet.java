@@ -28,7 +28,7 @@ public class CreditTransactionServlet extends BaseTransactionServlet {
      * @throws IOException в случае ошибок ввода-вывода
      */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Player player = getPlayerFromRequest(req, resp).orElse(null);
         if (player == null) {
             return;
