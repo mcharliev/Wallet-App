@@ -77,20 +77,4 @@ public class TransactionServiceTest {
         assertEquals(2, transactions.size());
     }
 
-    @Test
-    public void testShowPlayerBalance() {
-        Player player = new Player();
-        player.setUsername("testPlayer");
-        player.setBalance(new BigDecimal("1000"));
-
-        Mockito.when(playerService.findPlayerById(player.getId())).thenReturn(player);
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(out));
-
-        transactionService.showPlayerBalance(player.getId());
-
-        String output = out.toString();
-        assertTrue(output.contains("Баланс на счету игрока составляет: 1000"));
-    }
 }

@@ -28,8 +28,8 @@ public class LoggableAspect {
      * Совет, который выполняется до и после вызова методов,
      * в соответсвии с определенной точкой среза.
      * @param proceedingJoinPoint предоставляет информацию о перехваченном методе
-     * @return результат выполнения перехваченного метода
-     * @throws Throwable если в процессе выполнения метода произошла ошибка
+     * @return результат выполнения метода, тип {@link Object}
+     * @throws Throwable возможное исключение {@link Throwable}
      */
     @Around("annotatedByLoggable()")
     public Object logging(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {

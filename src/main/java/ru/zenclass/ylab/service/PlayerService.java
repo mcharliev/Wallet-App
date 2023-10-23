@@ -52,4 +52,11 @@ public interface PlayerService {
      */
     Optional<Player> findPlayerByUsername(String username);
 
+    /**
+     * Получение информации о балансе игрока.
+     *
+     * @param player игрок, баланс которого необходимо получить.
+     * @return строка с информацией о балансе в формате JSON.
+     */
+    String getPlayerBalanceInfo(Player player);
 }

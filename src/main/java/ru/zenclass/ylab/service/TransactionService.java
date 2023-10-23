@@ -38,10 +38,4 @@ public interface TransactionService {
      */
     List<Transaction> viewTransactionHistory(Long id, String username);
 
-    /**
-     * Отображает текущий баланс игрока.
-     *
-     * @param id  идентификатор игрока
-     */
-    void showPlayerBalance(Long id);
 }

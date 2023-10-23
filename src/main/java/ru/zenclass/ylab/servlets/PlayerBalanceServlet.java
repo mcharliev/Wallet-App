@@ -26,16 +26,12 @@ public class PlayerBalanceServlet extends BaseTransactionServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Optional<Player> playerOpt = validateTokenAndGetPlayer(req, resp);
+        Optional<Player> playerOpt = getPlayerFromRequest(req, resp);  // используем готовый метод из базового сервлета
         if (playerOpt.isEmpty()) {
             return;
         }
         Player player = playerOpt.get();
-        String jsonResponse = String.format(
-                "{ \"message\": \"Текущий баланс игрока %s\", \"balance\": %s }",
-                player.getUsername(),
-                player.getBalance().toPlainString()
-        );
+        String jsonResponse = playerService.getPlayerBalanceInfo(player);
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(jsonResponse);
     }
