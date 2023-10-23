@@ -3,6 +3,7 @@ package ru.zenclass.ylab.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.model.entity.Transaction;
 import ru.zenclass.ylab.model.enums.TransactionType;
@@ -15,7 +16,7 @@ import java.util.List;
  * Репозиторий для работы с транзакциями в базе данных.
  * Предоставляет функции для добавления транзакций и получения транзакций для определенного игрока.
  */
-
+@Loggable
 public class TransactionRepositoryImpl implements TransactionRepository {
 
     private final DatabaseConnectionManager connectionManager;

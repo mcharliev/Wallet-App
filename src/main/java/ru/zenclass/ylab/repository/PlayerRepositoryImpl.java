@@ -2,6 +2,7 @@ package ru.zenclass.ylab.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.model.entity.Player;
 
@@ -15,7 +16,7 @@ import java.util.Optional;
  * Репозиторий для работы с объектами типа {@link Player} в базе данных.
  * Предоставляет функции для добавления, поиска и обновления информации об игроках.
  */
-
+@Loggable
 public class PlayerRepositoryImpl implements PlayerRepository {
     public PlayerRepositoryImpl(DatabaseConnectionManager connectionManager) {
         this.connectionManager = connectionManager;

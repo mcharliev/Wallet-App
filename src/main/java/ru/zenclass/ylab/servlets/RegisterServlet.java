@@ -17,14 +17,22 @@ import ru.zenclass.ylab.service.PlayerServiceImpl;
 import java.io.IOException;
 import java.util.Optional;
 
-
+/**
+ * Сервлет, предназначенный для регистрации новых пользователей.
+ * <p>
+ * После успешной регистрации пользователь получает JSON-ответ с сообщением об успехе и данными нового пользователя.
+ * В случае ошибки или если пользователь с таким именем уже существует, возвращает соответствующее сообщение об ошибке.
+ * </p>
+ */
 @WebServlet(name = "RegisterServlet", urlPatterns = {"/players/register"})
 public class RegisterServlet extends BasicRegLogServlet {
 
     private PlayerService playerService;
     private final ObjectMapper mapper = new ObjectMapper();
 
-
+    /**
+     * Инициализирует сервлет, создавая и настраивая необходимые службы
+     */
     @Override
     public void init() {
         super.init();
@@ -32,6 +40,14 @@ public class RegisterServlet extends BasicRegLogServlet {
         PlayerRepository playerRepository = new PlayerRepositoryImpl(connectionManager);
         this.playerService = new PlayerServiceImpl(playerRepository);
     }
+
+    /**
+     * Обрабатывает POST-запрос для регистрации нового пользователя.
+     *
+     * @param req  запрос от клиента
+     * @param resp ответ сервера
+     * @throws IOException в случае ошибок ввода-вывода
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         RegisterPlayerDTO registerPlayerDTO = getAndValidatePlayerDTO(req, resp);

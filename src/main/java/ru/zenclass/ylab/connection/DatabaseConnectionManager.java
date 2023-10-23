@@ -1,6 +1,7 @@
 package ru.zenclass.ylab.connection;
 
-import java.io.FileInputStream;
+import ru.zenclass.ylab.aop.annotations.Loggable;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +18,6 @@ import java.util.Properties;
  * загруженных из файла properties.
  * </p>
  */
-
 public class DatabaseConnectionManager {
 
     private final Properties properties;

@@ -3,6 +3,7 @@ package ru.zenclass.ylab.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.exception.NotEnoughMoneyException;
 import ru.zenclass.ylab.exception.PlayerNotFoundException;
 import ru.zenclass.ylab.model.entity.Player;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * Сервис для обработки транзакций.
  */
-
+@Loggable
 public class TransactionServiceImpl implements TransactionService {
 
     // Репозиторий транзакций для работы с данными о транзакциях.

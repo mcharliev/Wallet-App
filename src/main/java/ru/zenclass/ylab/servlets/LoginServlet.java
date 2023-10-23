@@ -18,12 +18,22 @@ import ru.zenclass.ylab.util.JwtUtil;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * Сервлет, предназначенный для авторизации пользователей.
+ * <p>
+ * После успешной авторизации пользователь получает JSON-ответ с сообщением об успехе, данными пользователя
+ * и JWT-токеном. В случае ошибки авторизации возвращает сообщение об ошибке.
+ * </p>
+ */
 @WebServlet(name = "LoginServlet", urlPatterns = {"/players/login"})
 public class LoginServlet extends BasicRegLogServlet {
 
     private PlayerService playerService;
     private final ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Инициализирует сервлет, создавая и настраивая необходимые службы
+     */
     @Override
     public void init() {
         super.init();
@@ -32,6 +42,13 @@ public class LoginServlet extends BasicRegLogServlet {
         this.playerService = new PlayerServiceImpl(playerRepository);
     }
 
+    /**
+     * Обрабатывает POST-запрос для авторизации пользователя.
+     *
+     * @param req  запрос от клиента
+     * @param resp ответ сервера
+     * @throws IOException в случае ошибок ввода-вывода
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         RegisterPlayerDTO registerPlayerDTO = getAndValidatePlayerDTO(req, resp);

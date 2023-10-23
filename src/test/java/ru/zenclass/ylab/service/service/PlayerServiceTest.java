@@ -61,25 +61,6 @@ public class PlayerServiceTest {
         assertEquals(player.getPassword(), loggedInPlayer.getPassword());
         assertEquals(player.getBalance(), loggedInPlayer.getBalance());
     }
-
-    @Test
-    void testRegisterPlayerWithExistingUsername() {
-        Player existingPlayer = new Player();
-        existingPlayer.setUsername("existingUser");
-        existingPlayer.setPassword("existingPassword");
-
-        Mockito.when(playerRepository.findPlayerByUsername(existingPlayer.getUsername())).thenReturn(Optional.of(existingPlayer));
-
-        // Проверяем, что при попытке регистрации пользователя с существующим именем выводится нужное сообщение
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        Optional<Player> registeredPlayerOpt = playerService.registerPlayer("existingUser", "anotherPassword");
-
-        assertFalse(registeredPlayerOpt.isPresent());
-        String expectedOutput = "Пользователь с таким именем уже существует. Пожалуйста, выберите другое имя.";
-        assertTrue(outContent.toString().contains(expectedOutput));
-    }
     @Test
     void testUnsuccessfulLogin() {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();

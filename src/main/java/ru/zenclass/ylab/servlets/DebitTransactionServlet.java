@@ -12,8 +12,22 @@ import ru.zenclass.ylab.model.mapper.TransactionMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+/**
+ * Сервлет для обработки дебетовых транзакций.
+ * При успешной обработке дебетовой транзакции, отправляет ответ с статусом 201 (CREATED) и JSON-сообщением о успехе.
+ * Если на счете недостаточно средств для проведения дебетовой транзакции, возвращает статус 400 (BAD REQUEST)
+ * с сообщением о недостатке средств.
+ */
 @WebServlet(name = "DebitTransactionServlet", urlPatterns = {"/transactions/debit"})
 public class DebitTransactionServlet extends BaseTransactionServlet {
+
+    /**
+     * Обрабатывает POST-запрос для создания дебетовой транзакции.
+     *
+     * @param req  запрос от клиента
+     * @param resp ответ сервера
+     * @throws IOException в случае ошибок ввода-вывода
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Player player = getPlayerFromRequest(req, resp).orElse(null);
@@ -24,7 +38,6 @@ public class DebitTransactionServlet extends BaseTransactionServlet {
         if (creditAmount == null) {
             return;
         }
-        // Процесс дебетовой транзакции
         try {
             Transaction transaction = transactionService.addDebitTransaction(player, creditAmount);
             TransactionDTO transactionDTO = TransactionMapper.INSTANCE.toDTO(transaction);

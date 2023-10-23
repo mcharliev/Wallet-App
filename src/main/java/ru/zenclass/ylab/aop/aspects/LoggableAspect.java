@@ -7,23 +7,37 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Аспект для логирования методов и классов, аннотированных {@code @Loggable}.
+ * При вызове таких методов в лог будут выводиться сообщения о начале выполнения метода,
+ * его завершении и времени выполнения.
+ */
 @Aspect
 public class LoggableAspect {
-    Logger log = LoggerFactory.getLogger(LoggableAspect.class);
+    private static final Logger log = LoggerFactory.getLogger(LoggableAspect.class);
+
+    /**
+     * Точка среза для для классов, аннотированных {@code @Loggable}.
+     */
     @Pointcut("within(@ru.zenclass.ylab.aop.annotations.Loggable *) && execution(* *(..))")
     public void annotatedByLoggable() {
 
     }
 
+    /**
+     * Совет, который выполняется до и после вызова методов,
+     * в соответсвии с определенной точкой среза.
+     * @param proceedingJoinPoint предоставляет информацию о перехваченном методе
+     * @return результат выполнения перехваченного метода
+     * @throws Throwable если в процессе выполнения метода произошла ошибка
+     */
     @Around("annotatedByLoggable()")
     public Object logging(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         log.info("Calling method " + proceedingJoinPoint.getSignature());
-        System.out.println("Calling method " + proceedingJoinPoint.getSignature());
         long startTime = System.currentTimeMillis();
         Object result = proceedingJoinPoint.proceed();
         long endTime = System.currentTimeMillis();
-        log.info("Calling method " + proceedingJoinPoint.getSignature());
-        System.out.println("Execution of method " + proceedingJoinPoint.getSignature() +
+        log.info("Execution of method " + proceedingJoinPoint.getSignature() +
                 " finished. Execution time is " + (endTime - startTime) + " ms");
         return result;
     }

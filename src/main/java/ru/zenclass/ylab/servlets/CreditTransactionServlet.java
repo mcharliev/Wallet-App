@@ -11,9 +11,22 @@ import ru.zenclass.ylab.model.mapper.TransactionMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-
+/**
+ * Сервлет для обработки кредитных транзакций.
+ * При успешном выполнении кредитной транзакции, отправляет ответ с статусом 201 (CREATED) и JSON-сообщением о успехе.
+ * В случае ошибки возвращает статус 400 (BAD REQUEST) с сообщением об ошибке.
+ * </p>
+ */
 @WebServlet(name = "CreditTransactionServlet", urlPatterns = {"/transactions/credit"})
 public class CreditTransactionServlet extends BaseTransactionServlet {
+
+    /**
+     * Обрабатывает POST-запрос для создания кредитной транзакции.
+     *
+     * @param req  запрос от клиента
+     * @param resp ответ сервера
+     * @throws IOException в случае ошибок ввода-вывода
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Player player = getPlayerFromRequest(req, resp).orElse(null);

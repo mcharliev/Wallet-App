@@ -16,7 +16,7 @@ import java.util.Optional;
  * Этот сервис предоставляет методы для выполнения основных операций, таких как поиск, обновление, регистрация и вход.
  */
 
-
+@Loggable
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
@@ -81,11 +81,6 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public Optional<Player> findPlayerByUsername(String username) {
         return playerRepository.findPlayerByUsername(username);
-    }
-
-    @Override
-    public void save(Player playerEntity) {
-        playerRepository.addPlayer(playerEntity);
     }
 
     /**

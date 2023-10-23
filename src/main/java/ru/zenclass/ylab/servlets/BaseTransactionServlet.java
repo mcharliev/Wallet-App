@@ -1,6 +1,7 @@
 package ru.zenclass.ylab.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +10,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.model.dto.AmountDTO;
 import ru.zenclass.ylab.model.entity.Player;
@@ -28,6 +28,13 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Базовый сервлет для обработки транзакций.
+ * <p>
+ * Этот абстрактный класс содержит общую логику и утилиты для работы с транзакциями,
+ * такие как валидация токенов, извлечение данных о игроке и обработка суммы транзакции.
+ * </p>
+ */
 public abstract class BaseTransactionServlet extends HttpServlet {
     protected ObjectMapper mapper;
     protected final JwtUtil jwtUtil = new JwtUtil();
@@ -35,6 +42,9 @@ public abstract class BaseTransactionServlet extends HttpServlet {
     protected PlayerService playerService;
     protected Validator validator;
 
+    /**
+     * Инициализирует сервлет, настраивая необходимые сервисы и валидаторы.
+     */
     @Override
     public void init() {
         DatabaseConnectionManager connectionManager = new DatabaseConnectionManager();
@@ -47,6 +57,14 @@ public abstract class BaseTransactionServlet extends HttpServlet {
         validator = factory.getValidator();
     }
 
+    /**
+     * Валидирует токен из заголовка запроса и возвращает соответствующего игрока.
+     *
+     * @param req  Запрос от клиента.
+     * @param resp Ответ клиенту.
+     * @return Игрок {@link Optional<Player>} , если токен действителен; иначе {@link Optional#empty()}.
+     * @throws IOException В случае ошибок ввода-вывода.
+     */
     protected Optional<Player> validateTokenAndGetPlayer(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         String token = req.getHeader("Authorization");
@@ -74,9 +92,21 @@ public abstract class BaseTransactionServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("{\"error\": \"Токен недействителен\"}");
             return Optional.empty();
+        } catch (ExpiredJwtException ex) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.getWriter().write("{\"error\": \"Токен истек\"}");
+            return Optional.empty();
         }
     }
 
+    /**
+     * Возвращает объект игрока из запроса после валидации токена.
+     *
+     * @param req  Запрос от клиента.
+     * @param resp Ответ клиенту.
+     * @return Игрок {@link Optional<Player>}, если токен действителен; иначе {@link Optional#empty()}.
+     * @throws IOException В случае ошибок ввода-вывода.
+     */
     protected Optional<Player> getPlayerFromRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Optional<Player> playerOpt = validateTokenAndGetPlayer(req, resp);
         if (playerOpt.isEmpty()) {
@@ -85,6 +115,14 @@ public abstract class BaseTransactionServlet extends HttpServlet {
         return playerOpt;
     }
 
+    /**
+     * Извлекает сумму транзакции из запроса и валидирует ее.
+     * @param req  Запрос от клиента.
+     * @param resp Ответ клиенту.
+     * @return Сумма транзакции в случае успешной валидации {@link Optional<BigDecimal>};
+     * иначе {@link Optional#empty()}.
+     * @throws IOException В случае ошибок ввода-вывода.
+     */
     protected Optional<BigDecimal> getAmountFromRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             AmountDTO amountDTO = mapper.readValue(req.getReader(), AmountDTO.class);
