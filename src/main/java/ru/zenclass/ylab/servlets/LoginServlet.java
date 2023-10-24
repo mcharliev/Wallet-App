@@ -5,16 +5,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.exception.AuthenticationException;
 import ru.zenclass.ylab.model.dto.LoginResponseDTO;
 import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.mapper.PlayerMapper;
-import ru.zenclass.ylab.repository.PlayerRepository;
-import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
 import ru.zenclass.ylab.service.PlayerService;
-import ru.zenclass.ylab.service.PlayerServiceImpl;
+import ru.zenclass.ylab.service.ServiceLocator;
 
 import java.io.IOException;
 import java.util.Map;
@@ -34,13 +31,12 @@ public class LoginServlet extends HttpServlet {
     public LoginServlet(PlayerService playerService) {
         this.playerService = playerService;
     }
+    public LoginServlet() {}
 
     @Override
     public void init() {
         if (playerService == null) {
-            DatabaseConnectionManager connectionManager = new DatabaseConnectionManager();
-            PlayerRepository playerRepository = new PlayerRepositoryImpl(connectionManager);
-            this.playerService = new PlayerServiceImpl(playerRepository);
+            this.playerService = ServiceLocator.getPlayerService();
         }
     }
 

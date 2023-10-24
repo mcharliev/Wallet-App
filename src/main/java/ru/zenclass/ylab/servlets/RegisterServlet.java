@@ -5,15 +5,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.exception.ConflictException;
 import ru.zenclass.ylab.exception.ValidationException;
 import ru.zenclass.ylab.model.dto.PlayerDTO;
 import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
-import ru.zenclass.ylab.repository.PlayerRepository;
-import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
 import ru.zenclass.ylab.service.PlayerService;
-import ru.zenclass.ylab.service.PlayerServiceImpl;
+import ru.zenclass.ylab.service.ServiceLocator;
 
 import java.io.IOException;
 
@@ -30,12 +27,9 @@ public class RegisterServlet extends HttpServlet {
     private PlayerService playerService;
     private ObjectMapper mapper;
 
-
     public RegisterServlet() {
         mapper = new ObjectMapper();
-        DatabaseConnectionManager connectionManager = new DatabaseConnectionManager();
-        PlayerRepository playerRepository = new PlayerRepositoryImpl(connectionManager);
-        this.playerService = new PlayerServiceImpl(playerRepository);
+        this.playerService = ServiceLocator.getPlayerService();
     }
 
     public RegisterServlet(PlayerService playerService, ObjectMapper mapper) {

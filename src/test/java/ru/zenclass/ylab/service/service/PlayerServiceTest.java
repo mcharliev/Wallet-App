@@ -1,5 +1,6 @@
 package ru.zenclass.ylab.service.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-class PlayerServiceImplTest {
+class PlayerServiceTest {
 
     @Mock
     private PlayerRepository playerRepository;
@@ -39,6 +40,11 @@ class PlayerServiceImplTest {
 
     @InjectMocks
     private PlayerServiceImpl playerService;
+
+    @BeforeEach
+    public void setUp() {
+        playerService = new PlayerServiceImpl(playerRepository, registerPlayerValidator, jwtUtil);
+    }
     @Test
     void testFindPlayerById_existingId() {
         Player player = new Player();

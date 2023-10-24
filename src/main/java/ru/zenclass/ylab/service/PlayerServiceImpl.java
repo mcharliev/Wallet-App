@@ -35,9 +35,6 @@ public class PlayerServiceImpl implements PlayerService {
         this.registerPlayerValidator = registerPlayerValidator;
         this.jwtUtil = jwtUtil;
     }
-    public PlayerServiceImpl(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
-    }
 
     @Override
     public Player findPlayerById(Long id) {
