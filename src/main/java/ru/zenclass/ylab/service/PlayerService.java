@@ -13,57 +13,50 @@ import java.util.Optional;
 public interface PlayerService {
 
     /**
-     * Поиск игрока по его уникальному идентификатору.
+     * Найти игрока по его ID.
      *
-     * @param id уникальный идентификатор игрока
-     * @return найденная сущность игрока
+     * @param id идентификатор игрока.
+     * @return найденный игрок.
      */
     Player findPlayerById(Long id);
 
     /**
-     * Обновление данных игрока.
+     * Обновить данные игрока.
      *
-     * @param updatedPlayer сущность игрока с обновленными данными
+     * @param updatedPlayer обновленные данные игрока.
      */
     void updatePlayer(Player updatedPlayer);
 
     /**
-     * Регистрация нового игрока в системе.
+     * Зарегистрировать нового игрока.
      *
-     * @param username имя пользователя для регистрации
-     * @param password пароль пользователя для регистрации
-     * @return созданная сущность игрока {@link Optional Optional<Player>}
-     * или {@link Optional#empty()} если регистрация не удалась
+     * @param registerPlayerDTO данные для регистрации.
+     * @return DTO нового игрока.
      */
-    Optional<Player> registerPlayer(String username, String password);
+    PlayerDTO registerNewPlayer(RegisterPlayerDTO registerPlayerDTO);
 
     /**
-     * Вход игрока в систему.
+     * Найти игрока по имени пользователя.
      *
-     * @param username имя пользователя для входа
-     * @param password пароль пользователя для входа
-     * @return сущность авторизованного игрока {@link Optional Optional<Player>}
-     * или {@link Optional#empty()} если авторизация не удалась
-     */
-    Optional<Player> login(String username, String password);
-
-    /**
-     * Поиск игрока по его имени пользователя.
-     * @param username имя пользователя
-     * @return найденная сущность игрока {@link Optional Optional<Player>}
-     * или {@link Optional#empty()} если игрок с таким именем не найден
+     * @param username имя пользователя.
+     * @return найденный игрок.
      */
     Optional<Player> findPlayerByUsername(String username);
 
     /**
-     * Получение информации о балансе игрока.
+     * Получить информацию о балансе игрока.
      *
-     * @param player игрок, баланс которого необходимо получить.
-     * @return строка с информацией о балансе в формате JSON.
+     * @param player игрок.
+     * @return информация о балансе в формате JSON.
      */
     String getPlayerBalanceInfo(Player player);
 
-    PlayerDTO registerNewPlayer(RegisterPlayerDTO registerPlayerDTO);
-
+    /**
+     * Аутентифицировать игрока и сгенерировать токен.
+     *
+     * @param username имя пользователя.
+     * @param password пароль.
+     * @return DTO с данными игрока и токеном.
+     */
     LoginResponseDTO authenticateAndGenerateToken(String username, String password);
 }

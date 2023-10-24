@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.exception.AuthenticationException;
 import ru.zenclass.ylab.model.dto.LoginResponseDTO;
-import ru.zenclass.ylab.model.dto.PlayerDTO;
 import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.mapper.PlayerMapper;
@@ -16,11 +15,9 @@ import ru.zenclass.ylab.repository.PlayerRepository;
 import ru.zenclass.ylab.repository.PlayerRepositoryImpl;
 import ru.zenclass.ylab.service.PlayerService;
 import ru.zenclass.ylab.service.PlayerServiceImpl;
-import ru.zenclass.ylab.util.JwtUtil;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Сервлет, предназначенный для авторизации пользователей.

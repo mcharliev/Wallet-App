@@ -5,9 +5,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.zenclass.ylab.model.entity.Player;
+import ru.zenclass.ylab.service.AuthService;
+import ru.zenclass.ylab.service.PlayerService;
+import ru.zenclass.ylab.service.ServiceLocator;
 
 import java.io.IOException;
-import java.util.Optional;
+
 
 /**
  * Сервлет, предназначенный для получения текущего баланса игрока.
@@ -18,23 +21,29 @@ import java.util.Optional;
 @WebServlet(name = "PlayerBalanceServlet", urlPatterns = {"/players/balance"})
 public class PlayerBalanceServlet extends HttpServlet {
 
-//    /**
-//     * Обрабатывает GET-запрос для получения баланса указанного игрока.
-//     *
-//     * @param req  запрос от клиента
-//     * @param resp ответ сервера
-//     * @throws IOException в случае ошибок ввода-вывода
-//     */
-//    @Override
-//    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//        Optional<Player> playerOpt = getPlayerFromRequest(req, resp);
-//        if (playerOpt.isEmpty()) {
-//            return;
-//        }
-//        Player player = playerOpt.get();
-//        String jsonResponse = playerService.getPlayerBalanceInfo(player);
-//        resp.setStatus(HttpServletResponse.SC_OK);
-//        resp.getWriter().write(jsonResponse);
-//    }
+    private PlayerService playerService;
+    private AuthService authService;
+    @Override
+    public void init() {
+        this.playerService = ServiceLocator.getPlayerService();
+        this.authService = ServiceLocator.getAuthService();
+    }
+
+    @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Player player = authService.getPlayerFromRequest(req, resp).orElse(null);
+        if (player == null) {
+            return;
+        }
+        try {
+            String jsonResponse = playerService.getPlayerBalanceInfo(player);
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getWriter().write(jsonResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"Ошибка при получении баланса игрока\"}");
+        }
+    }
 }
 

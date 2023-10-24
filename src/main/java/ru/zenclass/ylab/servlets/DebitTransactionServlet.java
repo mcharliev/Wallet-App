@@ -1,5 +1,6 @@
 package ru.zenclass.ylab.servlets;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,10 @@ import ru.zenclass.ylab.model.dto.TransactionDTO;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.entity.Transaction;
 import ru.zenclass.ylab.model.mapper.TransactionMapper;
+import ru.zenclass.ylab.service.AuthService;
+import ru.zenclass.ylab.service.RequestService;
+import ru.zenclass.ylab.service.ServiceLocator;
+import ru.zenclass.ylab.service.TransactionService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -21,36 +26,42 @@ import java.math.BigDecimal;
  */
 @WebServlet(name = "DebitTransactionServlet", urlPatterns = {"/transactions/debit"})
 public class DebitTransactionServlet extends HttpServlet {
+    private TransactionService transactionService;
+    private ObjectMapper mapper = new ObjectMapper();
+    private AuthService authService;
+    private RequestService requestService;
 
-//    /**
-//     * Обрабатывает POST-запрос для создания дебетовой транзакции.
-//     *
-//     * @param req  запрос от клиента
-//     * @param resp ответ сервера
-//     * @throws IOException в случае ошибок ввода-вывода
-//     */
-//    @Override
-//    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//        Player player = getPlayerFromRequest(req, resp).orElse(null);
-//        if (player == null) {
-//            return;
-//        }
-//        BigDecimal creditAmount = getAmountFromRequest(req, resp).orElse(null);
-//        if (creditAmount == null) {
-//            return;
-//        }
-//        try {
-//            Transaction transaction = transactionService.addDebitTransaction(player, creditAmount);
-//            TransactionDTO transactionDTO = TransactionMapper.INSTANCE.toDTO(transaction);
-//            String jsonResponse = String.format(
-//                    "{ \"message\": \"Дебетовая транзакция успешно выполнена\", \"transaction\": %s }",
-//                    mapper.writeValueAsString(transactionDTO));
-//            resp.setStatus(HttpServletResponse.SC_CREATED);
-//            resp.getWriter().write(jsonResponse);
-//        } catch (NotEnoughMoneyException e) {
-//            e.printStackTrace();
-//            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            resp.getWriter().write("{\"error\": \"Недостаточно средств на счете\"}");
-//        }
-//    }
+    @Override
+    public void init() {
+        this.transactionService = ServiceLocator.getTransactionService();
+        this.authService = ServiceLocator.getAuthService();
+        this.requestService = ServiceLocator.getRequestService();
+    }
+
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Player player = authService.getPlayerFromRequest(req, resp).orElse(null);
+        if (player == null) {
+            return;
+        }
+        BigDecimal debitAmount = requestService.getAmountFromRequest(req, resp).orElse(null);
+        if (debitAmount == null) {
+            return;
+        }
+        try {
+            Transaction savedTransaction = transactionService.addDebitTransaction(player, debitAmount);
+            TransactionDTO transactionDTO = TransactionMapper.INSTANCE.toDTO(savedTransaction);
+            String jsonResponse = mapper.writeValueAsString(transactionDTO);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+            resp.getWriter().write(jsonResponse);
+        } catch (NotEnoughMoneyException e) {
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"Недостаточно средств на счете\"}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"Ошибка при выполнении транзакции\"}");
+        }
+    }
 }

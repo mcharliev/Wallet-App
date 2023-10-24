@@ -15,6 +15,7 @@ import ru.zenclass.ylab.repository.PlayerRepository;
 import ru.zenclass.ylab.util.JwtUtil;
 import ru.zenclass.ylab.validator.RegisterPlayerValidator;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,25 +35,28 @@ public class PlayerServiceImpl implements PlayerService {
         this.playerRepository = playerRepository;
     }
 
+    @Override
     public Player findPlayerById(Long id) {
         return playerRepository.findPlayerById(id).orElseThrow(PlayerNotFoundException::new);
     }
 
+    @Override
     public void updatePlayer(Player updatedPlayer) {
         playerRepository.updatePlayer(updatedPlayer);
     }
 
-    public Optional<Player> registerPlayer(String username, String password) {
-        return playerRepository.findPlayerByUsername(username)
-                .or(() -> {
-                    Player player = new Player(username, password);
-                    playerRepository.addPlayer(player);
-                    return Optional.of(player);
-                });
-    }
+    @Override
+    public PlayerDTO registerNewPlayer(RegisterPlayerDTO registerPlayerDTO) {
+        validate(registerPlayerDTO);
 
-    public Optional<Player> login(String username, String password) {
-        return authenticatePlayer(username, password);
+        Optional<Player> existingPlayer = playerRepository.findPlayerByUsername(registerPlayerDTO.getUsername());
+        if (existingPlayer.isPresent()) {
+            throw new ConflictException("Игрок уже существует");
+        }
+
+        Player player = new Player(registerPlayerDTO.getUsername(), registerPlayerDTO.getPassword());
+        playerRepository.addPlayer(player);
+        return PlayerMapper.INSTANCE.toDTO(player);
     }
 
     @Override
@@ -62,19 +66,25 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public String getPlayerBalanceInfo(Player player) {
-        return null;
+        if (player == null) {
+            throw new IllegalArgumentException("Игрок не должен быть null");
+        }
+        BigDecimal playerBalance = player.getBalance();
+        return String.format("{\"username\": \"%s\", \"balance\": \"%s\"}", player.getUsername(), playerBalance.toPlainString());
+    }
+
+    @Override
+    public LoginResponseDTO authenticateAndGenerateToken(String username, String password) {
+        Player player = authenticatePlayer(username, password).orElseThrow(() ->
+                new AuthenticationException("Неверный логин или пароль, попробуйте ввести данные снова"));
+        String token = jwtUtil.generateToken(player.getUsername());
+        PlayerDTO playerDTO = PlayerMapper.INSTANCE.toDTO(player);
+        return new LoginResponseDTO(playerDTO, token);
     }
 
     private Optional<Player> authenticatePlayer(String username, String password) {
         return playerRepository.findPlayerByUsername(username)
                 .filter(player -> player.getPassword().equals(password));
-    }
-
-    public PlayerDTO registerNewPlayer(RegisterPlayerDTO registerPlayerDTO) {
-        validate(registerPlayerDTO);
-        return registerPlayer(registerPlayerDTO.getUsername(), registerPlayerDTO.getPassword())
-                .map(PlayerMapper.INSTANCE::toDTO)
-                .orElseThrow(() -> new ConflictException("Игрок уже существует"));
     }
 
     private void validate(RegisterPlayerDTO registerPlayerDTO) {
@@ -88,14 +98,6 @@ public class PlayerServiceImpl implements PlayerService {
         return violations.stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining(". "));
-    }
-
-    public LoginResponseDTO authenticateAndGenerateToken(String username, String password) {
-        Player player = authenticatePlayer(username, password).orElseThrow(() ->
-                new AuthenticationException("Неверный логин или пароль, попробуйте ввести данные снова"));
-        String token = jwtUtil.generateToken(player.getUsername());
-        PlayerDTO playerDTO = PlayerMapper.INSTANCE.toDTO(player);
-        return new LoginResponseDTO(playerDTO, token);
     }
 }
 

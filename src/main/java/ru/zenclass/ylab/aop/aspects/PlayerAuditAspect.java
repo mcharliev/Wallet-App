@@ -6,6 +6,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.zenclass.ylab.model.dto.LoginResponseDTO;
+import ru.zenclass.ylab.model.dto.PlayerDTO;
 import ru.zenclass.ylab.model.entity.Player;
 
 import java.util.Optional;
@@ -17,82 +19,41 @@ import java.util.Optional;
 public class PlayerAuditAspect {
     private static final Logger log = LoggerFactory.getLogger(PlayerAuditAspect.class);
 
-    /**
-     * Определение точки среза для метода регистрации игрока.
-     */
-    @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.registerPlayer(..))")
-    public void registerPlayerMethod() {
+    @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.registerNewPlayer(..))")
+    public void registerNewPlayer() {
     }
 
-    /**
-     * Логирование процесса регистрации игрока.
-     *
-     * @param joinPoint соединительная точка
-     * @return результат выполнения метода, тип {@link Object}
-     * @throws Throwable возможное исключение {@link Throwable}
-     */
-    @Around("registerPlayerMethod()")
+    @Around("registerNewPlayer()")
     public Object logRegistration(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
-        if (result instanceof Optional) {
-            Optional<?> genericOpt = (Optional<?>) result;
-            if (genericOpt.isEmpty()) {
-                log.error("Ошибка регистрации пользователя. Пользователь с таким именем уже существует.");
-            } else {
-                Object possiblePlayer = genericOpt.get();
-                if (possiblePlayer instanceof Player) {
-                    Player player = (Player) possiblePlayer;
-                    log.info("Пользователь " + player.getUsername() + " успешно зарегистрировался");
-                }
-            }
+        if (result instanceof PlayerDTO) {
+            PlayerDTO playerDTO = (PlayerDTO) result;
+            log.info("Пользователь " + playerDTO.getUsername() + " успешно зарегистрировался");
         }
         return result;
     }
 
-    /**
-     * Определение точки среза для метода авторизации игрока.
-     */
-    @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.login(..))")
-    public void loginMethod() {
+    @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.authenticateAndGenerateToken(..))")
+    public void authenticateAndGenerateToken() {
     }
 
-    /**
-     * Логирование процесса авторизации игрока.
-     *
-     * @param joinPoint соединительная точка
-     * @return результат выполнения метода, тип {@link Object}
-     * @throws Throwable возможное исключение {@link Throwable}
-     */
-    @Around("loginMethod()")
+    @Around("authenticateAndGenerateToken()")
     public Object logLogin(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         String username = (String) args[0];
         Object result = joinPoint.proceed();
-        if (result instanceof Optional) {
-            Optional<?> genericOpt = (Optional<?>) result;
-            if (genericOpt.isEmpty()) {
-                log.error("Ошибка авторизации пользователя с именем " + username);
-            } else {
-                log.info("Пользователь " + username + " прошел авторизацию");
-            }
+        if (result instanceof LoginResponseDTO) {
+            log.info("Пользователь " + username + " прошел авторизацию");
+        } else {
+            log.error("Ошибка авторизации пользователя с именем " + username);
         }
         return result;
     }
 
-    /**
-     * Определение точки среза для метода получения баланса игрока.
-     */
     @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.getPlayerBalanceInfo(..))")
     public void getPlayerBalanceInfoMethod() {
     }
 
-    /**
-     * Логирование процесса получения информации о балансе игрока.
-     *
-     * @param joinPoint соединительная точка
-     * @return результат выполнения метода, тип {@link Object}
-     * @throws Throwable возможное исключение {@link Throwable}
-     */
     @Around("getPlayerBalanceInfoMethod()")
     public Object logGetPlayerBalanceInfo(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
