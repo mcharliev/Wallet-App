@@ -1,12 +1,23 @@
 package ru.zenclass.ylab.service;
 
 
+import jakarta.validation.ConstraintViolation;
+import ru.zenclass.ylab.exception.AuthenticationException;
+import ru.zenclass.ylab.exception.ConflictException;
 import ru.zenclass.ylab.exception.PlayerNotFoundException;
+import ru.zenclass.ylab.exception.ValidationException;
+import ru.zenclass.ylab.model.dto.LoginResponseDTO;
+import ru.zenclass.ylab.model.dto.PlayerDTO;
+import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 import ru.zenclass.ylab.model.entity.Player;
+import ru.zenclass.ylab.model.mapper.PlayerMapper;
 import ru.zenclass.ylab.repository.PlayerRepository;
+import ru.zenclass.ylab.util.JwtUtil;
+import ru.zenclass.ylab.validator.RegisterPlayerValidator;
 
-import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Сервис для управления данными игрока.
@@ -16,93 +27,75 @@ import java.util.Optional;
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final RegisterPlayerValidator registerPlayerValidator = new RegisterPlayerValidator();
+    private final JwtUtil jwtUtil = new JwtUtil();
 
     public PlayerServiceImpl(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 
-    /**
-     * Поиск игрока по его идентификатору.
-     *
-     * @param id идентификатор игрока.
-     * @return {@link Player}.
-     * @throws PlayerNotFoundException если игрок с данным идентификатором не найден.
-     */
     public Player findPlayerById(Long id) {
         return playerRepository.findPlayerById(id).orElseThrow(PlayerNotFoundException::new);
     }
 
-    /**
-     * Обновление данных игрока.
-     *
-     * @param updatedPlayer объект игрока с обновленными данными.
-     */
     public void updatePlayer(Player updatedPlayer) {
         playerRepository.updatePlayer(updatedPlayer);
     }
 
-    /**
-     * Регистрация нового игрока.
-     */
     public Optional<Player> registerPlayer(String username, String password) {
-        Optional<Player> optPlayer = playerRepository.findPlayerByUsername(username);
-        if (optPlayer.isEmpty()) {
-            Player player = new Player();
-            player.setUsername(username);
-            player.setPassword(password);
-            player.setBalance(BigDecimal.ZERO);
-            playerRepository.addPlayer(player);
-            return Optional.of(player);
-        } else {
-            return Optional.empty();
-        }
+        return playerRepository.findPlayerByUsername(username)
+                .or(() -> {
+                    Player player = new Player(username, password);
+                    playerRepository.addPlayer(player);
+                    return Optional.of(player);
+                });
     }
 
-    /**
-     * Вход игрока в систему.
-     *
-     * @param username имя пользователя.
-     * @param password пароль пользователя.
-     * @return {@link Optional<Player>} игрока, если логин и пароль верные.
-     */
     public Optional<Player> login(String username, String password) {
         return authenticatePlayer(username, password);
     }
 
-    /**
-     * Поиск игрока по имени пользователя.
-     *
-     * @param username имя пользователя.
-     * @return {@link Optional<Player>} игрока, если он найден.
-     */
     @Override
     public Optional<Player> findPlayerByUsername(String username) {
         return playerRepository.findPlayerByUsername(username);
     }
 
-    /**
-     * Получение информации о балансе игрока.
-     *
-     * @param player игрок, баланс которого необходимо получить.
-     * @return строка с информацией о балансе в формате JSON.
-     */
+    @Override
     public String getPlayerBalanceInfo(Player player) {
-        return String.format(
-                "{ \"message\": \"Текущий баланс игрока %s\", \"balance\": %s }",
-                player.getUsername(),
-                player.getBalance().toPlainString()
-        );
+        return null;
     }
 
-    /**
-     * Аутентификация игрока на основе имени пользователя и пароля.
-     *
-     * @param username имя пользователя.
-     * @param password пароль пользователя.
-     * @return {@link Player}, если аутентификация прошла успешно, иначе null.
-     */
     private Optional<Player> authenticatePlayer(String username, String password) {
-        Optional<Player> optPlayer = playerRepository.findPlayerByUsername(username);
-        return optPlayer.filter(player -> player.getPassword().equals(password));
+        return playerRepository.findPlayerByUsername(username)
+                .filter(player -> player.getPassword().equals(password));
+    }
+
+    public PlayerDTO registerNewPlayer(RegisterPlayerDTO registerPlayerDTO) {
+        validate(registerPlayerDTO);
+        return registerPlayer(registerPlayerDTO.getUsername(), registerPlayerDTO.getPassword())
+                .map(PlayerMapper.INSTANCE::toDTO)
+                .orElseThrow(() -> new ConflictException("Игрок уже существует"));
+    }
+
+    private void validate(RegisterPlayerDTO registerPlayerDTO) {
+        Set<ConstraintViolation<RegisterPlayerDTO>> violations = registerPlayerValidator.validate(registerPlayerDTO);
+        if (!violations.isEmpty()) {
+            throw new ValidationException(formatViolations(violations));
+        }
+    }
+
+    private String formatViolations(Set<ConstraintViolation<RegisterPlayerDTO>> violations) {
+        return violations.stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(". "));
+    }
+
+    public LoginResponseDTO authenticateAndGenerateToken(String username, String password) {
+        Player player = authenticatePlayer(username, password).orElseThrow(() ->
+                new AuthenticationException("Неверный логин или пароль, попробуйте ввести данные снова"));
+        String token = jwtUtil.generateToken(player.getUsername());
+        PlayerDTO playerDTO = PlayerMapper.INSTANCE.toDTO(player);
+        return new LoginResponseDTO(playerDTO, token);
     }
 }
+

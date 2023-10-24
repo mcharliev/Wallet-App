@@ -29,11 +29,6 @@ public class TransactionServiceImpl implements TransactionService {
         this.playerService = playerService;
     }
 
-    /**
-     * Метод для добавления дебетовой транзакции.
-     *
-     * @param player Игрок, который хочет выполнить дебетовую операцию.
-     */
     public Transaction addDebitTransaction(Player player, BigDecimal debitAmount) {
         if (debitAmount.compareTo(player.getBalance()) <= 0) {
             Transaction transaction = new Transaction();
@@ -52,11 +47,6 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    /**
-     * Метод для добавления кредитной транзакции.
-     *
-     * @param player Игрок, который хочет выполнить кредитную операцию.
-     */
     public Transaction addCreditTransaction(Player player, BigDecimal creditAmount) {
         Transaction transaction = new Transaction();
         transaction.setType(TransactionType.CREDIT);
@@ -70,12 +60,6 @@ public class TransactionServiceImpl implements TransactionService {
         return savedTransaction;
     }
 
-    /**
-     * Метод для просмотра истории транзакций игрока.
-     *
-     * @param id       ID игрока.
-     * @param username Имя пользователя игрока.
-     */
     public List<Transaction> viewTransactionHistory(Long id, String username) {
         return transactionRepository.getAllTransactionsByPlayerId(id);
     }

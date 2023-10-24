@@ -12,12 +12,19 @@ import java.util.List;
  */
 
 public class Player {
-    private Long id;                    // Идентификатор игрока
-    private String username;              // Имя игрока
-    private String password;              // Пароль игрока
-    private BigDecimal balance;           // Баланс игрока
-    private final List<Transaction> transactions = new ArrayList<>(); // Список транзакций игрока
+    private Long id;
+    private String username;
+    private String password;
+    private BigDecimal balance;
+    private final List<Transaction> transactions = new ArrayList<>();
 
+    public Player(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.balance = new BigDecimal(0);
+    }
+    public Player() {
+    }
 
     public void setTransaction(Transaction transaction) {
         this.transactions.add(transaction);

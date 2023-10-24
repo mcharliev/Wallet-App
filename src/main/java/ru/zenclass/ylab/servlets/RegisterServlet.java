@@ -2,9 +2,16 @@ package ru.zenclass.ylab.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
+import ru.zenclass.ylab.exception.ConflictException;
+import ru.zenclass.ylab.exception.ValidationException;
 import ru.zenclass.ylab.model.dto.PlayerDTO;
 import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 import ru.zenclass.ylab.model.entity.Player;
@@ -16,6 +23,7 @@ import ru.zenclass.ylab.service.PlayerServiceImpl;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Сервлет, предназначенный для регистрации новых пользователей.
@@ -25,49 +33,33 @@ import java.util.Optional;
  * </p>
  */
 @WebServlet(name = "RegisterServlet", urlPatterns = {"/players/register"})
-public class RegisterServlet extends BasicRegLogServlet {
+public class RegisterServlet extends HttpServlet {
 
     private PlayerService playerService;
-    private final ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper;
 
-    /**
-     * Инициализирует сервлет, создавая и настраивая необходимые службы
-     */
     @Override
     public void init() {
-        super.init();
+        mapper = new ObjectMapper();
         DatabaseConnectionManager connectionManager = new DatabaseConnectionManager();
         PlayerRepository playerRepository = new PlayerRepositoryImpl(connectionManager);
         this.playerService = new PlayerServiceImpl(playerRepository);
     }
 
-    /**
-     * Обрабатывает POST-запрос для регистрации нового пользователя.
-     *
-     * @param req  запрос от клиента
-     * @param resp ответ сервера
-     * @throws IOException в случае ошибок ввода-вывода
-     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        RegisterPlayerDTO registerPlayerDTO = getAndValidatePlayerDTO(req, resp);
-        if (registerPlayerDTO == null) {
-            return;
-        }
-        Player playerEntity = PlayerMapper.INSTANCE.toPlayerEntity(registerPlayerDTO);
-        Optional<Player> registeredPlayerOpt = playerService.registerPlayer(playerEntity.getUsername(), playerEntity.getPassword());
-        if (registeredPlayerOpt.isPresent()) {
-            Player registeredPlayer = registeredPlayerOpt.get();
-            PlayerDTO playerDTO = PlayerMapper.INSTANCE.toDTO(registeredPlayer);
-            String jsonResponse = String.format(
-                    "{ \"message\": \"Пользователь '%s' успешно зарегистрирован\", \"player\": %s }",
-                    playerDTO.getUsername(),
-                    mapper.writeValueAsString(playerDTO));
+        try {
+            RegisterPlayerDTO registerPlayerDTO = mapper.readValue(req.getReader(), RegisterPlayerDTO.class);
+            PlayerDTO registeredPlayerDTO = playerService.registerNewPlayer(registerPlayerDTO);
+            resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_CREATED);
-            resp.getWriter().write(jsonResponse);
-        } else {
+            resp.getWriter().write(mapper.writeValueAsString(registeredPlayerDTO));
+        } catch (ValidationException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("Пользователь с таким именем уже существует. Пожалуйста, выберите другое имя");
+            resp.getWriter().write(e.getMessage());
+        } catch (ConflictException e) {
+            resp.setStatus(HttpServletResponse.SC_CONFLICT);
+            resp.getWriter().write(e.getMessage());
         }
     }
 }
