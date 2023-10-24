@@ -19,9 +19,9 @@ import java.math.BigDecimal;
 
 /**
  * Сервлет для обработки кредитных транзакций.
- * При успешном выполнении кредитной транзакции, отправляет ответ с статусом 201 (CREATED) и JSON-сообщением о успехе.
- * В случае ошибки возвращает статус 400 (BAD REQUEST) с сообщением об ошибке.
- * </p>
+ * При успешном выполнении кредитной транзакции, отправляет ответ с статусом 201 (CREATED)
+ * и JSON-сообщением о успехе. В случае ошибки возвращает статус 400 (BAD REQUEST)
+ * с сообщением об ошибке.
  */
 @WebServlet(name = "CreditTransactionServlet", urlPatterns = {"/transactions/credit"})
 public class CreditTransactionServlet extends HttpServlet {
@@ -31,12 +31,23 @@ public class CreditTransactionServlet extends HttpServlet {
     private final AuthService authService;
     private final RequestService requestService;
 
+    /**
+     * Конструктор по умолчанию для создания сервлета.
+     * Использует сервисы из {@link ServiceLocator} для инициализации.
+     */
     public CreditTransactionServlet() {
         this(ServiceLocator.getTransactionService(),
                 ServiceLocator.getAuthService(),
                 ServiceLocator.getRequestService());
     }
 
+    /**
+     * Конструктор для создания сервлета с явным указанием сервисов.
+     *
+     * @param transactionService Сервис для управления транзакциями.
+     * @param authService        Сервис для аутентификации игрока.
+     * @param requestService     Сервис для обработки запросов.
+     */
     public CreditTransactionServlet(TransactionService transactionService,
                                     AuthService authService,
                                     RequestService requestService) {

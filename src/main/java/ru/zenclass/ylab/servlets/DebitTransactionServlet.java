@@ -20,9 +20,9 @@ import java.math.BigDecimal;
 
 /**
  * Сервлет для обработки дебетовых транзакций.
- * При успешной обработке дебетовой транзакции, отправляет ответ с статусом 201 (CREATED) и JSON-сообщением о успехе.
- * Если на счете недостаточно средств для проведения дебетовой транзакции, возвращает статус 400 (BAD REQUEST)
- * с сообщением о недостатке средств.
+ * При успешной обработке дебетовой транзакции, отправляет ответ с статусом 201 (CREATED)
+ * и JSON-сообщением о успехе. Если на счете недостаточно средств для проведения дебетовой транзакции,
+ * возвращает статус 400 (BAD REQUEST) с сообщением о недостатке средств.
  */
 @WebServlet(name = "DebitTransactionServlet", urlPatterns = {"/transactions/debit"})
 public class DebitTransactionServlet extends HttpServlet {
@@ -31,12 +31,23 @@ public class DebitTransactionServlet extends HttpServlet {
     private AuthService authService;
     private RequestService requestService;
 
+    /**
+     * Конструктор по умолчанию для создания сервлета.
+     * Использует сервисы из {@link ServiceLocator} для инициализации.
+     */
     public DebitTransactionServlet() {
         this(ServiceLocator.getTransactionService(),
                 ServiceLocator.getAuthService(),
                 ServiceLocator.getRequestService());
     }
 
+    /**
+     * Конструктор для создания сервлета с явным указанием сервисов.
+     *
+     * @param transactionService Сервис для управления транзакциями.
+     * @param authService        Сервис для аутентификации игрока.
+     * @param requestService     Сервис для обработки запросов.
+     */
     public DebitTransactionServlet(TransactionService transactionService,
                                    AuthService authService,
                                    RequestService requestService) {
@@ -44,6 +55,7 @@ public class DebitTransactionServlet extends HttpServlet {
         this.authService = authService;
         this.requestService = requestService;
     }
+
 
     @Override
     public void init() {

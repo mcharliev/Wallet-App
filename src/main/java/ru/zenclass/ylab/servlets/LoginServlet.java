@@ -28,10 +28,21 @@ public class LoginServlet extends HttpServlet {
     private  PlayerService playerService;
     private final ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Конструктор, используемый для создания сервлета с явно указанным сервисом игрока.
+     *
+     * @param playerService Сервис для управления данными игрока.
+     */
     public LoginServlet(PlayerService playerService) {
         this.playerService = playerService;
     }
+
+    /**
+     * Конструктор по умолчанию для создания сервлета.
+     * Использует сервис из {@link ServiceLocator} для инициализации.
+     */
     public LoginServlet() {}
+
 
     @Override
     public void init() {

@@ -27,11 +27,21 @@ public class RegisterServlet extends HttpServlet {
     private PlayerService playerService;
     private ObjectMapper mapper;
 
+    /**
+     * Конструктор по умолчанию для создания сервлета.
+     * Инициализирует объект ObjectMapper и использует {@link ServiceLocator} для получения сервиса игрока.
+     */
     public RegisterServlet() {
         mapper = new ObjectMapper();
         this.playerService = ServiceLocator.getPlayerService();
     }
 
+    /**
+     * Конструктор, используемый для создания сервлета с явно указанными сервисами игрока и объектом ObjectMapper.
+     *
+     * @param playerService Сервис для управления данными игрока.
+     * @param mapper        Объект ObjectMapper для обработки JSON.
+     */
     public RegisterServlet(PlayerService playerService, ObjectMapper mapper) {
         this.playerService = playerService;
         this.mapper = mapper;

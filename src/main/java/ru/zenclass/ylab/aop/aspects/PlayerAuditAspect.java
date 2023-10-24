@@ -17,10 +17,21 @@ import ru.zenclass.ylab.model.entity.Player;
 public class PlayerAuditAspect {
     private static final Logger log = LoggerFactory.getLogger(PlayerAuditAspect.class);
 
+    /**
+     * Определяет точку среза для метода
+     * который представляет собой регистрацию нового игрока.
+     */
     @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.registerNewPlayer(..))")
     public void registerNewPlayer() {
     }
 
+    /**
+     * Ведет аудит операции регистрации нового игрока.
+     *
+     * @param joinPoint Точка присоединения, представляющая метод регистрации.
+     * @return Результат выполнения метода регистрации.
+     * @throws Throwable Если произошла ошибка при выполнении метода.
+     */
     @Around("registerNewPlayer()")
     public Object logRegistration(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
@@ -31,10 +42,21 @@ public class PlayerAuditAspect {
         return result;
     }
 
+    /**
+     * Определяет точку среза для метода
+     * который представляет собой авторизацию и генерацию токена для пользователя.
+     */
     @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.authenticateAndGenerateToken(..))")
     public void authenticateAndGenerateToken() {
     }
 
+    /**
+     * Ведет аудит операции авторизации пользователя и генерации токена.
+     *
+     * @param joinPoint Точка присоединения, представляющая метод авторизации.
+     * @return Результат выполнения метода авторизации.
+     * @throws Throwable Если произошла ошибка при выполнении метода.
+     */
     @Around("authenticateAndGenerateToken()")
     public Object logLogin(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
@@ -48,10 +70,21 @@ public class PlayerAuditAspect {
         return result;
     }
 
+    /**
+     * Определяет точку среза для метода
+     * который представляет собой запрос баланса игрока.
+     */
     @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.getPlayerBalanceInfo(..))")
     public void getPlayerBalanceInfoMethod() {
     }
 
+    /**
+     * Ведет аудит операции запроса баланса игрока.
+     *
+     * @param joinPoint Точка присоединения, представляющая метод запроса баланса игрока.
+     * @return Результат выполнения метода запроса баланса игрока.
+     * @throws Throwable Если произошла ошибка при выполнении метода.
+     */
     @Around("getPlayerBalanceInfoMethod()")
     public Object logGetPlayerBalanceInfo(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();

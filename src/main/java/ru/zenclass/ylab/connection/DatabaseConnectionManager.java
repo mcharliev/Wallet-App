@@ -74,10 +74,8 @@ public class DatabaseConnectionManager {
         String username = properties.getProperty("username");
         String password = properties.getProperty("password");
 
-        // Регистрация драйвера JDBC
         Class.forName(driver);
 
-        // Установка соединения с базой данных
         return DriverManager.getConnection(url, username, password);
     }
 

@@ -25,11 +25,11 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     private final DatabaseConnectionManager connectionManager;
     private final Logger log = LoggerFactory.getLogger(PlayerRepositoryImpl.class);
 
-
     /**
      * Добавляет нового игрока в базу данных.
      *
-     * @param player объект игрока, который следует добавить
+     * @param player Объект игрока, который следует добавить, см. {@link Player}.
+     * @throws RuntimeException если произошла ошибка при добавлении игрока.
      */
     public void addPlayer(Player player) {
         // SQL-запрос для вставки нового игрока в таблицу.
@@ -59,8 +59,9 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     /**
      * Ищет игрока в базе данных по его ID.
      *
-     * @param id идентификатор игрока
-     * @return {@link Optional} объект игрока, если он найден, иначе пустой {@link Optional}
+     * @param id Идентификатор игрока.
+     * @return {@link Optional} объект игрока, если он найден, иначе пустой {@link Optional}.
+     * @throws RuntimeException если произошла ошибка при поиске игрока по ID.
      */
     public Optional<Player> findPlayerById(Long id) {
         // SQL-запрос для поиска игрока по ID.
@@ -86,6 +87,13 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         }
     }
 
+    /**
+     * Ищет игрока в базе данных по его имени пользователя.
+     *
+     * @param username Имя игрока.
+     * @return {@link Optional} объект игрока, если он найден, иначе пустой {@link Optional}.
+     * @throws RuntimeException если произошла ошибка при поиске игрока по имени пользователя.
+     */
     public Optional<Player> findPlayerByUsername(String username) {
         // SQL-запрос для поиска игрока по имени пользователя.
         String sql = "SELECT * FROM wallet_service.players WHERE username = ?";
@@ -113,7 +121,8 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     /**
      * Обновляет информацию о балансе игрока в базе данных.
      *
-     * @param player объект игрока с новой информацией о балансе
+     * @param player Объект игрока с новой информацией о балансе, см. {@link Player}.
+     * @throws RuntimeException если произошла ошибка при обновлении информации об игроке.
      */
     public void updatePlayer(Player player) {
         // SQL-запрос для обновления баланса игрока.
@@ -135,9 +144,10 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     /**
      * Преобразует результат SQL-запроса (строку из {@link ResultSet}) в объект {@link Player}.
-     * @param resultSet результат SQL-запроса
-     * @return {@link Player} объект игрока, извлеченный из текущей строки {@link ResultSet}
-     * @throws SQLException в случае ошибки при извлечении данных из {@link ResultSet}
+     *
+     * @param resultSet Результат SQL-запроса.
+     * @return {@link Player} объект игрока, извлеченный из текущей строки {@link ResultSet}.
+     * @throws SQLException в случае ошибки при извлечении данных из {@link ResultSet}.
      */
     private Player getPlayer(ResultSet resultSet) throws SQLException {
         Player player = new Player();

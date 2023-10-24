@@ -33,10 +33,21 @@ public class TransactionHistoryServlet extends HttpServlet {
     private ObjectMapper mapper = new ObjectMapper();
     private TransactionService transactionService;
 
+    /**
+     * Конструктор по умолчанию для создания сервлета.
+     * Инициализирует сервисы игрока, аутентификации и транзакций с использованием {@link ServiceLocator}.
+     */
     public TransactionHistoryServlet() {
         this(ServiceLocator.getPlayerService(), ServiceLocator.getAuthService(), ServiceLocator.getTransactionService());
     }
 
+    /**
+     * Конструктор, используемый для создания сервлета с явно указанными сервисами игрока, аутентификации и транзакций.
+     *
+     * @param playerService     Сервис для управления данными игрока.
+     * @param authService       Сервис аутентификации.
+     * @param transactionService Сервис для управления данными транзакций.
+     */
     public TransactionHistoryServlet(PlayerService playerService, AuthService authService, TransactionService transactionService) {
         this.playerService = playerService;
         this.authService = authService;

@@ -24,10 +24,20 @@ public class PlayerBalanceServlet extends HttpServlet {
     private final PlayerService playerService;
     private final AuthService authService;
 
+    /**
+     * Конструктор по умолчанию для создания сервлета.
+     * Использует сервисы из {@link ServiceLocator} для инициализации.
+     */
     public PlayerBalanceServlet() {
         this(ServiceLocator.getPlayerService(), ServiceLocator.getAuthService());
     }
 
+    /**
+     * Конструктор, используемый для создания сервлета с явно указанными сервисами игрока и аутентификации.
+     *
+     * @param playerService Сервис для управления данными игрока.
+     * @param authService   Сервис аутентификации.
+     */
     public PlayerBalanceServlet(PlayerService playerService, AuthService authService) {
         this.playerService = playerService;
         this.authService = authService;
@@ -50,4 +60,3 @@ public class PlayerBalanceServlet extends HttpServlet {
         }
     }
 }
-

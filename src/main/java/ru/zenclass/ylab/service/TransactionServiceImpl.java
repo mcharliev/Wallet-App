@@ -13,6 +13,8 @@ import java.util.List;
 
 /**
  * Сервис для обработки транзакций.
+ * Этот сервис предоставляет методы для добавления дебетовых и кредитных транзакций,
+ * а также для просмотра истории транзакций игрока.
  */
 public class TransactionServiceImpl implements TransactionService {
 
@@ -20,11 +22,25 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final PlayerService playerService;
 
+    /**
+     * Конструктор класса.
+     *
+     * @param transactionRepository репозиторий транзакций
+     * @param playerService сервис для работы с игроками
+     */
     public TransactionServiceImpl(TransactionRepository transactionRepository, PlayerService playerService) {
         this.transactionRepository = transactionRepository;
         this.playerService = playerService;
     }
 
+    /**
+     * Добавляет дебетовую транзакцию для игрока.
+     *
+     * @param player игрок, для которого выполняется транзакция
+     * @param debitAmount сумма дебетовой транзакции
+     * @return объект {@link Transaction}, представляющий добавленную транзакцию
+     * @throws NotEnoughMoneyException если на счете игрока недостаточно средств для выполнения транзакции
+     */
     public Transaction addDebitTransaction(Player player, BigDecimal debitAmount) {
         if (debitAmount.compareTo(player.getBalance()) <= 0) {
             Transaction transaction = new Transaction();
@@ -43,6 +59,13 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
+    /**
+     * Добавляет кредитную транзакцию для игрока.
+     *
+     * @param player игрок, для которого выполняется транзакция
+     * @param creditAmount сумма кредитной транзакции
+     * @return объект {@link Transaction}, представляющий добавленную транзакцию
+     */
     public Transaction addCreditTransaction(Player player, BigDecimal creditAmount) {
         Transaction transaction = new Transaction();
         transaction.setType(TransactionType.CREDIT);
@@ -56,6 +79,13 @@ public class TransactionServiceImpl implements TransactionService {
         return savedTransaction;
     }
 
+    /**
+     * Получает историю транзакций для определенного игрока.
+     *
+     * @param id идентификатор игрока
+     * @param username имя игрока
+     * @return список транзакций {@link Transaction} для данного игрока
+     */
     public List<Transaction> viewTransactionHistory(Long id, String username) {
         return transactionRepository.getAllTransactionsByPlayerId(id);
     }
