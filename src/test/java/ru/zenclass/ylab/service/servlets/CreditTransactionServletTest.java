@@ -1,74 +1,109 @@
 package ru.zenclass.ylab.service.servlets;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Validator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.entity.Transaction;
-import ru.zenclass.ylab.service.PlayerService;
+import ru.zenclass.ylab.model.enums.TransactionType;
+import ru.zenclass.ylab.model.mapper.TransactionMapper;
+import ru.zenclass.ylab.service.AuthService;
+import ru.zenclass.ylab.service.RequestService;
 import ru.zenclass.ylab.service.TransactionService;
 import ru.zenclass.ylab.servlets.CreditTransactionServlet;
-import ru.zenclass.ylab.util.JwtUtil;
 
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class CreditTransactionServletTest {
+import static org.mockito.Mockito.*;
 
-//    @Test
-//    public void testDoPostValidCreditTransaction() throws Exception {
-//        HttpServletRequest request = mock(HttpServletRequest.class);
-//        HttpServletResponse response = mock(HttpServletResponse.class);
-//        PlayerService mockPlayerService = mock(PlayerService.class);
-//        TransactionService mockTransactionService = mock(TransactionService.class);
-//        JwtUtil mockJwtUtil = mock(JwtUtil.class);
-//
-//        Player player = new Player();
-//        player.setUsername("testName");
-//        Transaction transaction = new Transaction(); // Assuming you have a default constructor or you can set properties as needed
-//        String token = "Bearer your_token_here";
-//
-//        when(request.getHeader("Authorization")).thenReturn(token);
-//        when(mockPlayerService.findPlayerByUsername(anyString())).thenReturn(Optional.of(player));
-//        when(mockJwtUtil.validateToken(eq(token.substring(7)), eq("testName"))).thenReturn(true);
-//        when(mockJwtUtil.extractUsername(anyString())).thenReturn("testName");
-//        when(mockTransactionService.addCreditTransaction(eq(player), any(BigDecimal.class))).thenReturn(transaction);
-//
-//        StringWriter stringWriter = new StringWriter();
-//        PrintWriter writer = new PrintWriter(stringWriter);
-//        when(response.getWriter()).thenReturn(writer);
-//
-//        CreditTransactionServlet servlet = new CreditTransactionServlet() {
-//            @Override
-//            protected JwtUtil createJwtUtil() {
-//                return mockJwtUtil;
-//            }
-//
-//            @Override
-//            public void init() {
-//                super.init();
-//                this.playerService = mockPlayerService;
-//                this.transactionService = mockTransactionService;
-//                this.jwtUtil = mockJwtUtil;
-//            }
-//
-//            @Override
-//            public Validator initValidator() {
-//                return mock(Validator.class);
-//            }
-//        };
-//
-//        servlet.init();
-//        servlet.doPost(request, response);
-//
-//
-//        assertTrue(stringWriter.toString().contains("Транзакция успешно выполнена"));
-//        verify(response).setStatus(HttpServletResponse.SC_CREATED);
-//    }
+
+@ExtendWith(MockitoExtension.class)
+class CreditTransactionServletTest {
+
+    @Mock
+    private TransactionService transactionService;
+    @Mock
+    private AuthService authService;
+    @Mock
+    private RequestService requestService;
+    @Mock
+    private HttpServletRequest req;
+    @Mock
+    private HttpServletResponse resp;
+    @Mock
+    private PrintWriter writer;
+
+    private CreditTransactionServlet servlet;
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    @BeforeEach
+    void setUp() throws IOException {
+        servlet = new CreditTransactionServlet(transactionService, authService, requestService);
+        when(resp.getWriter()).thenReturn(writer);
+    }
+
+    @Test
+    void doPost_successfulTransaction() throws IOException {
+        Player player = new Player("testUser", "testPass");
+        BigDecimal creditAmount = new BigDecimal("100.50");
+        Transaction transaction = new Transaction();
+        transaction.setType(TransactionType.CREDIT);
+        transaction.setAmount(creditAmount);
+        transaction.setLocalDateTime(LocalDateTime.now());
+
+        when(authService.getPlayerFromRequest(req, resp)).thenReturn(Optional.of(player));
+        when(requestService.getAmountFromRequest(req, resp)).thenReturn(Optional.of(creditAmount));
+        when(transactionService.addCreditTransaction(player, creditAmount)).thenReturn(transaction);
+
+        servlet.doPost(req, resp);
+
+        verify(resp).setStatus(HttpServletResponse.SC_CREATED);
+        verify(writer).write(mapper.writeValueAsString(TransactionMapper.INSTANCE.toDTO(transaction)));
+    }
+
+    @Test
+    void doPost_noPlayer() throws IOException {
+        lenient().when(resp.getWriter()).thenReturn(writer);
+        when(authService.getPlayerFromRequest(req, resp)).thenReturn(Optional.empty());
+
+        servlet.doPost(req, resp);
+
+        verify(writer, never()).write(anyString());
+    }
+
+    @Test
+    void doPost_invalidCreditAmount() throws IOException {
+        lenient().when(resp.getWriter()).thenReturn(writer);
+        Player player = new Player("testUser", "testPass");
+
+        when(authService.getPlayerFromRequest(req, resp)).thenReturn(Optional.of(player));
+        when(requestService.getAmountFromRequest(req, resp)).thenReturn(Optional.empty());
+
+        servlet.doPost(req, resp);
+
+        verify(writer, never()).write(anyString());
+    }
+
+    @Test
+    void doPost_transactionError() throws IOException {
+        Player player = new Player("testUser", "testPass");
+        BigDecimal creditAmount = new BigDecimal("100.50");
+
+        when(authService.getPlayerFromRequest(req, resp)).thenReturn(Optional.of(player));
+        when(requestService.getAmountFromRequest(req, resp)).thenReturn(Optional.of(creditAmount));
+        when(transactionService.addCreditTransaction(player, creditAmount)).thenThrow(new RuntimeException());
+
+        servlet.doPost(req, resp);
+        verify(resp).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        verify(writer).write("{\"error\": \"Ошибка при выполнении транзакции\"}");
+    }
 }

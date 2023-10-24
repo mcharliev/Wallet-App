@@ -12,6 +12,9 @@ public class LoginResponseDTO {
         this.message = String.format("Пользователь '%s' совершил успешный вход", player.getUsername());
     }
 
+    public LoginResponseDTO() {
+    }
+
     public PlayerDTO getPlayer() {
         return player;
     }
@@ -34,5 +37,9 @@ public class LoginResponseDTO {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public PlayerDTO getPlayerDTO() {
+        return player;
     }
 }

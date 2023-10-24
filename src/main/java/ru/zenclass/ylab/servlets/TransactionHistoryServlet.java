@@ -33,15 +33,18 @@ public class TransactionHistoryServlet extends HttpServlet {
     private ObjectMapper mapper = new ObjectMapper();
     private TransactionService transactionService;
 
-    @Override
-    public void init() {
-        this.playerService = ServiceLocator.getPlayerService();
-        this.authService = ServiceLocator.getAuthService();
-        this.transactionService = ServiceLocator.getTransactionService();
+    public TransactionHistoryServlet() {
+        this(ServiceLocator.getPlayerService(), ServiceLocator.getAuthService(), ServiceLocator.getTransactionService());
+    }
+
+    public TransactionHistoryServlet(PlayerService playerService, AuthService authService, TransactionService transactionService) {
+        this.playerService = playerService;
+        this.authService = authService;
+        this.transactionService = transactionService;
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Optional<Player> playerOpt = authService.getPlayerFromRequest(req, resp);
         if (playerOpt.isEmpty()) {
             return;

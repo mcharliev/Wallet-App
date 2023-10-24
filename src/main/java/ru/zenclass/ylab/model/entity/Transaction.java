@@ -13,10 +13,10 @@ import java.util.Objects;
  */
 
 public class Transaction {
-    private Long id;                   // Идентификатор транзакции
-    private TransactionType type;        // Тип транзакции (дебетовая или кредитная)
-    private BigDecimal amount;           // Сумма транзакции
-    private LocalDateTime localDateTime; // Дата и время выполнения транзакции
+    private Long id;
+    private TransactionType type;
+    private BigDecimal amount;
+    private LocalDateTime localDateTime;
 
     public Long getId() {
         return id;

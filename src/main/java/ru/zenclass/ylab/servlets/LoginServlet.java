@@ -28,18 +28,24 @@ import java.util.Map;
  */
 @WebServlet(name = "LoginServlet", urlPatterns = {"/players/login"})
 public class LoginServlet extends HttpServlet {
-    private PlayerService playerService;
+    private  PlayerService playerService;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Override
-    public void init() {
-        DatabaseConnectionManager connectionManager = new DatabaseConnectionManager();
-        PlayerRepository playerRepository = new PlayerRepositoryImpl(connectionManager);
-        this.playerService = new PlayerServiceImpl(playerRepository);
+    public LoginServlet(PlayerService playerService) {
+        this.playerService = playerService;
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void init() {
+        if (playerService == null) {
+            DatabaseConnectionManager connectionManager = new DatabaseConnectionManager();
+            PlayerRepository playerRepository = new PlayerRepositoryImpl(connectionManager);
+            this.playerService = new PlayerServiceImpl(playerRepository);
+        }
+    }
+
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             RegisterPlayerDTO registerPlayerDTO = mapper.readValue(req.getReader(), RegisterPlayerDTO.class);
             Player playerEntity = PlayerMapper.INSTANCE.toPlayerEntity(registerPlayerDTO);

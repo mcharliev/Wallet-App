@@ -21,12 +21,16 @@ import java.io.IOException;
 @WebServlet(name = "PlayerBalanceServlet", urlPatterns = {"/players/balance"})
 public class PlayerBalanceServlet extends HttpServlet {
 
-    private PlayerService playerService;
-    private AuthService authService;
-    @Override
-    public void init() {
-        this.playerService = ServiceLocator.getPlayerService();
-        this.authService = ServiceLocator.getAuthService();
+    private final PlayerService playerService;
+    private final AuthService authService;
+
+    public PlayerBalanceServlet() {
+        this(ServiceLocator.getPlayerService(), ServiceLocator.getAuthService());
+    }
+
+    public PlayerBalanceServlet(PlayerService playerService, AuthService authService) {
+        this.playerService = playerService;
+        this.authService = authService;
     }
 
     @Override

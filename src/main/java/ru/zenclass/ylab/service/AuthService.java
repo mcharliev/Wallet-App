@@ -13,8 +13,8 @@ import java.util.Optional;
 
 public class AuthService {
 
-    private JwtUtil jwtUtil = new JwtUtil();
-    private PlayerService playerService;
+    private final JwtUtil jwtUtil = new JwtUtil();
+    private final PlayerService playerService;
 
     public AuthService(PlayerService playerService) {
         this.playerService = playerService;

@@ -16,8 +16,8 @@ import java.util.Set;
 
 public class RequestService {
 
-    private ObjectMapper mapper = new ObjectMapper();
-    private Validator validator;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final Validator validator;
 
     public RequestService() {
         this.validator = initValidator();

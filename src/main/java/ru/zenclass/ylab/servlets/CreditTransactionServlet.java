@@ -26,16 +26,23 @@ import java.math.BigDecimal;
 @WebServlet(name = "CreditTransactionServlet", urlPatterns = {"/transactions/credit"})
 public class CreditTransactionServlet extends HttpServlet {
 
-    private TransactionService transactionService;
-    private ObjectMapper mapper = new ObjectMapper();
-    private AuthService authService;
-    private RequestService requestService;
+    private final TransactionService transactionService;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final AuthService authService;
+    private final RequestService requestService;
 
-    @Override
-    public void init() {
-        this.transactionService = ServiceLocator.getTransactionService();
-        this.authService = ServiceLocator.getAuthService();
-        this.requestService = ServiceLocator.getRequestService();
+    public CreditTransactionServlet() {
+        this(ServiceLocator.getTransactionService(),
+                ServiceLocator.getAuthService(),
+                ServiceLocator.getRequestService());
+    }
+
+    public CreditTransactionServlet(TransactionService transactionService,
+                                    AuthService authService,
+                                    RequestService requestService) {
+        this.transactionService = transactionService;
+        this.authService = authService;
+        this.requestService = requestService;
     }
 
     @Override

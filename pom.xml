@@ -136,6 +136,12 @@
             <artifactId>jakarta.validation-api</artifactId>
             <version>${jakarta.validation.api.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>3.11.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

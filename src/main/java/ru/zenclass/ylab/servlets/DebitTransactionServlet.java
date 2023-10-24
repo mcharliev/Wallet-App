@@ -31,6 +31,20 @@ public class DebitTransactionServlet extends HttpServlet {
     private AuthService authService;
     private RequestService requestService;
 
+    public DebitTransactionServlet() {
+        this(ServiceLocator.getTransactionService(),
+                ServiceLocator.getAuthService(),
+                ServiceLocator.getRequestService());
+    }
+
+    public DebitTransactionServlet(TransactionService transactionService,
+                                   AuthService authService,
+                                   RequestService requestService) {
+        this.transactionService = transactionService;
+        this.authService = authService;
+        this.requestService = requestService;
+    }
+
     @Override
     public void init() {
         this.transactionService = ServiceLocator.getTransactionService();
@@ -55,11 +69,9 @@ public class DebitTransactionServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.getWriter().write(jsonResponse);
         } catch (NotEnoughMoneyException e) {
-            e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("{\"error\": \"Недостаточно средств на счете\"}");
         } catch (Exception e) {
-            e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("{\"error\": \"Ошибка при выполнении транзакции\"}");
         }

@@ -10,8 +10,6 @@ import ru.zenclass.ylab.model.dto.LoginResponseDTO;
 import ru.zenclass.ylab.model.dto.PlayerDTO;
 import ru.zenclass.ylab.model.entity.Player;
 
-import java.util.Optional;
-
 /**
  * Аспект для аудита действий с объектами типа {@link Player}.
  */

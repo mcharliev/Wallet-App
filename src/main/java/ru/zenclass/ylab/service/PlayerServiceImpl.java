@@ -28,9 +28,13 @@ import java.util.stream.Collectors;
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
-    private final RegisterPlayerValidator registerPlayerValidator = new RegisterPlayerValidator();
-    private final JwtUtil jwtUtil = new JwtUtil();
-
+    private  RegisterPlayerValidator registerPlayerValidator;
+    private  JwtUtil jwtUtil;
+    public PlayerServiceImpl(PlayerRepository playerRepository, RegisterPlayerValidator registerPlayerValidator, JwtUtil jwtUtil) {
+        this.playerRepository = playerRepository;
+        this.registerPlayerValidator = registerPlayerValidator;
+        this.jwtUtil = jwtUtil;
+    }
     public PlayerServiceImpl(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
