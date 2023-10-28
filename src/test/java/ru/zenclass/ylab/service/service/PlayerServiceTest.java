@@ -2,113 +2,129 @@ package ru.zenclass.ylab.service.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import ru.zenclass.ylab.model.Player;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.zenclass.ylab.exception.AuthenticationException;
+import ru.zenclass.ylab.exception.ConflictException;
+import ru.zenclass.ylab.exception.PlayerNotFoundException;
+import ru.zenclass.ylab.model.dto.LoginResponseDTO;
+import ru.zenclass.ylab.model.dto.PlayerDTO;
+import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
+import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
-import ru.zenclass.ylab.service.PlayerService;
 import ru.zenclass.ylab.service.PlayerServiceImpl;
+import ru.zenclass.ylab.util.JwtUtil;
+import ru.zenclass.ylab.validator.RegisterPlayerValidator;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
-public class PlayerServiceTest {
+@ExtendWith(MockitoExtension.class)
+class PlayerServiceTest {
 
-    private PlayerService playerService;
     @Mock
     private PlayerRepository playerRepository;
 
+    @Mock
+    private RegisterPlayerValidator registerPlayerValidator;
+
+    @Mock
+    private JwtUtil jwtUtil;
+
+    @InjectMocks
+    private PlayerServiceImpl playerService;
+
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-        playerService = new PlayerServiceImpl(playerRepository);
+    public void setUp() {
+        playerService = new PlayerServiceImpl(playerRepository, registerPlayerValidator, jwtUtil);
     }
-
     @Test
-    void testFindPlayerById() {
+    void testFindPlayerById_existingId() {
         Player player = new Player();
-        player.setId(1L);
         player.setUsername("testUser");
-        player.setPassword("testPassword");
-        player.setBalance(new BigDecimal("100.00"));
-
-        Mockito.when(playerRepository.findPlayerById(player.getId())).thenReturn(Optional.of(player));
-
-        Player foundPlayer = playerService.findPlayerById(player.getId());
-        assertEquals(player.getUsername(), foundPlayer.getUsername());
+        when(playerRepository.findPlayerById(1L)).thenReturn(Optional.of(player));
+        Player result = playerService.findPlayerById(1L);
+        assertEquals("testUser", result.getUsername());
     }
 
     @Test
-    void testLogin() {
-        Player player = new Player();
-        player.setUsername("loginUser");
-        player.setPassword("loginPassword");
-        player.setBalance(new BigDecimal("100.00"));
-
-        Mockito.when(playerRepository.findPlayerByUsername(player.getUsername())).thenReturn(Optional.of(player));
-
-        Optional<Player> loggedInPlayerOpt = playerService.login("loginUser", "loginPassword");
-
-        assertTrue(loggedInPlayerOpt.isPresent());
-        Player loggedInPlayer = loggedInPlayerOpt.get();
-        assertEquals(player.getUsername(), loggedInPlayer.getUsername());
-        assertEquals(player.getPassword(), loggedInPlayer.getPassword());
-        assertEquals(player.getBalance(), loggedInPlayer.getBalance());
+    void testFindPlayerById_nonExistingId() {
+        when(playerRepository.findPlayerById(1L)).thenReturn(Optional.empty());
+        assertThrows(PlayerNotFoundException.class, () -> {
+            playerService.findPlayerById(1L);
+        });
     }
 
     @Test
-    void testRegisterPlayerWithExistingUsername() {
-        Player existingPlayer = new Player();
-        existingPlayer.setUsername("existingUser");
-        existingPlayer.setPassword("existingPassword");
+    void testRegisterNewPlayer_alreadyExists() {
+        RegisterPlayerDTO registerPlayerDTO = new RegisterPlayerDTO();
+        registerPlayerDTO.setUsername("testUser");
+        registerPlayerDTO.setPassword("testPass");
+        Player player = new Player("testUser", "testPass");
+        when(playerRepository.findPlayerByUsername("testUser")).thenReturn(Optional.of(player));
+        assertThrows(ConflictException.class, () -> {
+            playerService.registerNewPlayer(registerPlayerDTO);
+        });
+    }
 
-        Mockito.when(playerRepository.findPlayerByUsername(existingPlayer.getUsername())).thenReturn(Optional.of(existingPlayer));
+    @Test
+    void testRegisterNewPlayer_successful() {
+        RegisterPlayerDTO registerPlayerDTO = new RegisterPlayerDTO();
+        registerPlayerDTO.setUsername("newUser");
+        registerPlayerDTO.setPassword("newPass");
+        when(playerRepository.findPlayerByUsername("newUser")).thenReturn(Optional.empty());
+        PlayerDTO result = playerService.registerNewPlayer(registerPlayerDTO);
+        assertEquals("newUser", result.getUsername());
+    }
 
-        // Проверяем, что при попытке регистрации пользователя с существующим именем выводится нужное сообщение
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+    @Test
+    void testGetPlayerBalanceInfo_nullPlayer() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            playerService.getPlayerBalanceInfo(null);
+        });
+    }
 
-        Optional<Player> registeredPlayerOpt = playerService.registerPlayer("existingUser", "anotherPassword");
-
-        assertFalse(registeredPlayerOpt.isPresent());
-        String expectedOutput = "Пользователь с таким именем уже существует. Пожалуйста, выберите другое имя.";
-        assertTrue(outContent.toString().contains(expectedOutput));
+    @Test
+    void testGetPlayerBalanceInfo_validPlayer() {
+        Player player = new Player("testUser", "testPass");
+        player.setBalance(new BigDecimal("100.50"));
+        String result = playerService.getPlayerBalanceInfo(player);
+        assertEquals("{\"username\": \"testUser\", \"balance\": \"100.50\"}", result);
     }
     @Test
-    void testUnsuccessfulLogin() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+    void testAuthenticateAndGenerateToken_successful() {
+        String username = "testUser";
+        String password = "testPass";
+        Player player = new Player(username, password);
+        String token = "testToken";
+        when(playerRepository.findPlayerByUsername(username)).thenReturn(Optional.of(player));
+        when(jwtUtil.generateToken(username)).thenReturn(token);
+        LoginResponseDTO result = playerService.authenticateAndGenerateToken(username, password);
+        assertEquals(username, result.getPlayerDTO().getUsername());
+        assertEquals(token, result.getToken());
+    }
 
-        Optional<Player> loggedInPlayerOpt = playerService.login("nonexistentUser", "wrongPassword");
-
-        assertFalse(loggedInPlayerOpt.isPresent());
-
-        String expectedOutput = "Ошибка авторизации пользователя с именем nonexistentUser";
-        assertTrue(outContent.toString().contains(expectedOutput));
+    @Test
+    void testAuthenticateAndGenerateToken_invalidCredentials() {
+        String username = "testUser";
+        String password = "wrongPass";
+        when(playerRepository.findPlayerByUsername(username)).thenReturn(Optional.empty());
+        assertThrows(AuthenticationException.class, () -> {
+            playerService.authenticateAndGenerateToken(username, password);
+        });
     }
 
     @Test
     void testUpdatePlayer() {
-        Player player = new Player();
-        player.setId(1L);
-        player.setUsername("updateUser");
-        player.setPassword("updatePassword");
-        player.setBalance(new BigDecimal("100.00"));
-
-        Mockito.when(playerRepository.findPlayerById(player.getId())).thenReturn(Optional.of(player));
-        Mockito.doNothing().when(playerRepository).updatePlayer(Mockito.any(Player.class));
-
-        player.setBalance(new BigDecimal("150.00"));
-        playerService.updatePlayer(player);
-
-        Optional<Player> updatedPlayerOpt = playerRepository.findPlayerById(player.getId());
-        assertTrue(updatedPlayerOpt.isPresent());
-        assertEquals(new BigDecimal("150.00"), updatedPlayerOpt.get().getBalance());
+        Player updatedPlayer = new Player("testUser", "newTestPass");
+        assertDoesNotThrow(() -> playerService.updatePlayer(updatedPlayer));
+        verify(playerRepository).updatePlayer(updatedPlayer);  // Проверяем, что метод обновления был вызван
     }
 }

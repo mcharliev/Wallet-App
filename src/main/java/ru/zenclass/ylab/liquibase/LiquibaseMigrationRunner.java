@@ -5,9 +5,9 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.exception.MigrationException;
 
@@ -22,7 +22,7 @@ import java.util.Properties;
  * Предоставляет функциональность для выполнения миграций на основе файла changelog.xml в директории liquibase.
  * </p>
  */
-@RequiredArgsConstructor
+@Loggable
 public class LiquibaseMigrationRunner {
 
     // Логгер для записи информации о выполнении миграций
@@ -58,7 +58,6 @@ public class LiquibaseMigrationRunner {
             database.setLiquibaseSchemaName(liquibaseSchema);
             Liquibase liquibase = new Liquibase(changeLog, new ClassLoaderResourceAccessor(), database);
             liquibase.update();
-            log.info("Миграции успешно выполнены!");
         } catch (Exception e) {
             log.error("Ошибка при выполнении миграций", e);
             throw new MigrationException("Ошибка: миграции не выполнены!");

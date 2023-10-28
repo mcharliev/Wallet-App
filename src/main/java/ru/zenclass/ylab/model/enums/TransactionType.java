@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.model;
+package ru.zenclass.ylab.model.enums;
 
 /**
  * Перечисление, представляющее типы транзакций: дебетовые (DEBIT) и кредитные (CREDIT).

@@ -1,11 +1,12 @@
 package ru.zenclass.ylab.repository;
 
-import lombok.RequiredArgsConstructor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.connection.DatabaseConnectionManager;
-import ru.zenclass.ylab.model.Transaction;
-import ru.zenclass.ylab.model.TransactionType;
+import ru.zenclass.ylab.model.entity.Transaction;
+import ru.zenclass.ylab.model.enums.TransactionType;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,11 +16,15 @@ import java.util.List;
  * Репозиторий для работы с транзакциями в базе данных.
  * Предоставляет функции для добавления транзакций и получения транзакций для определенного игрока.
  */
-@RequiredArgsConstructor
+@Loggable
 public class TransactionRepositoryImpl implements TransactionRepository {
 
     private final DatabaseConnectionManager connectionManager;
     private final Logger log = LoggerFactory.getLogger(TransactionRepositoryImpl.class);
+
+    public TransactionRepositoryImpl(DatabaseConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     /**
      * Добавляет новую транзакцию в базу данных.
@@ -27,7 +32,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
      * @param transaction объект транзакции для добавления
      * @param playerId идентификатор игрока, для которого добавляется транзакция
      */
-    public void addTransaction(Transaction transaction, Long playerId) {
+    public Transaction addTransaction(Transaction transaction, Long playerId) {
 
         // SQL-запрос для вставки новой транзакции в таблицу транзакций.
         String sql = "INSERT INTO wallet_service.transactions (id, type, amount, local_date_time, player_id) VALUES (nextval('wallet_service.transactions_seq'), ?, ?, ?, ?) RETURNING id";
@@ -49,11 +54,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     transaction.setId(generatedId);
                 }
             }
-
         } catch (SQLException | ClassNotFoundException e) {
             log.error("Ошибка при добавлении транзакции", e);
             throw new RuntimeException("Ошибка при добавлении транзакции", e);
         }
+        return transaction;
     }
 
     /**

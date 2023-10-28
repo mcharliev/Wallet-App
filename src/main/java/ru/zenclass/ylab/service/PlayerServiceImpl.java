@@ -1,100 +1,136 @@
 package ru.zenclass.ylab.service;
 
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import jakarta.validation.ConstraintViolation;
+import ru.zenclass.ylab.exception.AuthenticationException;
+import ru.zenclass.ylab.exception.ConflictException;
 import ru.zenclass.ylab.exception.PlayerNotFoundException;
-import ru.zenclass.ylab.model.Player;
+import ru.zenclass.ylab.exception.ValidationException;
+import ru.zenclass.ylab.model.dto.LoginResponseDTO;
+import ru.zenclass.ylab.model.dto.PlayerDTO;
+import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
+import ru.zenclass.ylab.model.entity.Player;
+import ru.zenclass.ylab.model.mapper.PlayerMapper;
 import ru.zenclass.ylab.repository.PlayerRepository;
+import ru.zenclass.ylab.util.JwtUtil;
+import ru.zenclass.ylab.validator.RegisterPlayerValidator;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Сервис для управления данными игрока.
  * Этот сервис предоставляет методы для выполнения основных операций, таких как поиск, обновление, регистрация и вход.
  */
-@RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
-    private final Logger log = LoggerFactory.getLogger(PlayerServiceImpl.class);
+    private RegisterPlayerValidator registerPlayerValidator;
+    private JwtUtil jwtUtil;
 
     /**
-     * Поиск игрока по его идентификатору.
+     * Конструктор класса PlayerServiceImpl.
      *
-     * @param id идентификатор игрока.
-     * @return  {@link Player}.
-     * @throws PlayerNotFoundException если игрок с данным идентификатором не найден.
+     * @param playerRepository        Репозиторий игроков, см. {@link PlayerRepository}.
+     * @param registerPlayerValidator Валидатор регистрации игрока, см. {@link RegisterPlayerValidator}.
+     * @param jwtUtil                 Утилита для работы с JWT-токенами, см. {@link JwtUtil}.
      */
+    public PlayerServiceImpl(PlayerRepository playerRepository, RegisterPlayerValidator registerPlayerValidator, JwtUtil jwtUtil) {
+        this.playerRepository = playerRepository;
+        this.registerPlayerValidator = registerPlayerValidator;
+        this.jwtUtil = jwtUtil;
+    }
+
+
+    @Override
     public Player findPlayerById(Long id) {
         return playerRepository.findPlayerById(id).orElseThrow(PlayerNotFoundException::new);
     }
 
-    /**
-     * Обновление данных игрока.
-     *
-     * @param updatedPlayer объект игрока с обновленными данными.
-     */
+    @Override
     public void updatePlayer(Player updatedPlayer) {
         playerRepository.updatePlayer(updatedPlayer);
     }
 
+
+    @Override
+    public PlayerDTO registerNewPlayer(RegisterPlayerDTO registerPlayerDTO) {
+        validate(registerPlayerDTO);
+
+        Optional<Player> existingPlayer = playerRepository.findPlayerByUsername(registerPlayerDTO.getUsername());
+        if (existingPlayer.isPresent()) {
+            throw new ConflictException("Игрок уже существует");
+        }
+
+        Player player = new Player(registerPlayerDTO.getUsername(), registerPlayerDTO.getPassword());
+        playerRepository.addPlayer(player);
+        return PlayerMapper.INSTANCE.toDTO(player);
+    }
+
+
+    @Override
+    public Optional<Player> findPlayerByUsername(String username) {
+        return playerRepository.findPlayerByUsername(username);
+    }
+
+
+    @Override
+    public String getPlayerBalanceInfo(Player player) {
+        if (player == null) {
+            throw new IllegalArgumentException("Игрок не должен быть null");
+        }
+        BigDecimal playerBalance = player.getBalance();
+        return String.format("{\"username\": \"%s\", \"balance\": \"%s\"}", player.getUsername(), playerBalance.toPlainString());
+    }
+
+
+    @Override
+    public LoginResponseDTO authenticateAndGenerateToken(String username, String password) {
+        Player player = authenticatePlayer(username, password).orElseThrow(() ->
+                new AuthenticationException("Неверный логин или пароль, попробуйте ввести данные снова"));
+        String token = jwtUtil.generateToken(player.getUsername());
+        PlayerDTO playerDTO = PlayerMapper.INSTANCE.toDTO(player);
+        return new LoginResponseDTO(playerDTO, token);
+    }
+
     /**
-     * Регистрация нового игрока.
+     * Валидирует данные регистрации игрока.
      *
+     * @param registerPlayerDTO Данные регистрации игрока, см. {@link RegisterPlayerDTO}.
+     * @throws ValidationException если данные не соответствуют правилам валидации
      */
-    public Optional<Player> registerPlayer(String username, String password) {
-        Optional<Player> optPlayer = playerRepository.findPlayerByUsername(username);
-        if (optPlayer.isEmpty()) {
-            Player player = new Player();
-            player.setUsername(username);
-            player.setPassword(password);
-            player.setBalance(BigDecimal.ZERO);
-            playerRepository.addPlayer(player);
-            log.info("Пользователь " + player.getUsername() + " успешно зарегистрировался");
-            System.out.println("------------------------------------------------------------------");
-            System.out.println("Регистрация успешна. Теперь вы можете войти.");
-            System.out.println("------------------------------------------------------------------");
-            return Optional.of(player);
-        } else {
-            log.error("Ошибка регистрации пользователя");
-            System.out.println("Пользователь с таким именем уже существует. Пожалуйста, выберите другое имя.");
-            return Optional.empty();
-        }
-    }
-
-    public Optional<Player> login(String username, String password) {
-        Optional<Player> playerOpt = authenticatePlayer(username, password);
-        if (playerOpt.isPresent()) {
-            Player player = playerOpt.get();
-            log.info("Пользователь " + player.getUsername() + " прошел авторизацию");
-            return playerOpt;
-        } else {
-            log.error("Ошибка авторизации пользователя с именем " + username);
-            return Optional.empty();
+    private void validate(RegisterPlayerDTO registerPlayerDTO) {
+        Set<ConstraintViolation<RegisterPlayerDTO>> violations = registerPlayerValidator.validate(registerPlayerDTO);
+        if (!violations.isEmpty()) {
+            throw new ValidationException(formatViolations(violations));
         }
     }
 
     /**
-     * Аутентификация игрока на основе имени пользователя и пароля.
+     * Форматирует сообщения об ошибках валидации.
      *
-     * @param username имя пользователя.
-     * @param password пароль пользователя.
-     * @return {@link Player}, если аутентификация прошла успешно, иначе null.
+     * @param violations набор нарушений правил валидации, см. {@link ConstraintViolation}
+     * @return строка с объединенными сообщениями об ошибках
+     */
+    private String formatViolations(Set<ConstraintViolation<RegisterPlayerDTO>> violations) {
+        return violations.stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(". "));
+    }
+
+    /**
+     * Аутентифицирует игрока по его логину и паролю.
+     *
+     * @param username логин игрока
+     * @param password пароль игрока
+     * @return {@link Optional} объекта игрока, если аутентификация прошла успешно, иначе пустой {@link Optional}
+     * @throws AuthenticationException если аутентификация не удалась
      */
     private Optional<Player> authenticatePlayer(String username, String password) {
-        // Поиск игрока в репозитории по имени пользователя.
-        Optional<Player> optPlayer = playerRepository.findPlayerByUsername(username);
-
-        if (optPlayer.isPresent()) {
-            Player player = optPlayer.get();
-
-            // Проверка соответствия имени пользователя и пароля.
-            if (player.getUsername().equals(username) && player.getPassword().equals(password)) {
-                return optPlayer; // Возвращаем игрока, если данные совпадают.
-            }
-        }
-        return Optional.empty();
+        return playerRepository.findPlayerByUsername(username)
+                .filter(player -> player.getPassword().equals(password));
     }
 }
+
