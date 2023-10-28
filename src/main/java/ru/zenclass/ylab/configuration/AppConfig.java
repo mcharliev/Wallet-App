@@ -3,11 +3,18 @@ package ru.zenclass.ylab.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
+
 import javax.sql.DataSource;
+
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import ru.zenclass.ylab.model.util.JwtUtil;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @Configuration
 @PropertySources({
@@ -33,6 +40,9 @@ public class AppConfig {
     @Value("${database.liquibaseSchema}")
     private String liquibaseSchema;
 
+    @Value("${jwt.secretKey}")
+    private String jwtSecretKey;
+
     @Bean
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
@@ -44,11 +54,22 @@ public class AppConfig {
     }
 
     @Bean
-    public SpringLiquibase liquibase() {
+    public SpringLiquibase liquibase(DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection();
+             Statement stmt = connection.createStatement()) {
+            stmt.execute("CREATE SCHEMA IF NOT EXISTS migration;");
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось создать схему migration", e);
+        }
         SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setDataSource(dataSource());
+        liquibase.setDataSource(dataSource);
         liquibase.setChangeLog(liquibaseChangeLog);
         liquibase.setDefaultSchema(liquibaseSchema);
         return liquibase;
+    }
+
+    @Bean
+    public JwtUtil jwtUtil() {
+        return new JwtUtil(jwtSecretKey);
     }
 }

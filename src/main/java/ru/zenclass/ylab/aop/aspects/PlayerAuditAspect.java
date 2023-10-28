@@ -21,7 +21,7 @@ public class PlayerAuditAspect {
      * Определяет точку среза для метода
      * который представляет собой регистрацию нового игрока.
      */
-    @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.registerNewPlayer(..))")
+    @Pointcut("execution(* ru.zenclass.ylab.service.impl.PlayerServiceImpl.registerNewPlayer(..))")
     public void registerNewPlayer() {
     }
 
@@ -46,7 +46,7 @@ public class PlayerAuditAspect {
      * Определяет точку среза для метода
      * который представляет собой авторизацию и генерацию токена для пользователя.
      */
-    @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.authenticateAndGenerateToken(..))")
+    @Pointcut("execution(* ru.zenclass.ylab.service.impl.PlayerServiceImpl.authenticateAndGenerateToken(..))")
     public void authenticateAndGenerateToken() {
     }
 
@@ -74,7 +74,7 @@ public class PlayerAuditAspect {
      * Определяет точку среза для метода
      * который представляет собой запрос баланса игрока.
      */
-    @Pointcut("execution(* ru.zenclass.ylab.service.PlayerServiceImpl.getPlayerBalanceInfo(..))")
+    @Pointcut("execution(* ru.zenclass.ylab.service.impl.PlayerServiceImpl.getPlayerBalanceInfo(..))")
     public void getPlayerBalanceInfoMethod() {
     }
 

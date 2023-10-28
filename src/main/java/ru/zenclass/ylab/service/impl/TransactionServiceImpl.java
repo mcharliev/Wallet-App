@@ -1,11 +1,15 @@
-package ru.zenclass.ylab.service;
+package ru.zenclass.ylab.service.impl;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.zenclass.ylab.exception.NotEnoughMoneyException;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.entity.Transaction;
 import ru.zenclass.ylab.model.enums.TransactionType;
 import ru.zenclass.ylab.repository.TransactionRepository;
+import ru.zenclass.ylab.service.PlayerService;
+import ru.zenclass.ylab.service.TransactionService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,6 +20,7 @@ import java.util.List;
  * Этот сервис предоставляет методы для добавления дебетовых и кредитных транзакций,
  * а также для просмотра истории транзакций игрока.
  */
+@Service
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -28,6 +33,7 @@ public class TransactionServiceImpl implements TransactionService {
      * @param transactionRepository репозиторий транзакций
      * @param playerService сервис для работы с игроками
      */
+    @Autowired
     public TransactionServiceImpl(TransactionRepository transactionRepository, PlayerService playerService) {
         this.transactionRepository = transactionRepository;
         this.playerService = playerService;

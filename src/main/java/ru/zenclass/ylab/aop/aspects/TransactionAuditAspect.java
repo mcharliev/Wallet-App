@@ -22,7 +22,7 @@ public class TransactionAuditAspect {
     /**
      * Определение точки среза для дебетовых транзакций.
      */
-    @Pointcut("execution(* ru.zenclass.ylab.service.TransactionServiceImpl.addDebitTransaction(..))")
+    @Pointcut("execution(* ru.zenclass.ylab.service.impl.TransactionServiceImpl.addDebitTransaction(..))")
     public void debitTransactionMethod() {}
 
     /**
@@ -55,7 +55,7 @@ public class TransactionAuditAspect {
     /**
      * Определение точки среза для кредитных транзакций.
      */
-    @Pointcut("execution(* ru.zenclass.ylab.service.TransactionServiceImpl.addCreditTransaction(..))")
+    @Pointcut("execution(* ru.zenclass.ylab.service.impl.TransactionServiceImpl.addCreditTransaction(..))")
     public void creditTransactionMethod() {}
 
     /**
@@ -82,7 +82,7 @@ public class TransactionAuditAspect {
     /**
      * Определение точки среза для просмотра истории транзакций.
      */
-    @Pointcut("execution(* ru.zenclass.ylab.service.TransactionServiceImpl.viewTransactionHistory(..))")
+    @Pointcut("execution(* ru.zenclass.ylab.service.impl.TransactionServiceImpl.viewTransactionHistory(..))")
     public void viewTransactionHistoryMethod() {}
 
     /**

@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import org.springframework.stereotype.Component;
 import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 
 import java.util.Set;
@@ -12,6 +13,7 @@ import java.util.Set;
  * Класс-валидатор для проверки данных, предоставляемых при регистрации игрока.
  * Использует валидацию, основанную на аннотациях, для проверки корректности данных.
  */
+@Component
 public class RegisterPlayerValidator {
     private final Validator validator;
 

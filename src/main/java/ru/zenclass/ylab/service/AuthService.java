@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.zenclass.ylab.model.entity.Player;
-import ru.zenclass.ylab.util.JwtUtil;
+import ru.zenclass.ylab.model.util.JwtUtil;
 
 import java.io.IOException;
 import java.util.Optional;

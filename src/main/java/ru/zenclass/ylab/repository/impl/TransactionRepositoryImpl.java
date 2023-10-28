@@ -1,13 +1,16 @@
-package ru.zenclass.ylab.repository;
+package ru.zenclass.ylab.repository.impl;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import ru.zenclass.ylab.aop.annotations.Loggable;
-import ru.zenclass.ylab.connection.DatabaseConnectionManager;
 import ru.zenclass.ylab.model.entity.Transaction;
 import ru.zenclass.ylab.model.enums.TransactionType;
+import ru.zenclass.ylab.repository.TransactionRepository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +20,16 @@ import java.util.List;
  * Предоставляет функции для добавления транзакций и получения транзакций для определенного игрока.
  */
 @Loggable
+@Repository
 public class TransactionRepositoryImpl implements TransactionRepository {
 
-    private final DatabaseConnectionManager connectionManager;
+    private final DataSource dataSource;
+
     private final Logger log = LoggerFactory.getLogger(TransactionRepositoryImpl.class);
 
-    public TransactionRepositoryImpl(DatabaseConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
+    @Autowired
+    public TransactionRepositoryImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     /**
@@ -37,7 +43,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         // SQL-запрос для вставки новой транзакции в таблицу транзакций.
         String sql = "INSERT INTO wallet_service.transactions (id, type, amount, local_date_time, player_id) VALUES (nextval('wallet_service.transactions_seq'), ?, ?, ?, ?) RETURNING id";
 
-        try (Connection connection = connectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             // Устанавливаем значения для параметров в SQL-запросе.
@@ -54,7 +60,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     transaction.setId(generatedId);
                 }
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             log.error("Ошибка при добавлении транзакции", e);
             throw new RuntimeException("Ошибка при добавлении транзакции", e);
         }
@@ -72,7 +78,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         String sql = "SELECT * FROM wallet_service.transactions WHERE player_id = ?";
         List<Transaction> transactions = new ArrayList<>();
 
-        try (Connection connection = connectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             // Устанавливаем идентификатор игрока как параметр для запроса.
@@ -90,7 +96,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     transactions.add(transaction);
                 }
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             log.error("Ошибка при получении всех транзакций для playerId: " + playerId, e);
             throw new RuntimeException("Ошибка при получении всех транзакций для playerId: " + playerId, e);
         }

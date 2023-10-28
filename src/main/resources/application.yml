@@ -5,3 +5,5 @@ database:
   password: 353062
   changeLogLog: liquibase/changelog.xml
   liquibaseSchema: migration
+jwt:
+  secretKey: MY_SECRET_KEY

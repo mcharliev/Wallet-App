@@ -1,7 +1,9 @@
-package ru.zenclass.ylab.service;
+package ru.zenclass.ylab.service.impl;
 
 
 import jakarta.validation.ConstraintViolation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.zenclass.ylab.exception.AuthenticationException;
 import ru.zenclass.ylab.exception.ConflictException;
 import ru.zenclass.ylab.exception.PlayerNotFoundException;
@@ -12,7 +14,8 @@ import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.mapper.PlayerMapper;
 import ru.zenclass.ylab.repository.PlayerRepository;
-import ru.zenclass.ylab.util.JwtUtil;
+import ru.zenclass.ylab.service.PlayerService;
+import ru.zenclass.ylab.model.util.JwtUtil;
 import ru.zenclass.ylab.validator.RegisterPlayerValidator;
 
 import java.math.BigDecimal;
@@ -24,11 +27,12 @@ import java.util.stream.Collectors;
  * Сервис для управления данными игрока.
  * Этот сервис предоставляет методы для выполнения основных операций, таких как поиск, обновление, регистрация и вход.
  */
+@Service
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
-    private RegisterPlayerValidator registerPlayerValidator;
-    private JwtUtil jwtUtil;
+    private final RegisterPlayerValidator registerPlayerValidator;
+    private final JwtUtil jwtUtil;
 
     /**
      * Конструктор класса PlayerServiceImpl.
@@ -37,6 +41,7 @@ public class PlayerServiceImpl implements PlayerService {
      * @param registerPlayerValidator Валидатор регистрации игрока, см. {@link RegisterPlayerValidator}.
      * @param jwtUtil                 Утилита для работы с JWT-токенами, см. {@link JwtUtil}.
      */
+    @Autowired
     public PlayerServiceImpl(PlayerRepository playerRepository, RegisterPlayerValidator registerPlayerValidator, JwtUtil jwtUtil) {
         this.playerRepository = playerRepository;
         this.registerPlayerValidator = registerPlayerValidator;
