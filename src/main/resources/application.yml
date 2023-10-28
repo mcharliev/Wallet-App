@@ -3,7 +3,5 @@ database:
   url: jdbc:postgresql://localhost:5415/wallet_service_db
   username: Merdan
   password: 353062
-  changeLog:
-    log: liquibase/changelog.xml
-  liquibase:
-    schema: migration
+  changeLogLog: liquibase/changelog.xml
+  liquibaseSchema: migration
