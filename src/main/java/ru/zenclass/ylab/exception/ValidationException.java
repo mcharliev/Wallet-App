@@ -1,15 +1,19 @@
 package ru.zenclass.ylab.exception;
 
-/**
- * Исключение, сигнализирующее о проблемах при валидации данных.
- * <p>
- * Это подкласс класса {@link RuntimeException}, используемый для обозначения исключительных ситуаций,
- * связанных с ошибками валидации данных.
- *
- * @see RuntimeException
- */
+
+import jakarta.validation.ConstraintViolation;
+
+import java.util.Set;
+
 public class ValidationException extends RuntimeException {
-    public ValidationException(String message) {
+    private final Set<? extends ConstraintViolation<?>> violations;
+
+    public ValidationException(String message, Set<? extends ConstraintViolation<?>> violations) {
         super(message);
+        this.violations = violations;
+    }
+
+    public Set<? extends ConstraintViolation<?>> getViolations() {
+        return violations;
     }
 }

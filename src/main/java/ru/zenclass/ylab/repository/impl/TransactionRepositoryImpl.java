@@ -100,7 +100,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             log.error("Ошибка при получении всех транзакций для playerId: " + playerId, e);
             throw new RuntimeException("Ошибка при получении всех транзакций для playerId: " + playerId, e);
         }
-
         // Возвращаем список всех найденных транзакций для указанного игрока.
         return transactions;
     }

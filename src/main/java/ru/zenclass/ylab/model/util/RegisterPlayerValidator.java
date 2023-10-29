@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.validator;
+package ru.zenclass.ylab.model.util;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;

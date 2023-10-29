@@ -1,6 +1,7 @@
 package ru.zenclass.ylab.service;
 
 import ru.zenclass.ylab.model.dto.LoginResponseDTO;
+import ru.zenclass.ylab.model.dto.PlayerBalanceDTO;
 import ru.zenclass.ylab.model.dto.PlayerDTO;
 import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 import ru.zenclass.ylab.model.entity.Player;
@@ -49,14 +50,9 @@ public interface PlayerService {
      * @param player игрок.
      * @return информация о балансе в формате JSON.
      */
-    String getPlayerBalanceInfo(Player player);
+    PlayerBalanceDTO getPlayerBalanceInfo(Player player);
 
-    /**
-     * Аутентифицировать игрока и сгенерировать токен.
-     *
-     * @param username имя пользователя.
-     * @param password пароль.
-     * @return DTO с данными игрока и токеном.
-     */
-    LoginResponseDTO authenticateAndGenerateToken(String username, String password);
+
+    LoginResponseDTO authenticateAndGenerateToken(RegisterPlayerDTO registerPlayerDTO);
+    public Optional<Player> validateTokenAndGetPlayer(String token);
 }

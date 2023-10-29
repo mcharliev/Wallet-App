@@ -1,5 +1,8 @@
 package ru.zenclass.ylab.service;
 
+import ru.zenclass.ylab.model.dto.AmountDTO;
+import ru.zenclass.ylab.model.dto.TransactionDTO;
+import ru.zenclass.ylab.model.dto.TransactionHistoryDTO;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.entity.Transaction;
 
@@ -11,31 +14,14 @@ import java.util.List;
  */
 public interface TransactionService {
 
-    /**
-     * Создает дебетовую транзакцию для игрока.
-     *
-     * @param player       игрок, для которого создается транзакция
-     * @param debitAmount  сумма дебетовой транзакции
-     * @return созданная дебетовая транзакция {@link Transaction}
-     */
-    Transaction addDebitTransaction(Player player, BigDecimal debitAmount);
 
-    /**
-     * Создает кредитовую транзакцию для игрока.
-     *
-     * @param player        игрок, для которого создается транзакция
-     * @param creditAmount  сумма кредитовой транзакции
-     * @return созданная кредитовая транзакция {@link Transaction}
-     */
-    Transaction addCreditTransaction(Player player, BigDecimal creditAmount);
+    TransactionDTO addDebitTransaction(Player player,  AmountDTO amountDTO);
 
-    /**
-     * Отображает историю транзакций игрока.
-     *
-     * @param id        идентификатор игрока
-     * @param username  имя игрока
-     * @return список транзакций игрока {@link List<Transaction>}
-     */
-    List<Transaction> viewTransactionHistory(Long id, String username);
+
+
+    TransactionDTO addCreditTransaction(Player player, AmountDTO amountDTO);
+
+
+    TransactionHistoryDTO viewTransactionHistory(Player player);
 
 }
