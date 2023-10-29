@@ -4,6 +4,7 @@ package ru.zenclass.ylab.service.impl;
 import jakarta.validation.ConstraintViolation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.exception.NoTransactionsFoundException;
 import ru.zenclass.ylab.exception.NotEnoughMoneyException;
 import ru.zenclass.ylab.exception.ValidationException;
@@ -30,6 +31,7 @@ import java.util.Set;
  * а также для просмотра истории транзакций игрока.
  */
 @Service
+@Loggable
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;

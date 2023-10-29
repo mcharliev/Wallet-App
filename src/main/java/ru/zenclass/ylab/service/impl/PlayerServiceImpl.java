@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureException;
 import jakarta.validation.ConstraintViolation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.exception.AuthenticationException;
 import ru.zenclass.ylab.exception.PlayerAlreadyExistException;
 import ru.zenclass.ylab.exception.PlayerNotFoundException;
@@ -29,6 +30,7 @@ import java.util.Set;
  * Этот сервис предоставляет методы для выполнения основных операций, таких как поиск, обновление, регистрация и вход.
  */
 @Service
+@Loggable
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;

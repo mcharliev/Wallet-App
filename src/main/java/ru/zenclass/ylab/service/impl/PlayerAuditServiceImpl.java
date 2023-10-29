@@ -2,6 +2,7 @@ package ru.zenclass.ylab.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.model.entity.PlayerAudit;
 import ru.zenclass.ylab.repository.PlayerAuditRepository;
 import ru.zenclass.ylab.service.PlayerAuditService;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Loggable
 public class PlayerAuditServiceImpl implements PlayerAuditService {
 
     private final PlayerAuditRepository playerAuditRepository;

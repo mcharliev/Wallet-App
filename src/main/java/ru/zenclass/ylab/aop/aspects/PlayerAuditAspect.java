@@ -90,15 +90,9 @@ public class PlayerAuditAspect {
 
     private void logAction(String username, PlayerActionType actionType) {
         switch (actionType) {
-            case REGISTRATION:
-                log.info(createLogMessage(username, "успешно зарегистрировался"));
-                break;
-            case AUTHENTICATION:
-                log.info(createLogMessage(username, "прошел авторизацию"));
-                break;
-            case BALANCE_CHECK:
-                log.info(createLogMessage(username, "сделал запрос баланса"));
-                break;
+            case REGISTRATION -> log.info(createLogMessage(username, "успешно зарегистрировался"));
+            case AUTHENTICATION -> log.info(createLogMessage(username, "прошел авторизацию"));
+            case BALANCE_CHECK -> log.info(createLogMessage(username, "сделал запрос баланса"));
         }
     }
 
