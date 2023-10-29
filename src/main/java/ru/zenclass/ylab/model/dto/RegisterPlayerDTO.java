@@ -49,4 +49,5 @@ public class RegisterPlayerDTO {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

@@ -2,7 +2,6 @@ package ru.zenclass.ylab.service.impl;
 
 
 import jakarta.validation.ConstraintViolation;
-import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.zenclass.ylab.exception.NoTransactionsFoundException;

@@ -1,15 +1,12 @@
 package ru.zenclass.ylab.configuration;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.sql.DataSource;
 
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 import ru.zenclass.ylab.model.util.JwtUtil;
 
 import java.sql.Connection;
@@ -17,6 +14,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @Configuration
+@EnableAspectJAutoProxy
+@ComponentScan(basePackages = "ru.zenclass.ylab")
 @PropertySources({
         @PropertySource(value = "classpath:application.yml", factory = YamlPropertySourceFactory.class)
 })
