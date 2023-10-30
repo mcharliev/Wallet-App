@@ -41,7 +41,7 @@ public class ExceptionHandlerAdvice {
         ExceptionDetails exceptionDetails = new ExceptionDetails();
         exceptionDetails.setMessage("Ошибка дебетовой транзакции, недостаточно денег на счете");
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.CONFLICT)
                 .body(exceptionDetails);
     }
     @ExceptionHandler(NoTransactionsFoundException.class)

@@ -1,6 +1,6 @@
 package ru.zenclass.ylab.util;
 
-import jakarta.validation.ConstraintViolation;
+import javax.validation.ConstraintViolation;
 
 import java.util.Set;
 

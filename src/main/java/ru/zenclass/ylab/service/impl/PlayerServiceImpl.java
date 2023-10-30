@@ -3,7 +3,6 @@ package ru.zenclass.ylab.service.impl;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
-import jakarta.validation.ConstraintViolation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.zenclass.ylab.aop.annotations.Loggable;
@@ -17,12 +16,12 @@ import ru.zenclass.ylab.model.dto.PlayerDTO;
 import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.mapper.PlayerMapper;
-import ru.zenclass.ylab.util.DTOValidator;
-import ru.zenclass.ylab.util.JwtUtil;
 import ru.zenclass.ylab.repository.PlayerRepository;
 import ru.zenclass.ylab.service.PlayerService;
-import ru.zenclass.ylab.util.RegisterPlayerValidator;
+import ru.zenclass.ylab.util.DTOValidator;
+import ru.zenclass.ylab.util.JwtUtil;
 
+import javax.validation.ConstraintViolation;
 import java.util.Optional;
 import java.util.Set;
 

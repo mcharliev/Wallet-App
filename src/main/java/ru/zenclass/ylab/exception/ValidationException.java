@@ -1,7 +1,7 @@
 package ru.zenclass.ylab.exception;
 
 
-import jakarta.validation.ConstraintViolation;
+import javax.validation.ConstraintViolation;
 
 import java.util.Set;
 
