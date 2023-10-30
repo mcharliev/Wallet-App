@@ -44,7 +44,7 @@ public class TransactionController {
     public ResponseEntity<TransactionHistoryDTO> viewTransactionHistory(
             @RequestAttribute("authenticatedPlayer") Player authenticatedPlayer) {
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.OK)
                 .body(transactionService.viewTransactionHistory(authenticatedPlayer));
     }
 }

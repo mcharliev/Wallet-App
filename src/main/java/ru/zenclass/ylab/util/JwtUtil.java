@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.model.util;
+package ru.zenclass.ylab.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

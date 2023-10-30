@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.model.util;
+package ru.zenclass.ylab.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

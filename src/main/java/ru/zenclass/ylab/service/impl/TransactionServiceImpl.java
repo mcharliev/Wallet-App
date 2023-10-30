@@ -15,10 +15,11 @@ import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.entity.Transaction;
 import ru.zenclass.ylab.model.enums.TransactionType;
 import ru.zenclass.ylab.model.mapper.TransactionMapper;
-import ru.zenclass.ylab.model.util.AmountValidator;
+import ru.zenclass.ylab.util.AmountValidator;
 import ru.zenclass.ylab.repository.TransactionRepository;
 import ru.zenclass.ylab.service.PlayerService;
 import ru.zenclass.ylab.service.TransactionService;
+import ru.zenclass.ylab.util.DTOValidator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -37,19 +38,12 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
 
     private final PlayerService playerService;
-    private final AmountValidator amountValidator;
+    private final DTOValidator<AmountDTO> amountValidator;
 
-
-    /**
-     * Конструктор класса.
-     *
-     * @param transactionRepository репозиторий транзакций
-     * @param playerService         сервис для работы с игроками
-     */
     @Autowired
     public TransactionServiceImpl(TransactionRepository transactionRepository,
                                   PlayerService playerService,
-                                  AmountValidator amountValidator) {
+                                  DTOValidator<AmountDTO> amountValidator) {
         this.transactionRepository = transactionRepository;
         this.playerService = playerService;
         this.amountValidator = amountValidator;

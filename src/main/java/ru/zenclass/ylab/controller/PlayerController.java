@@ -37,8 +37,9 @@ public class PlayerController {
     }
 
     @GetMapping("/balance")
-    public ResponseEntity<?> getBalance(@RequestAttribute("authenticatedPlayer") Player authenticatedPlayer) {
-        PlayerBalanceDTO balanceInfo = playerService.getPlayerBalanceInfo(authenticatedPlayer);
-        return ResponseEntity.ok(balanceInfo);
+    public ResponseEntity<PlayerBalanceDTO> getBalance(@RequestAttribute("authenticatedPlayer") Player authenticatedPlayer) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(playerService.getPlayerBalanceInfo(authenticatedPlayer));
     }
 }

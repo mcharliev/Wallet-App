@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.model.util;
+package ru.zenclass.ylab.util;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -14,7 +14,7 @@ import java.util.Set;
  * Использует валидацию, основанную на аннотациях, для проверки корректности данных.
  */
 @Component
-public class RegisterPlayerValidator {
+public class RegisterPlayerValidator implements DTOValidator<RegisterPlayerDTO> {
     private final Validator validator;
 
     /**

@@ -7,7 +7,7 @@ import javax.sql.DataSource;
 
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
-import ru.zenclass.ylab.model.util.JwtUtil;
+import ru.zenclass.ylab.util.JwtUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;

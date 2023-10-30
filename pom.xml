@@ -31,8 +31,10 @@
         <jakarta.validation.api.version>3.0.2</jakarta.validation.api.version>
         <plugin.war.version>3.3.1</plugin.war.version>
         <aspectj.version>1.9.19</aspectj.version>
-        <plugin.aspectj.version>1.14.0</plugin.aspectj.version>
         <spring-framework.version>6.0.13</spring-framework.version>
+        <mockito-junit-jupiter.version>3.11.2</mockito-junit-jupiter.version>
+        <hikaricp.version>4.0.3</hikaricp.version>
+        <snakeyaml.version>1.28</snakeyaml.version>
     </properties>
 
     <dependencies>
@@ -87,11 +89,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
-        </dependency>
-        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${jakarta.servlet.version}</version>
@@ -140,7 +137,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>3.11.2</version>
+            <version>${mockito-junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -163,13 +160,13 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>4.0.3</version>
+            <version>${hikaricp.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.28</version>
+            <version>${snakeyaml.version}</version>
         </dependency>
 
         <dependency>
@@ -182,6 +179,21 @@
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
+
+        <!-- Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <!-- Swagger UI -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>

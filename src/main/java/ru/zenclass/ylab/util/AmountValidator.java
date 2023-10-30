@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.model.util;
+package ru.zenclass.ylab.util;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -12,14 +12,13 @@ import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 import java.util.Set;
 
 @Component
-public class AmountValidator {
+public class AmountValidator implements DTOValidator<AmountDTO> {
     private final Validator validator;
 
     public AmountValidator() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
-
 
     public Set<ConstraintViolation<AmountDTO>> validate(AmountDTO amountDTO) {
         return validator.validate(amountDTO);

@@ -17,10 +17,11 @@ import ru.zenclass.ylab.model.dto.PlayerDTO;
 import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.mapper.PlayerMapper;
-import ru.zenclass.ylab.model.util.JwtUtil;
+import ru.zenclass.ylab.util.DTOValidator;
+import ru.zenclass.ylab.util.JwtUtil;
 import ru.zenclass.ylab.repository.PlayerRepository;
 import ru.zenclass.ylab.service.PlayerService;
-import ru.zenclass.ylab.model.util.RegisterPlayerValidator;
+import ru.zenclass.ylab.util.RegisterPlayerValidator;
 
 import java.util.Optional;
 import java.util.Set;
@@ -34,20 +35,13 @@ import java.util.Set;
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
-    private final RegisterPlayerValidator registerPlayerValidator;
+    private final DTOValidator<RegisterPlayerDTO> registerPlayerValidator;
     private final JwtUtil jwtUtil;
 
-    /**
-     * Конструктор класса PlayerServiceImpl.
-     *
-     * @param playerRepository        Репозиторий игроков, см. {@link PlayerRepository}.
-     * @param registerPlayerValidator Валидатор регистрации игрока, см. {@link RegisterPlayerValidator}.
-     * @param jwtUtil                 Утилита для работы с JWT-токенами, см. {@link JwtUtil}.
-     */
     @Autowired
-    public PlayerServiceImpl(PlayerRepository playerRepository, RegisterPlayerValidator registerPlayerValidator, JwtUtil jwtUtil) {
+    public PlayerServiceImpl(PlayerRepository playerRepository, DTOValidator<RegisterPlayerDTO> registerPlayerDTOValidator, JwtUtil jwtUtil) { // заменено
         this.playerRepository = playerRepository;
-        this.registerPlayerValidator = registerPlayerValidator;
+        this.registerPlayerValidator = registerPlayerDTOValidator;
         this.jwtUtil = jwtUtil;
     }
 
@@ -111,14 +105,6 @@ public class PlayerServiceImpl implements PlayerService {
         }
     }
 
-    /**
-     * Аутентифицирует игрока по его логину и паролю.
-     *
-     * @param username логин игрока
-     * @param password пароль игрока
-     * @return {@link Optional} объекта игрока, если аутентификация прошла успешно, иначе пустой {@link Optional}
-     * @throws AuthenticationException если аутентификация не удалась
-     */
     private Optional<Player> authenticatePlayer(String username, String password) {
         return playerRepository.findPlayerByUsername(username)
                 .filter(player -> player.getPassword().equals(password));
