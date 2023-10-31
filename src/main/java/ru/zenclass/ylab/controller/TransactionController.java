@@ -79,4 +79,5 @@ public class TransactionController {
                 .status(HttpStatus.OK)
                 .body(transactionService.viewTransactionHistory(authenticatedPlayer));
     }
+
 }

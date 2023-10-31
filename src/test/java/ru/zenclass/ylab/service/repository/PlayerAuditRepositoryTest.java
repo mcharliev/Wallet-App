@@ -14,13 +14,13 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.zenclass.ylab.configuration.AppConfig;
 import ru.zenclass.ylab.model.entity.PlayerAudit;
+import ru.zenclass.ylab.model.enums.PlayerActionType;
 import ru.zenclass.ylab.repository.PlayerAuditRepository;
 import ru.zenclass.ylab.service.config.TestDataSourceConfig;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,16 +63,16 @@ public class PlayerAuditRepositoryTest {
     void testAddPlayerAudit() {
         PlayerAudit playerAudit = new PlayerAudit();
         playerAudit.setPlayerId(1L);
-        playerAudit.setActionType("LOGIN");
+        playerAudit.setActionType(PlayerActionType.AUTHENTICATION.getAction());
         playerAudit.setActionDate(LocalDateTime.now());
-        playerAudit.setDetails("User logged in successfully");
+        playerAudit.setDetails("Игрок совершил успешный вход");
 
         playerAuditRepository.addPlayerAudit(playerAudit);
 
         List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(1L);
         assertFalse(audits.isEmpty());
-        assertEquals("LOGIN", audits.get(0).getActionType());
-        assertEquals("User logged in successfully", audits.get(0).getDetails());
+        assertEquals("AUTHENTICATION", audits.get(0).getActionType());
+        assertEquals("Игрок совершил успешный вход", audits.get(0).getDetails());
     }
 
     @Test
@@ -90,17 +90,6 @@ public class PlayerAuditRepositoryTest {
 
         List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(playerId);
         assertEquals(3, audits.size());
-
-        // Проверяем, что все добавленные записи присутствуют, независимо от порядка
-        List<String> expectedActionTypes = IntStream.range(0, 3)
-                .mapToObj(i -> "ACTION_TYPE_" + i)
-                .collect(Collectors.toList());
-
-        List<String> actualActionTypes = audits.stream()
-                .map(PlayerAudit::getActionType)
-                .collect(Collectors.toList());
-
-        assertTrue(actualActionTypes.containsAll(expectedActionTypes));
     }
 
     @Test

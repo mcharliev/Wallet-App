@@ -8,13 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.zenclass.ylab.exception.NotEnoughMoneyException;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.entity.Transaction;
 import ru.zenclass.ylab.model.enums.PlayerActionType;
 import ru.zenclass.ylab.service.PlayerAuditService;
-
-import java.math.BigDecimal;
 
 /**
  * Аспект для аудита транзакций с объектами типа {@link Transaction}.
@@ -55,7 +52,8 @@ public class TransactionAuditAspect {
         Object[] args = joinPoint.getArgs();
         if (args[0] instanceof Player player) {
             logAction(player.getUsername(), PlayerActionType.CREDIT_TRANSACTION_SUCCESS);
-            playerAuditService.logPlayerAction(player.getId(), PlayerActionType.CREDIT_TRANSACTION_SUCCESS.toString(), createLogMessage(player.getUsername(), "успешно совершил кредитную операцию"));
+            playerAuditService.logPlayerAction(player.getId(), PlayerActionType.CREDIT_TRANSACTION_SUCCESS.toString(),
+                    createLogMessage(player.getUsername(), "успешно совершил кредитную операцию"));
         }
         return result;
     }
@@ -69,7 +67,8 @@ public class TransactionAuditAspect {
         Object[] args = joinPoint.getArgs();
         if (args[0] instanceof Player player) {
             logAction(player.getUsername(), PlayerActionType.VIEW_TRANSACTION_HISTORY);
-            playerAuditService.logPlayerAction(player.getId(), PlayerActionType.VIEW_TRANSACTION_HISTORY.toString(), createLogMessage(player.getUsername(), "просмотрел свою историю транзакций"));
+            playerAuditService.logPlayerAction(player.getId(), PlayerActionType.VIEW_TRANSACTION_HISTORY.toString(),
+                    createLogMessage(player.getUsername(), "просмотрел свою историю транзакций"));
         }
         return result;
     }
