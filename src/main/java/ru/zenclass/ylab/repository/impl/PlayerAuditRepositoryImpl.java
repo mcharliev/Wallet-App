@@ -13,17 +13,31 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Реализация репозитория аудита игроков.
+ */
 @Loggable
 @Repository
 public class PlayerAuditRepositoryImpl implements PlayerAuditRepository {
     private final DataSource dataSource;
     private final Logger log = LoggerFactory.getLogger(PlayerAuditRepositoryImpl.class);
 
+    /**
+     * Конструктор с внедрением зависимостей.
+     *
+     * @param dataSource Источник данных для работы с базой данных, тип {@link DataSource}.
+     */
     @Autowired
     public PlayerAuditRepositoryImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
+    /**
+     * Добавляет запись аудита игрока в базу данных.
+     *
+     * @param playerAudit Запись аудита игрока, тип {@link PlayerAudit}.
+     * @throws RuntimeException Если произошла ошибка при добавлении записи аудита.
+     */
     public void addPlayerAudit(PlayerAudit playerAudit) {
         String sql = "INSERT INTO wallet_service.audit_actions (player_id, action_type, action_data, details) VALUES (?, ?, ?, ?)";
 
@@ -42,6 +56,13 @@ public class PlayerAuditRepositoryImpl implements PlayerAuditRepository {
         }
     }
 
+    /**
+     * Находит записи аудита по идентификатору игрока.
+     *
+     * @param playerId Идентификатор игрока, тип {@link Long}.
+     * @return Список записей аудита, тип {@link List} {@link PlayerAudit}.
+     * @throws RuntimeException Если произошла ошибка при поиске записей аудита.
+     */
     public List<PlayerAudit> findAuditsByPlayerId(Long playerId) {
         String sql = "SELECT * FROM wallet_service.audit_actions WHERE player_id = ?";
 
@@ -64,12 +85,20 @@ public class PlayerAuditRepositoryImpl implements PlayerAuditRepository {
         return audits;
     }
 
+    /**
+     * Приватный метод для создания объекта {@link PlayerAudit} из данных результата SQL-запроса.
+     *
+     * @param resultSet Результат выполнения SQL-запроса, тип {@link ResultSet}.
+     * @return Объект {@link PlayerAudit}, созданный из данных результата запроса.
+     * @throws SQLException В случае ошибки при обработке результата SQL-запроса.
+     */
     private PlayerAudit getPlayerAudit(ResultSet resultSet) throws SQLException {
         PlayerAudit audit = new PlayerAudit();
         audit.setId(resultSet.getLong("id"));
         audit.setPlayerId(resultSet.getLong("player_id"));
         audit.setActionType(resultSet.getString("action_type"));
-        audit.setActionDate(resultSet.getTimestamp("action_data").toLocalDateTime());        audit.setDetails(resultSet.getString("details"));
+        audit.setActionDate(resultSet.getTimestamp("action_data").toLocalDateTime());
+        audit.setDetails(resultSet.getString("details"));
         return audit;
     }
 }

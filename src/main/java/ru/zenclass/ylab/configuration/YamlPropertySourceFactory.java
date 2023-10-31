@@ -11,6 +11,9 @@ import org.springframework.lang.NonNull;
 import java.util.Objects;
 import java.util.Properties;
 
+/**
+ * Фабрика для создания источника свойств из файлов YAML.
+ */
 public class YamlPropertySourceFactory implements PropertySourceFactory {
 
     @Override

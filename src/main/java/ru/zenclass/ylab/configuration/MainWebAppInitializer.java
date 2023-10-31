@@ -8,6 +8,9 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
+/**
+ * Инициализатор веб-приложения для настройки Spring.
+ */
 public class MainWebAppInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext container) throws ServletException {

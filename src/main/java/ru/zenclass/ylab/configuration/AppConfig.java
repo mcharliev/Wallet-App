@@ -13,6 +13,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Конфигурационный класс для настройки приложения.
+ */
 @Configuration
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = "ru.zenclass.ylab")
@@ -42,6 +45,11 @@ public class AppConfig {
     @Value("${jwt.secretKey}")
     private String jwtSecretKey;
 
+    /**
+     * Создает и настраивает источник данных для базы данных.
+     *
+     * @return Объект источника данных, тип {@link DataSource}.
+     */
     @Bean
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
@@ -52,6 +60,12 @@ public class AppConfig {
         return dataSource;
     }
 
+    /**
+     * Создает и настраивает Spring Liquibase для управления миграциями базы данных.
+     *
+     * @param dataSource Объект источника данных, тип {@link DataSource}.
+     * @return Объект Spring Liquibase, тип {@link SpringLiquibase}.
+     */
     @Bean
     public SpringLiquibase liquibase(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection();
@@ -67,6 +81,11 @@ public class AppConfig {
         return liquibase;
     }
 
+    /**
+     * Создает и настраивает утилиту для работы с JSON Web Tokens (JWT).
+     *
+     * @return Объект утилиты JWT, тип {@link JwtUtil}.
+     */
     @Bean
     public JwtUtil jwtUtil() {
         return new JwtUtil(jwtSecretKey);

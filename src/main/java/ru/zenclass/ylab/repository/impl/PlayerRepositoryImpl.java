@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+
 /**
  * Репозиторий для работы с объектами типа {@link Player} в базе данных.
  * Предоставляет функции для добавления, поиска и обновления информации об игроках.
@@ -24,15 +25,24 @@ import java.util.Optional;
 public class PlayerRepositoryImpl implements PlayerRepository {
     private final DataSource dataSource;
 
+    /**
+     * Конструктор с внедрением зависимостей.
+     *
+     * @param dataSource Источник данных для работы с базой данных, тип {@link DataSource}.
+     */
     @Autowired
     public PlayerRepositoryImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-
     private final Logger log = LoggerFactory.getLogger(PlayerRepositoryImpl.class);
 
-
+    /**
+     * Добавляет игрока в базу данных.
+     *
+     * @param player Игрок для добавления, тип {@link Player}.
+     * @throws RuntimeException Если произошла ошибка при добавлении игрока.
+     */
     public void addPlayer(Player player) {
         // SQL-запрос для вставки нового игрока в таблицу.
         String sql = "INSERT INTO wallet_service.players (id, username, password, balance) VALUES (nextval('wallet_service.players_seq'), ?, ?, ?) RETURNING id";
@@ -53,11 +63,18 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                     player.setId(generatedId);
                 }
             }
-        } catch (SQLException e ) {
+        } catch (SQLException e) {
             throw new RuntimeException("Ошибка при добавлении игрока", e);
         }
     }
 
+    /**
+     * Находит игрока по его идентификатору.
+     *
+     * @param id Идентификатор игрока, тип {@link Long}.
+     * @return Объект игрока в виде {@link Optional<Player>}.
+     * @throws RuntimeException Если произошла ошибка при поиске игрока.
+     */
     public Optional<Player> findPlayerById(Long id) {
         // SQL-запрос для поиска игрока по ID.
         String sql = "SELECT * FROM wallet_service.players WHERE id = ?";
@@ -82,6 +99,13 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         }
     }
 
+    /**
+     * Находит игрока по его имени пользователя.
+     *
+     * @param username Имя пользователя игрока, тип {@link String}.
+     * @return Объект игрока в виде {@link Optional<Player>}.
+     * @throws RuntimeException Если произошла ошибка при поиске игрока.
+     */
     public Optional<Player> findPlayerByUsername(String username) {
         // SQL-запрос для поиска игрока по имени пользователя.
         String sql = "SELECT * FROM wallet_service.players WHERE username = ?";
@@ -98,7 +122,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                     return Optional.of(getPlayer(resultSet));
                 }
             }
-        } catch (SQLException e ) {
+        } catch (SQLException e) {
             log.error("Ошибка при поиске игрока по имени: " + username, e);
             throw new RuntimeException("Ошибка при поиске игрока по имени: " + username, e);
         }
@@ -106,6 +130,12 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         return Optional.empty(); // Если игрок не найден, возвращаем пустой Optional.
     }
 
+    /**
+     * Обновляет баланс игрока в базе данных.
+     *
+     * @param player Игрок для обновления, тип {@link Player}.
+     * @throws RuntimeException Если произошла ошибка при обновлении игрока.
+     */
     public void updatePlayer(Player player) {
         // SQL-запрос для обновления баланса игрока.
         String sql = "UPDATE wallet_service.players SET balance = ? WHERE id = ?";
@@ -124,7 +154,13 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         }
     }
 
-
+    /**
+     * Приватный метод для создания объекта {@link Player} из данных результата SQL-запроса.
+     *
+     * @param resultSet Результат выполнения SQL-запроса, тип {@link ResultSet}.
+     * @return Объект {@link Player}, созданный из данных результата запроса.
+     * @throws SQLException В случае ошибки при обработке результата SQL-запроса.
+     */
     private Player getPlayer(ResultSet resultSet) throws SQLException {
         Player player = new Player();
         player.setId(resultSet.getLong("id"));

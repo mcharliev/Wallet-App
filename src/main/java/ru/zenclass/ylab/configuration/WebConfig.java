@@ -19,6 +19,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.List;
 
+/**
+ * Конфигурационный класс для настройки веб-приложения.
+ */
 @EnableWebMvc
 @Configuration
 @EnableSwagger2
@@ -31,6 +34,11 @@ public class WebConfig implements WebMvcConfigurer {
         this.jwtInterceptor = jwtInterceptor;
     }
 
+    /**
+     * Регистрирует интерсептор JwtInterceptor для обработки JWT-токенов.
+     *
+     * @param registry Реестр интерсепторов, тип {@link InterceptorRegistry}.
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
@@ -38,6 +46,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/players/register","/players/login");
     }
 
+    /**
+     * Настраивает конвертеры сообщений HTTP для работы с JSON.
+     *
+     * @param converters Список конвертеров сообщений HTTP, тип {@link List}.
+     */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder()
@@ -45,6 +58,11 @@ public class WebConfig implements WebMvcConfigurer {
         converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
     }
 
+    /**
+     * Создает и настраивает Docket для Swagger API.
+     *
+     * @return Объект Docket для настройки Swagger, тип {@link Docket}.
+     */
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -54,6 +72,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .build();
     }
 
+    /**
+     * Регистрирует обработчики ресурсов для Swagger UI.
+     *
+     * @param registry Реестр обработчиков ресурсов, тип {@link ResourceHandlerRegistry}.
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/swagger-ui/**")

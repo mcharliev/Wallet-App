@@ -49,6 +49,13 @@ public class TransactionServiceImpl implements TransactionService {
         this.amountValidator = amountValidator;
     }
 
+    /**
+     * Добавляет дебетовую транзакцию для игрока.
+     *
+     * @param player    Объект игрока, тип {@link Player}.
+     * @param amountDTO Объект с информацией о сумме транзакции, тип {@link AmountDTO}.
+     * @return Объект с информацией о созданной транзакции, тип {@link TransactionDTO}.
+     */
     public TransactionDTO addDebitTransaction(Player player, AmountDTO amountDTO) {
         validateAmount(amountDTO);
         checkSufficientBalance(player, amountDTO.getAmount());
@@ -65,6 +72,13 @@ public class TransactionServiceImpl implements TransactionService {
         return TransactionMapper.INSTANCE.toDTO(transaction);
     }
 
+    /**
+     * Добавляет кредитную транзакцию для игрока.
+     *
+     * @param player    Объект игрока, тип {@link Player}.
+     * @param amountDTO Объект с информацией о сумме транзакции, тип {@link AmountDTO}.
+     * @return Объект с информацией о созданной транзакции, тип {@link TransactionDTO}.
+     */
     public TransactionDTO addCreditTransaction(Player player, AmountDTO amountDTO) {
         validateAmount(amountDTO);
         Transaction transaction = new Transaction();
@@ -79,6 +93,13 @@ public class TransactionServiceImpl implements TransactionService {
         return TransactionMapper.INSTANCE.toDTO(transaction);
     }
 
+    /**
+     * Просматривает историю транзакций игрока.
+     *
+     * @param player Объект игрока, тип {@link Player}.
+     * @return Объект с информацией об истории транзакций игрока, тип {@link TransactionHistoryDTO}.
+     * @throws NoTransactionsFoundException Если не найдено ни одной транзакции для игрока.
+     */
     public TransactionHistoryDTO viewTransactionHistory(Player player) {
         List<Transaction> allTransactionsByPlayerId
                 = transactionRepository.getAllTransactionsByPlayerId(player.getId());
@@ -94,6 +115,12 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionHistoryDTO;
     }
 
+    /**
+     * Приватный метод для валидации суммы транзакции.
+     *
+     * @param amountDTO Объект с информацией о сумме транзакции, тип {@link AmountDTO}.
+     * @throws ValidationException Если сумма транзакции не проходит валидацию.
+     */
     private void validateAmount(AmountDTO amountDTO) {
         Set<ConstraintViolation<AmountDTO>> violations = amountValidator.validate(amountDTO);
         if (!violations.isEmpty()) {
@@ -105,13 +132,19 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
+    /**
+     * Приватный метод для проверки достаточности средств на счете игрока.
+     *
+     * @param player Объект игрока, тип {@link Player}.
+     * @param amount Сумма транзакции, тип {@link BigDecimal}.
+     * @throws NotEnoughMoneyException Если у игрока недостаточно средств для проведения транзакции.
+     */
     private void checkSufficientBalance(Player player, BigDecimal amount) {
         if (amount.compareTo(player.getBalance()) > 0) {
             throw new NotEnoughMoneyException();
         }
     }
 }
-
 
 
 
