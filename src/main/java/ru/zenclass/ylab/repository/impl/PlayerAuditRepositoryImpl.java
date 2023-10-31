@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import ru.zenclass.ylab.aop.annotations.Loggable;
 import ru.zenclass.ylab.model.entity.PlayerAudit;
 import ru.zenclass.ylab.repository.PlayerAuditRepository;
-import ru.zenclass.ylab.service.PlayerAuditService;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -44,7 +43,7 @@ public class PlayerAuditRepositoryImpl implements PlayerAuditRepository {
     }
 
     public List<PlayerAudit> findAuditsByPlayerId(Long playerId) {
-        String sql = "SELECT * FROM wallet_service.audit_actions WHERE playerId = ? ORDER BY actionDate DESC";
+        String sql = "SELECT * FROM wallet_service.audit_actions WHERE player_id = ?";
 
         List<PlayerAudit> audits = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();

@@ -56,6 +56,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
 
+
     @Override
     public PlayerDTO registerNewPlayer(RegisterPlayerDTO registerPlayerDTO) {
         validate(registerPlayerDTO);

@@ -7,3 +7,4 @@ database:
   liquibaseSchema: migration
 jwt:
   secretKey: MY_SECRET_KEY
+

@@ -22,6 +22,8 @@ public class RegisterPlayerDTO {
     @ApiModelProperty(notes = "Пароль пользователя", example = "123456")
     private String password;
 
+
+
     /**
      * Получить имя пользователя.
      * @return имя пользователя {@link String}
