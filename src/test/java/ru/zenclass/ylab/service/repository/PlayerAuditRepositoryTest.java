@@ -21,9 +21,9 @@ import ru.zenclass.ylab.service.config.TestDataSourceConfig;
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @SpringJUnitConfig(classes = {AppConfig.class, TestDataSourceConfig.class})
 @Testcontainers
@@ -70,9 +70,9 @@ public class PlayerAuditRepositoryTest {
         playerAuditRepository.addPlayerAudit(playerAudit);
 
         List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(1L);
-        assertFalse(audits.isEmpty());
-        assertEquals("AUTHENTICATION", audits.get(0).getActionType());
-        assertEquals("Игрок совершил успешный вход", audits.get(0).getDetails());
+        assertThat(audits).isNotEmpty();
+        assertThat(audits.get(0).getActionType()).isEqualTo("AUTHENTICATION");
+        assertThat(audits.get(0).getDetails()).isEqualTo("Игрок совершил успешный вход");
     }
 
     @Test
@@ -89,13 +89,13 @@ public class PlayerAuditRepositoryTest {
         }
 
         List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(playerId);
-        assertEquals(3, audits.size());
+        assertThat(audits).hasSize(3);
     }
 
     @Test
     void testFindAuditsByPlayerId_NoAudits() {
         Long playerId = 3L;
         List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(playerId);
-        assertTrue(audits.isEmpty());
+        assertThat(audits).isEmpty();
     }
 }

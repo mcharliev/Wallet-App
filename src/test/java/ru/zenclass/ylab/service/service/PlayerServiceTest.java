@@ -21,12 +21,13 @@ import ru.zenclass.ylab.util.JwtUtil;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = AppConfig.class)
- class PlayerServiceTest {
+class PlayerServiceTest {
 
     @Mock
     private PlayerRepository playerRepository;
@@ -40,49 +41,58 @@ import static org.mockito.Mockito.*;
     @InjectMocks
     private PlayerServiceImpl playerService;
 
+    private Long id;
+    private Player mockPlayer;
+    private RegisterPlayerDTO registerPlayerDTO;
+    private String token;
+    private String username;
+    private String password;
+    private Player updatedPlayer;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        id = 1L;
+        username = "player1";
+        password = "pass123";
+        token = "someToken";
+        mockPlayer = new Player(username, password);
+        updatedPlayer = new Player("player2", "newpass");
+
+        registerPlayerDTO = new RegisterPlayerDTO();
+        registerPlayerDTO.setUsername(username);
+        registerPlayerDTO.setPassword(password);
     }
 
     @Test
     public void testFindPlayerById_PlayerExists() {
-        Long id = 1L;
-        Player mockPlayer = new Player();
         when(playerRepository.findPlayerById(id)).thenReturn(Optional.of(mockPlayer));
         Player result = playerService.findPlayerById(id);
-        assertEquals(mockPlayer, result);
+        assertThat(result).isEqualTo(mockPlayer);
         verify(playerRepository).findPlayerById(id);
     }
 
     @Test
     public void testFindPlayerById_PlayerNotFound() {
-        Long id = 1L;
         when(playerRepository.findPlayerById(id)).thenReturn(Optional.empty());
-        assertThrows(PlayerNotFoundException.class, () -> playerService.findPlayerById(id));
+        assertThatExceptionOfType(PlayerNotFoundException.class)
+                .isThrownBy(() -> playerService.findPlayerById(id));
         verify(playerRepository).findPlayerById(id);
     }
 
     @Test
     public void testAuthenticateAndGenerateToken_Success() {
-        String username = "player1";
-        String password = "pass123";
-        RegisterPlayerDTO registerPlayerDTO = new RegisterPlayerDTO();
-        registerPlayerDTO.setUsername(username);
-        registerPlayerDTO.setPassword(password);
-        Player mockPlayer = new Player(username, password);
-        String token = "someToken";
-
         when(playerRepository.findPlayerByUsername(username)).thenReturn(Optional.of(mockPlayer));
         when(jwtUtil.generateToken(username)).thenReturn(token);
         LoginResponseDTO result = playerService.authenticateAndGenerateToken(registerPlayerDTO);
 
-        assertEquals(username, result.getPlayer().getUsername());
-        assertEquals(token, result.getToken());
+        assertThat(result.getPlayer().getUsername()).isEqualTo(username);
+        assertThat(result.getToken()).isEqualTo(token);
     }
+
     @Test
     public void testUpdatePlayer() {
-        Player updatedPlayer = new Player("player2", "newpass");
         doNothing().when(playerRepository).updatePlayer(updatedPlayer);
 
         playerService.updatePlayer(updatedPlayer);
@@ -92,9 +102,8 @@ import static org.mockito.Mockito.*;
 
     @Test
     public void testRegisterNewPlayer_NewPlayer() {
-        RegisterPlayerDTO registerPlayerDTO = new RegisterPlayerDTO();
         registerPlayerDTO.setUsername("newplayer");
-        registerPlayerDTO.setPassword("pass123");
+
         when(playerRepository.findPlayerByUsername("newplayer")).thenReturn(Optional.empty());
 
         playerService.registerNewPlayer(registerPlayerDTO);
@@ -105,73 +114,66 @@ import static org.mockito.Mockito.*;
 
     @Test
     public void testFindPlayerByUsername_PlayerExists() {
-        String username = "player1";
-        Player mockPlayer = new Player(username, "pass123");
         when(playerRepository.findPlayerByUsername(username)).thenReturn(Optional.of(mockPlayer));
 
         Optional<Player> result = playerService.findPlayerByUsername(username);
 
-        assertTrue(result.isPresent());
-        assertEquals(mockPlayer, result.get());
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(mockPlayer);
     }
 
     @Test
     public void testFindPlayerByUsername_PlayerNotFound() {
-        String username = "player1";
         when(playerRepository.findPlayerByUsername(username)).thenReturn(Optional.empty());
 
         Optional<Player> result = playerService.findPlayerByUsername(username);
 
-        assertFalse(result.isPresent());
+        assertThat(result).isNotPresent();
     }
 
     @Test
     public void testGetPlayerBalanceInfo() {
-        Player player = new Player("player1", "pass123");
-        player.setBalance(BigDecimal.valueOf(100.0));
+        mockPlayer.setBalance(BigDecimal.valueOf(100.0));
 
-        PlayerBalanceDTO result = playerService.getPlayerBalanceInfo(player);
+        PlayerBalanceDTO result = playerService.getPlayerBalanceInfo(mockPlayer);
 
-        assertEquals(player.getUsername(), result.getUsername());
-        assertEquals(player.getBalance(), result.getBalance());
+        assertThat(result.getUsername()).isEqualTo(mockPlayer.getUsername());
+        assertThat(result.getBalance()).isEqualByComparingTo(mockPlayer.getBalance());
     }
 
     @Test
     public void testValidateTokenAndGetPlayer_ValidToken() {
-        String token = "Bearer validToken";
-        String username = "player1";
+        String validToken = "Bearer validToken";
 
         when(jwtUtil.extractUsername("validToken")).thenReturn(username);
         when(jwtUtil.validateToken("validToken", username)).thenReturn(true);
-        when(playerRepository.findPlayerByUsername(username)).thenReturn(Optional.of(new Player(username, "pass123")));
+        when(playerRepository.findPlayerByUsername(username)).thenReturn(Optional.of(mockPlayer));
 
-        Optional<Player> result = playerService.validateTokenAndGetPlayer(token);
+        Optional<Player> result = playerService.validateTokenAndGetPlayer(validToken);
 
-        assertTrue(result.isPresent());
-        assertEquals(username, result.get().getUsername());
+        assertThat(result).isPresent();
+        assertThat(result.get().getUsername()).isEqualTo(username);
     }
 
     @Test
     public void testValidateTokenAndGetPlayer_NoBearer() {
-        String token = "invalidToken";
+        String invalidToken = "invalidToken";
 
-        Optional<Player> result = playerService.validateTokenAndGetPlayer(token);
+        Optional<Player> result = playerService.validateTokenAndGetPlayer(invalidToken);
 
-        assertFalse(result.isPresent());
+        assertThat(result).isNotPresent();
     }
 
     @Test
     public void testAuthenticateAndGenerateToken_Failure() {
-        String username = "player1";
-        String password = "wrongpass";
-        RegisterPlayerDTO registerPlayerDTO = new RegisterPlayerDTO();
-        registerPlayerDTO.setUsername(username);
-        registerPlayerDTO.setPassword(password);
-        Player mockPlayer = new Player(username, "correctpass");
+        String wrongPassword = "wrongpass";
+        registerPlayerDTO.setPassword(wrongPassword);
+        Player wrongPasswordPlayer = new Player(username, "correctpass");
 
-        when(playerRepository.findPlayerByUsername(username)).thenReturn(Optional.of(mockPlayer));
+        when(playerRepository.findPlayerByUsername(username)).thenReturn(Optional.of(wrongPasswordPlayer));
 
-        assertThrows(AuthenticationException.class, () -> playerService.authenticateAndGenerateToken(registerPlayerDTO));
+        assertThatExceptionOfType(AuthenticationException.class)
+                .isThrownBy(() -> playerService.authenticateAndGenerateToken(registerPlayerDTO));
 
         verify(jwtUtil, never()).generateToken(anyString());
     }

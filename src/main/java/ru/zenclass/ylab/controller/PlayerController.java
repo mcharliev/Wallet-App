@@ -31,9 +31,9 @@ public class PlayerController {
     @PostMapping("/register")
     @ApiOperation(value = "Регистрация нового игрока")
     @ApiResponses(value = {
-            @ApiResponse(responseCode  = "201", description = "Игрок успешно создан"),
-            @ApiResponse(responseCode  = "409", description = "Игрок с таким именем уже существует"),
-            @ApiResponse(responseCode  = "400", description = "Неверные входные данные (не прошли валидацию)"),
+            @ApiResponse(responseCode = "201", description = "Игрок успешно создан"),
+            @ApiResponse(responseCode = "409", description = "Игрок с таким именем уже существует"),
+            @ApiResponse(responseCode = "400", description = "Неверные входные данные (не прошли валидацию)"),
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<PlayerDTO> register(
@@ -48,8 +48,8 @@ public class PlayerController {
     @ApiOperation(value = "Аутентификация игрока и генерация токена")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Игрок успешно аутентифицирован"),
-            @ApiResponse(responseCode  = "401", description = "Учетные данные игрока неверны, или токен JWT неверен или истек"),
-            @ApiResponse(responseCode  = "400", description = "Неверные входные данные (не прошли валидацию)"),
+            @ApiResponse(responseCode = "401", description = "Учетные данные игрока неверны, или токен JWT неверен или истек"),
+            @ApiResponse(responseCode = "400", description = "Неверные входные данные (не прошли валидацию)"),
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<LoginResponseDTO> login(
@@ -64,7 +64,7 @@ public class PlayerController {
     @ApiOperation(value = "Получение баланса аутентифицированного игрока")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Баланс игрока успешно получен"),
-            @ApiResponse(responseCode  = "401", description = "Учетные данные игрока неверны, или токен JWT неверен или истек"),
+            @ApiResponse(responseCode = "401", description = "Учетные данные игрока неверны, или токен JWT неверен или истек"),
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<PlayerBalanceDTO> getBalance(

@@ -19,7 +19,6 @@ import ru.zenclass.ylab.controller.advice.ExceptionHandlerAdvice;
 import ru.zenclass.ylab.exception.AuthenticationException;
 import ru.zenclass.ylab.exception.NoTransactionsFoundException;
 import ru.zenclass.ylab.exception.NotEnoughMoneyException;
-import ru.zenclass.ylab.exception.ValidationException;
 import ru.zenclass.ylab.model.dto.AmountDTO;
 import ru.zenclass.ylab.model.dto.TransactionDTO;
 import ru.zenclass.ylab.model.dto.TransactionHistoryDTO;
@@ -30,7 +29,6 @@ import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -49,22 +47,25 @@ public class TransactionControllerTest {
     private TransactionController transactionController;
 
     private MockMvc mockMvc;
+    private Player authenticatedPlayer;
+    private AmountDTO amountDTO;
+    private TransactionDTO transactionDTO;
 
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(transactionController)
                 .setControllerAdvice(new ExceptionHandlerAdvice())
                 .build();
+
+        authenticatedPlayer = new Player("user", "pass");
+        amountDTO = new AmountDTO();
+        amountDTO.setAmount(new BigDecimal(100));
+        transactionDTO = new TransactionDTO();
+        transactionDTO.setAmount(amountDTO.getAmount());
     }
 
     @Test
     void addCreditTransaction() throws Exception {
-        Player authenticatedPlayer = new Player("user", "pass");
-        AmountDTO amountDTO = new AmountDTO();
-        amountDTO.setAmount(new BigDecimal(100));
-        TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setAmount(amountDTO.getAmount());
-
         given(transactionService.addCreditTransaction(any(Player.class), any(AmountDTO.class))).willReturn(transactionDTO);
 
         mockMvc.perform(post("/transactions/credit")
@@ -77,10 +78,7 @@ public class TransactionControllerTest {
 
     @Test
     void addDebitTransaction() throws Exception {
-        Player authenticatedPlayer = new Player("user", "pass");
-        AmountDTO amountDTO = new AmountDTO();
-        amountDTO.setAmount(new BigDecimal(50));
-        TransactionDTO transactionDTO = new TransactionDTO();
+        amountDTO.setAmount(new BigDecimal(50)); // Override for this specific test
         transactionDTO.setAmount(amountDTO.getAmount());
 
         given(transactionService.addDebitTransaction(any(Player.class), any(AmountDTO.class))).willReturn(transactionDTO);
@@ -95,7 +93,6 @@ public class TransactionControllerTest {
 
     @Test
     void viewTransactionHistory() throws Exception {
-        Player authenticatedPlayer = new Player("user", "pass");
         TransactionHistoryDTO transactionHistoryDTO = new TransactionHistoryDTO();
         transactionHistoryDTO.setMessage("История транзакций игрока user");
 
@@ -109,9 +106,7 @@ public class TransactionControllerTest {
 
     @Test
     void addDebitTransaction_NotEnoughMoney() throws Exception {
-        Player authenticatedPlayer = new Player("user", "pass");
-        AmountDTO amountDTO = new AmountDTO();
-        amountDTO.setAmount(new BigDecimal(150));
+        amountDTO.setAmount(new BigDecimal(150)); // Override for this specific test
 
         given(transactionService.addDebitTransaction(any(Player.class), any(AmountDTO.class)))
                 .willThrow(new NotEnoughMoneyException());
@@ -123,10 +118,9 @@ public class TransactionControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Ошибка дебетовой транзакции, недостаточно денег на счете"));
     }
+
     @Test
     void viewTransactionHistory_NoTransactionsFound() throws Exception {
-        Player authenticatedPlayer = new Player("user", "pass");
-
         given(transactionService.viewTransactionHistory(authenticatedPlayer))
                 .willThrow(new NoTransactionsFoundException());
 
@@ -138,10 +132,6 @@ public class TransactionControllerTest {
 
     @Test
     void addCreditTransaction_AuthenticationError() throws Exception {
-        Player authenticatedPlayer = new Player("user", "pass");
-        AmountDTO amountDTO = new AmountDTO();
-        amountDTO.setAmount(new BigDecimal(100));
-
         given(transactionService.addCreditTransaction(any(Player.class), any(AmountDTO.class)))
                 .willThrow(new AuthenticationException());
 

@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -28,7 +26,6 @@ import ru.zenclass.ylab.service.PlayerService;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -49,23 +46,36 @@ public class PlayerControllerTest {
     @InjectMocks
     private PlayerController playerController;
 
-
     private MockMvc mockMvc;
+    private RegisterPlayerDTO registerPlayerDTO;
+    private PlayerDTO playerDTO;
+    private LoginResponseDTO loginResponseDTO;
+    private Player authenticatedPlayer;
+    private PlayerBalanceDTO playerBalanceDTO;
 
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(playerController)
                 .setControllerAdvice(new ExceptionHandlerAdvice())
                 .build();
-    }
-    @Test
-    void registerNewPlayer() throws Exception {
-        RegisterPlayerDTO registerPlayerDTO = new RegisterPlayerDTO();
+
+        registerPlayerDTO = new RegisterPlayerDTO();
         registerPlayerDTO.setUsername("user");
         registerPlayerDTO.setPassword("pass");
-        PlayerDTO playerDTO = new PlayerDTO();
-        playerDTO.setUsername("user");
 
+        playerDTO = new PlayerDTO();
+        playerDTO.setUsername(registerPlayerDTO.getUsername());
+
+        loginResponseDTO = new LoginResponseDTO();
+        loginResponseDTO.setPlayer(playerDTO);
+        loginResponseDTO.setToken("token");
+
+        authenticatedPlayer = new Player("user", "pass");
+        playerBalanceDTO = new PlayerBalanceDTO("user", new BigDecimal(100));
+    }
+
+    @Test
+    void registerNewPlayer() throws Exception {
         given(playerService.registerNewPlayer(any(RegisterPlayerDTO.class))).willReturn(playerDTO);
 
         mockMvc.perform(post("/players/register")
@@ -77,9 +87,6 @@ public class PlayerControllerTest {
 
     @Test
     void registerExistingPlayer() throws Exception {
-        RegisterPlayerDTO registerPlayerDTO = new RegisterPlayerDTO();
-        registerPlayerDTO.setUsername("existingUser");
-        registerPlayerDTO.setPassword("pass");
         doThrow(new PlayerAlreadyExistException()).when(playerService).registerNewPlayer(any(RegisterPlayerDTO.class));
 
         mockMvc.perform(post("/players/register")
@@ -90,14 +97,6 @@ public class PlayerControllerTest {
 
     @Test
     void authenticatePlayerAndGenerateToken() throws Exception {
-        RegisterPlayerDTO registerPlayerDTO = new RegisterPlayerDTO();
-        registerPlayerDTO.setUsername("user");
-        registerPlayerDTO.setPassword("pass");
-        PlayerDTO playerDTO = new PlayerDTO();
-        playerDTO.setUsername("user");
-        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
-        loginResponseDTO.setPlayer(playerDTO);
-        loginResponseDTO.setToken("token");
         given(playerService.authenticateAndGenerateToken(any(RegisterPlayerDTO.class))).willReturn(loginResponseDTO);
 
         mockMvc.perform(post("/players/login")
@@ -109,10 +108,6 @@ public class PlayerControllerTest {
 
     @Test
     void getBalanceForAuthenticatedPlayer() throws Exception {
-        Player authenticatedPlayer = new Player("user", "pass");
-        PlayerBalanceDTO playerBalanceDTO = new PlayerBalanceDTO("user", new BigDecimal(100));
-
-
         given(playerService.getPlayerBalanceInfo(authenticatedPlayer)).willReturn(playerBalanceDTO);
 
         mockMvc.perform(get("/players/balance")

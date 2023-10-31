@@ -14,8 +14,7 @@ import ru.zenclass.ylab.service.impl.PlayerAuditServiceImpl;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,10 +39,10 @@ public class PlayerAuditServiceImplTest {
         verify(playerAuditRepository).addPlayerAudit(auditCaptor.capture());
 
         PlayerAudit capturedAudit = auditCaptor.getValue();
-        assertEquals(playerId, capturedAudit.getPlayerId());
-        assertEquals(actionType, capturedAudit.getActionType());
-        assertEquals(details, capturedAudit.getDetails());
-        assertNotNull(capturedAudit.getActionDate());
+        assertThat(capturedAudit.getPlayerId()).isEqualTo(playerId);
+        assertThat(capturedAudit.getActionType()).isEqualTo(actionType);
+        assertThat(capturedAudit.getDetails()).isEqualTo(details);
+        assertThat(capturedAudit.getActionDate()).isNotNull();
     }
 
     @Test
@@ -55,7 +54,7 @@ public class PlayerAuditServiceImplTest {
 
         List<PlayerAudit> actualAudits = playerAuditService.getAuditForPlayer(playerId);
 
-        assertEquals(expectedAudits, actualAudits);
+        assertThat(actualAudits).isEqualTo(expectedAudits);
         verify(playerAuditRepository).findAuditsByPlayerId(playerId);
     }
 }
