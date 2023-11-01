@@ -32,6 +32,13 @@
         <mockito-junit-jupiter.version>3.11.2</mockito-junit-jupiter.version>
         <hikaricp.version>4.0.3</hikaricp.version>
         <snakeyaml.version>1.28</snakeyaml.version>
+        <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
+        <validation-api.version>2.0.1.Final</validation-api.version>
+        <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
+        <springfox-swagger2.version>3.0.0</springfox-swagger2.version>
+        <springfox-swagger-ui.version>3.0.0</springfox-swagger-ui.version>
+        <json-path.version>2.6.0</json-path.version>
+        <assertj-core.version>3.23.1</assertj-core.version>
     </properties>
 
     <dependencies>
@@ -88,7 +95,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
+            <version>${javax.servlet-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -124,7 +131,7 @@
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
+            <version>${validation-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -171,17 +178,17 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>6.2.0.Final</version>
+            <version>${hibernate-validator.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
+            <version>${springfox-swagger2.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>3.0.0</version>
+            <version>${springfox-swagger-ui.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -192,13 +199,13 @@
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-            <version>2.6.0</version> <!-- Или любая другая актуальная версия -->
+            <version>${json-path.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.23.1</version>
+            <version>${assertj-core.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
