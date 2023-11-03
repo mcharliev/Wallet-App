@@ -45,6 +45,9 @@ public class AppConfig {
     @Value("${jwt.secretKey}")
     private String jwtSecretKey;
 
+    @Value("${database.defaultSchema}")
+    private String defaultSchema;
+
     /**
      * Создает и настраивает источник данных для базы данных.
      *
@@ -77,7 +80,8 @@ public class AppConfig {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
         liquibase.setChangeLog(liquibaseChangeLog);
-        liquibase.setDefaultSchema(liquibaseSchema);
+        liquibase.setDefaultSchema(defaultSchema);
+        liquibase.setLiquibaseSchema(liquibaseSchema);
         return liquibase;
     }
 

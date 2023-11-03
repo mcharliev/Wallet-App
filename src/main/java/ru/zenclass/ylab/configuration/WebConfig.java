@@ -84,4 +84,3 @@ public class WebConfig implements WebMvcConfigurer {
                 .resourceChain(false);
     }
 }
-

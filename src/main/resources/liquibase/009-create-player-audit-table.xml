@@ -1,12 +1,11 @@
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-
-    <changeSet id="008-create-player-audit-table" author="Merdan">
+    <changeSet id="009-create-player-audit-table" author="Merdan">
         <createTable schemaName="wallet_service" tableName="audit_actions">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="BIGINT" defaultValueSequenceNext="audit_actions_seq">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="player_id" type="BIGINT">
@@ -22,4 +21,5 @@
             <column name="details" type="TEXT"/>
         </createTable>
     </changeSet>
+
 </databaseChangeLog>
