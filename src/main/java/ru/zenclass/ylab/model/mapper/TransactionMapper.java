@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  * Интерфейс маппера для конвертации объектов между {@link Transaction} и {@link TransactionDTO}.
  * Использует библиотеку MapStruct для автоматического создания реализации на основе аннотаций.
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface TransactionMapper {
 
     TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);
