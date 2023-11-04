@@ -1,7 +1,6 @@
 package ru.zenclass.ylab.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -9,7 +8,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ru.zenclass.ylab.util.JwtInterceptor;
-
 
 import java.util.List;
 
@@ -49,5 +47,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .indentOutput(true);
         converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
     }
-
 }

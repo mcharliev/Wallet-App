@@ -20,42 +20,42 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PlayerAuditServiceImplTest {
-//
-//    @Mock
-//    private PlayerAuditRepository playerAuditRepository;
-//
-//    @InjectMocks
-//    private PlayerAuditServiceImpl playerAuditService;
-//
-//    @Test
-//    public void testLogPlayerAction() {
-//        Long playerId = 1L;
-//        String actionType = PlayerActionType.AUTHENTICATION.getAction();
-//        String details = "Игрок совершил успешный вход";
-//
-//        playerAuditService.logPlayerAction(playerId, actionType, details);
-//
-//        ArgumentCaptor<PlayerAudit> auditCaptor = ArgumentCaptor.forClass(PlayerAudit.class);
-//        verify(playerAuditRepository).addPlayerAudit(auditCaptor.capture());
-//
-//        PlayerAudit capturedAudit = auditCaptor.getValue();
-//        assertThat(capturedAudit.getPlayerId()).isEqualTo(playerId);
-//        assertThat(capturedAudit.getActionType()).isEqualTo(actionType);
-//        assertThat(capturedAudit.getDetails()).isEqualTo(details);
-//        assertThat(capturedAudit.getActionDate()).isNotNull();
-//    }
-//
-//    @Test
-//    public void testGetAuditForPlayer() {
-//        Long playerId = 1L;
-//        List<PlayerAudit> expectedAudits = Arrays.asList(new PlayerAudit(), new PlayerAudit());
-//
-//        when(playerAuditRepository.findAuditsByPlayerId(playerId)).thenReturn(expectedAudits);
-//
-//        List<PlayerAudit> actualAudits = playerAuditService.getAuditForPlayer(playerId);
-//
-//        assertThat(actualAudits).isEqualTo(expectedAudits);
-//        verify(playerAuditRepository).findAuditsByPlayerId(playerId);
-//    }
+
+    @Mock
+    private PlayerAuditRepository playerAuditRepository;
+
+    @InjectMocks
+    private PlayerAuditServiceImpl playerAuditService;
+
+    @Test
+    public void testLogPlayerAction() {
+        Long playerId = 1L;
+        String actionType = PlayerActionType.AUTHENTICATION.getAction();
+        String details = "Игрок совершил успешный вход";
+
+        playerAuditService.logPlayerAction(playerId, actionType, details);
+
+        ArgumentCaptor<PlayerAudit> auditCaptor = ArgumentCaptor.forClass(PlayerAudit.class);
+        verify(playerAuditRepository).addPlayerAudit(auditCaptor.capture());
+
+        PlayerAudit capturedAudit = auditCaptor.getValue();
+        assertThat(capturedAudit.getPlayerId()).isEqualTo(playerId);
+        assertThat(capturedAudit.getActionType()).isEqualTo(actionType);
+        assertThat(capturedAudit.getDetails()).isEqualTo(details);
+        assertThat(capturedAudit.getActionDate()).isNotNull();
+    }
+
+    @Test
+    public void testGetAuditForPlayer() {
+        Long playerId = 1L;
+        List<PlayerAudit> expectedAudits = Arrays.asList(new PlayerAudit(), new PlayerAudit());
+
+        when(playerAuditRepository.findAuditsByPlayerId(playerId)).thenReturn(expectedAudits);
+
+        List<PlayerAudit> actualAudits = playerAuditService.getAuditForPlayer(playerId);
+
+        assertThat(actualAudits).isEqualTo(expectedAudits);
+        verify(playerAuditRepository).findAuditsByPlayerId(playerId);
+    }
 }
 
