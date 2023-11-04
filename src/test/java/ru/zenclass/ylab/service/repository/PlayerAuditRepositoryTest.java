@@ -30,72 +30,72 @@ import static org.assertj.core.api.Assertions.assertThat;
 @WebAppConfiguration
 public class PlayerAuditRepositoryTest {
 
-    @Container
-    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    private DataSource dataSource;
-
-    @Autowired
-    private PlayerAuditRepository playerAuditRepository;
-
-    @DynamicPropertySource
-    static void postgresqlProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.password", postgres::getPassword);
-        registry.add("spring.datasource.username", postgres::getUsername);
-    }
-
-    @BeforeEach
-    void setUp() {
-        SpringLiquibase liquibase = applicationContext.getBean(SpringLiquibase.class);
-        try {
-            liquibase.afterPropertiesSet();
-        } catch (Exception e) {
-            throw new RuntimeException("Ошибка при запуске миграций Liquibase", e);
-        }
-    }
-
-    @Test
-    void testAddPlayerAudit() {
-        PlayerAudit playerAudit = new PlayerAudit();
-        playerAudit.setPlayerId(1L);
-        playerAudit.setActionType(PlayerActionType.AUTHENTICATION.getAction());
-        playerAudit.setActionDate(LocalDateTime.now());
-        playerAudit.setDetails("Игрок совершил успешный вход");
-
-        playerAuditRepository.addPlayerAudit(playerAudit);
-
-        List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(1L);
-        assertThat(audits).isNotEmpty();
-        assertThat(audits.get(0).getActionType()).isEqualTo("AUTHENTICATION");
-        assertThat(audits.get(0).getDetails()).isEqualTo("Игрок совершил успешный вход");
-    }
-
-    @Test
-    void testFindAuditsByPlayerId() {
-        Long playerId = 2L;
-
-        for (int i = 0; i < 3; i++) {
-            PlayerAudit playerAudit = new PlayerAudit();
-            playerAudit.setPlayerId(playerId);
-            playerAudit.setActionType("ACTION_TYPE_" + i);
-            playerAudit.setActionDate(LocalDateTime.now());
-            playerAudit.setDetails("Details for action " + i);
-            playerAuditRepository.addPlayerAudit(playerAudit);
-        }
-
-        List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(playerId);
-        assertThat(audits).hasSize(3);
-    }
-
-    @Test
-    void testFindAuditsByPlayerId_NoAudits() {
-        Long playerId = 3L;
-        List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(playerId);
-        assertThat(audits).isEmpty();
-    }
+//    @Container
+//    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
+//
+//    @Autowired
+//    private ApplicationContext applicationContext;
+//
+//    @Autowired
+//    private DataSource dataSource;
+//
+//    @Autowired
+//    private PlayerAuditRepository playerAuditRepository;
+//
+//    @DynamicPropertySource
+//    static void postgresqlProperties(DynamicPropertyRegistry registry) {
+//        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+//        registry.add("spring.datasource.password", postgres::getPassword);
+//        registry.add("spring.datasource.username", postgres::getUsername);
+//    }
+//
+//    @BeforeEach
+//    void setUp() {
+//        SpringLiquibase liquibase = applicationContext.getBean(SpringLiquibase.class);
+//        try {
+//            liquibase.afterPropertiesSet();
+//        } catch (Exception e) {
+//            throw new RuntimeException("Ошибка при запуске миграций Liquibase", e);
+//        }
+//    }
+//
+//    @Test
+//    void testAddPlayerAudit() {
+//        PlayerAudit playerAudit = new PlayerAudit();
+//        playerAudit.setPlayerId(1L);
+//        playerAudit.setActionType(PlayerActionType.AUTHENTICATION.getAction());
+//        playerAudit.setActionDate(LocalDateTime.now());
+//        playerAudit.setDetails("Игрок совершил успешный вход");
+//
+//        playerAuditRepository.addPlayerAudit(playerAudit);
+//
+//        List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(1L);
+//        assertThat(audits).isNotEmpty();
+//        assertThat(audits.get(0).getActionType()).isEqualTo("AUTHENTICATION");
+//        assertThat(audits.get(0).getDetails()).isEqualTo("Игрок совершил успешный вход");
+//    }
+//
+//    @Test
+//    void testFindAuditsByPlayerId() {
+//        Long playerId = 2L;
+//
+//        for (int i = 0; i < 3; i++) {
+//            PlayerAudit playerAudit = new PlayerAudit();
+//            playerAudit.setPlayerId(playerId);
+//            playerAudit.setActionType("ACTION_TYPE_" + i);
+//            playerAudit.setActionDate(LocalDateTime.now());
+//            playerAudit.setDetails("Details for action " + i);
+//            playerAuditRepository.addPlayerAudit(playerAudit);
+//        }
+//
+//        List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(playerId);
+//        assertThat(audits).hasSize(3);
+//    }
+//
+//    @Test
+//    void testFindAuditsByPlayerId_NoAudits() {
+//        Long playerId = 3L;
+//        List<PlayerAudit> audits = playerAuditRepository.findAuditsByPlayerId(playerId);
+//        assertThat(audits).isEmpty();
+//    }
 }

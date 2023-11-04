@@ -1,7 +1,7 @@
 package ru.zenclass.ylab.service.impl;
 
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.zenclass.ylab.aop.annotations.Loggable;

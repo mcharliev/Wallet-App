@@ -2,8 +2,8 @@ package ru.zenclass.ylab.model.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 

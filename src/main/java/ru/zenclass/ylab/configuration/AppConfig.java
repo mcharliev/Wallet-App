@@ -1,11 +1,12 @@
 package ru.zenclass.ylab.configuration;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.sql.DataSource;
 
-import com.zaxxer.hikari.HikariDataSource;
+
 import liquibase.integration.spring.SpringLiquibase;
 import ru.zenclass.ylab.util.JwtUtil;
 
@@ -17,11 +18,6 @@ import java.sql.Statement;
  * Конфигурационный класс для настройки приложения.
  */
 @Configuration
-@EnableAspectJAutoProxy
-@ComponentScan(basePackages = "ru.zenclass.ylab")
-@PropertySources({
-        @PropertySource(value = "classpath:application.yml", factory = YamlPropertySourceFactory.class)
-})
 public class AppConfig {
 
     @Value("${database.driver}")
@@ -69,21 +65,21 @@ public class AppConfig {
      * @param dataSource Объект источника данных, тип {@link DataSource}.
      * @return Объект Spring Liquibase, тип {@link SpringLiquibase}.
      */
-    @Bean
-    public SpringLiquibase liquibase(DataSource dataSource) {
-        try (Connection connection = dataSource.getConnection();
-             Statement stmt = connection.createStatement()) {
-            stmt.execute("CREATE SCHEMA IF NOT EXISTS migration;");
-        } catch (SQLException e) {
-            throw new RuntimeException("Не удалось создать схему migration", e);
-        }
-        SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog(liquibaseChangeLog);
-        liquibase.setDefaultSchema(defaultSchema);
-        liquibase.setLiquibaseSchema(liquibaseSchema);
-        return liquibase;
-    }
+//    @Bean
+//    public SpringLiquibase liquibase(DataSource dataSource) {
+//        try (Connection connection = dataSource.getConnection();
+//             Statement stmt = connection.createStatement()) {
+//            stmt.execute("CREATE SCHEMA IF NOT EXISTS migration;");
+//        } catch (SQLException e) {
+//            throw new RuntimeException("Не удалось создать схему migration", e);
+//        }
+//        SpringLiquibase liquibase = new SpringLiquibase();
+//        liquibase.setDataSource(dataSource);
+//        liquibase.setChangeLog(liquibaseChangeLog);
+//        liquibase.setDefaultSchema(defaultSchema);
+//        liquibase.setLiquibaseSchema(liquibaseSchema);
+//        return liquibase;
+//    }
 
     /**
      * Создает и настраивает утилиту для работы с JSON Web Tokens (JWT).

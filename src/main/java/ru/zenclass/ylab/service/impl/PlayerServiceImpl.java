@@ -21,7 +21,7 @@ import ru.zenclass.ylab.service.PlayerService;
 import ru.zenclass.ylab.util.DTOValidator;
 import ru.zenclass.ylab.util.JwtUtil;
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 import java.util.Optional;
 import java.util.Set;
 

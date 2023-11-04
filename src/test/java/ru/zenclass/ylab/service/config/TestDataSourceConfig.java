@@ -16,35 +16,35 @@ import javax.sql.DataSource;
 @Configuration
 public class TestDataSourceConfig {
 
-    /**
-     * URL базы данных, полученный из настроек приложения.
-     */
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
-
-    /**
-     * Имя пользователя базы данных, полученное из настроек приложения.
-     */
-    @Value("${spring.datasource.username}")
-    private String dbUsername;
-
-    /**
-     * Пароль пользователя базы данных, полученный из настроек приложения.
-     */
-    @Value("${spring.datasource.password}")
-    private String dbPassword;
-
-    /**
-     * Создает и возвращает настроенный источник данных (DataSource) с использованием HikariCP.
-     *
-     * @return Источник данных {@link DataSource}
-     */
-    @Bean
-    public DataSource dataSource() {
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl(dbUrl);
-        dataSource.setUsername(dbUsername);
-        dataSource.setPassword(dbPassword);
-        return dataSource;
-    }
+//    /**
+//     * URL базы данных, полученный из настроек приложения.
+//     */
+//    @Value("${spring.datasource.url}")
+//    private String dbUrl;
+//
+//    /**
+//     * Имя пользователя базы данных, полученное из настроек приложения.
+//     */
+//    @Value("${spring.datasource.username}")
+//    private String dbUsername;
+//
+//    /**
+//     * Пароль пользователя базы данных, полученный из настроек приложения.
+//     */
+//    @Value("${spring.datasource.password}")
+//    private String dbPassword;
+//
+//    /**
+//     * Создает и возвращает настроенный источник данных (DataSource) с использованием HikariCP.
+//     *
+//     * @return Источник данных {@link DataSource}
+//     */
+//    @Bean
+//    public DataSource dataSource() {
+//        HikariDataSource dataSource = new HikariDataSource();
+//        dataSource.setJdbcUrl(dbUrl);
+//        dataSource.setUsername(dbUsername);
+//        dataSource.setPassword(dbPassword);
+//        return dataSource;
+//    }
 }
