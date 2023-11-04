@@ -1,10 +1,11 @@
 package ru.zenclass.ylab.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import ru.zenclass.ylab.service.TransactionService;
 
 @RestController
 @RequestMapping("/transactions")
-@Api(tags = "Управление транзакциями")
+@Tag(name = "Управление транзакциями")
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -28,7 +29,7 @@ public class TransactionController {
     }
 
     @PostMapping("/credit")
-    @ApiOperation(value = "Добавление кредитной транзакции для аутентифицированного игрока")
+    @Operation(summary = "Добавление кредитной транзакции для аутентифицированного игрока")
     @ApiResponses(value = {
             @ApiResponse(responseCode  = "201", description = "Кредитная транзакция успешно создана"),
             @ApiResponse(responseCode  = "400", description = "Неверные входные данные (не прошли валидацию)"),
@@ -36,9 +37,9 @@ public class TransactionController {
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<TransactionDTO> addCreditTransaction(
-            @ApiParam(value = "Аутентифицированный игрок", required = true)
+            @Parameter(description = "Аутентифицированный игрок", required = true)
             @RequestAttribute("authenticatedPlayer") Player authenticatedPlayer,
-            @ApiParam(value = "Сумма для транзакции", required = true)
+            @Parameter(description = "Сумма для транзакции", required = true)
             @RequestBody AmountDTO amountDTO) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -46,7 +47,7 @@ public class TransactionController {
     }
 
     @PostMapping("/debit")
-    @ApiOperation(value = "Добавление дебетовой транзакции для аутентифицированного игрока")
+    @Operation(summary = "Добавление дебетовой транзакции для аутентифицированного игрока")
     @ApiResponses(value = {
             @ApiResponse(responseCode  = "201", description = "Дебетовая транзакция успешно создана"),
             @ApiResponse(responseCode  = "400", description = "Неверные входные данные (не прошли валидацию)"),
@@ -55,9 +56,9 @@ public class TransactionController {
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<TransactionDTO> addDebitTransaction(
-            @ApiParam(value = "Аутентифицированный игрок", required = true)
+            @Parameter(description = "Аутентифицированный игрок", required = true)
             @RequestAttribute("authenticatedPlayer") Player authenticatedPlayer,
-            @ApiParam(value = "Сумма для транзакции", required = true)
+            @Parameter(description = "Сумма для транзакции", required = true)
             @RequestBody AmountDTO amountDTO) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -65,15 +66,15 @@ public class TransactionController {
     }
 
     @GetMapping("/history")
-    @ApiOperation(value = "Просмотр истории транзакций аутентифицированного игрока")
+    @Operation(summary = "Просмотр истории транзакций аутентифицированного игрока")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "История транзакций успешно получена"),
             @ApiResponse(responseCode  = "401", description = "Учетные данные игрока неверны, или токен JWT неверен или истек"),
-            @ApiResponse(responseCode = "404", description = "У игрока нету истории транзакций"),
+            @ApiResponse(responseCode = "404", description = "У игрока нет истории транзакций"),
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<TransactionHistoryDTO> viewTransactionHistory(
-            @ApiParam(value = "Аутентифицированный игрок", required = true)
+            @Parameter(description = "Аутентифицированный игрок", required = true)
             @RequestAttribute("authenticatedPlayer") Player authenticatedPlayer) {
         return ResponseEntity
                 .status(HttpStatus.OK)

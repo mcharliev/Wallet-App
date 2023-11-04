@@ -1,8 +1,8 @@
 package ru.zenclass.ylab.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import ru.zenclass.ylab.service.PlayerService;
 
 @RestController
 @RequestMapping("/players")
-@Api(tags = "Управление игроками")
+@Tag(name = "Управление игроками")
 public class PlayerController {
 
     private final PlayerService playerService;
@@ -29,7 +29,7 @@ public class PlayerController {
     }
 
     @PostMapping("/register")
-    @ApiOperation(value = "Регистрация нового игрока")
+    @Operation(summary = "Регистрация нового игрока")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Игрок успешно создан"),
             @ApiResponse(responseCode = "409", description = "Игрок с таким именем уже существует"),
@@ -37,7 +37,7 @@ public class PlayerController {
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<PlayerDTO> register(
-            @ApiParam(value = "Детали регистрации игрока", required = true)
+            @Parameter(description = "Детали регистрации игрока", required = true)
             @RequestBody RegisterPlayerDTO registerPlayerDTO) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -45,7 +45,7 @@ public class PlayerController {
     }
 
     @PostMapping("/login")
-    @ApiOperation(value = "Аутентификация игрока и генерация токена")
+    @Operation(summary = "Аутентификация игрока и генерация токена")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Игрок успешно аутентифицирован"),
             @ApiResponse(responseCode = "401", description = "Учетные данные игрока неверны, или токен JWT неверен или истек"),
@@ -53,7 +53,7 @@ public class PlayerController {
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<LoginResponseDTO> login(
-            @ApiParam(value = "Данные для входа игрока", required = true)
+            @Parameter(description = "Данные для входа игрока", required = true)
             @RequestBody RegisterPlayerDTO registerPlayerDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -61,14 +61,14 @@ public class PlayerController {
     }
 
     @GetMapping("/balance")
-    @ApiOperation(value = "Получение баланса аутентифицированного игрока")
+    @Operation(summary = "Получение баланса аутентифицированного игрока")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Баланс игрока успешно получен"),
             @ApiResponse(responseCode = "401", description = "Учетные данные игрока неверны, или токен JWT неверен или истек"),
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<PlayerBalanceDTO> getBalance(
-            @ApiParam(value = "Аутентифицированный игрок", required = true)
+            @Parameter(description = "Аутентифицированный игрок", required = true)
             @RequestAttribute("authenticatedPlayer") Player authenticatedPlayer) {
         return ResponseEntity
                 .status(HttpStatus.OK)

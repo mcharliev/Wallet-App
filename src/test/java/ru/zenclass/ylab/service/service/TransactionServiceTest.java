@@ -21,7 +21,7 @@ import ru.zenclass.ylab.service.PlayerService;
 import ru.zenclass.ylab.service.impl.TransactionServiceImpl;
 import ru.zenclass.ylab.util.DTOValidator;
 
-import javax.validation.ConstraintViolation;
+
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;

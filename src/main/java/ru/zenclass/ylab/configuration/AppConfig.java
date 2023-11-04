@@ -1,18 +1,18 @@
 package ru.zenclass.ylab.configuration;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.context.annotation.*;
-import org.springframework.beans.factory.annotation.Value;
-
-import javax.sql.DataSource;
-
-
 import liquibase.integration.spring.SpringLiquibase;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import ru.zenclass.ylab.util.JwtUtil;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+
 
 /**
  * Конфигурационный класс для настройки приложения.
@@ -65,21 +65,21 @@ public class AppConfig {
      * @param dataSource Объект источника данных, тип {@link DataSource}.
      * @return Объект Spring Liquibase, тип {@link SpringLiquibase}.
      */
-//    @Bean
-//    public SpringLiquibase liquibase(DataSource dataSource) {
-//        try (Connection connection = dataSource.getConnection();
-//             Statement stmt = connection.createStatement()) {
-//            stmt.execute("CREATE SCHEMA IF NOT EXISTS migration;");
-//        } catch (SQLException e) {
-//            throw new RuntimeException("Не удалось создать схему migration", e);
-//        }
-//        SpringLiquibase liquibase = new SpringLiquibase();
-//        liquibase.setDataSource(dataSource);
-//        liquibase.setChangeLog(liquibaseChangeLog);
-//        liquibase.setDefaultSchema(defaultSchema);
-//        liquibase.setLiquibaseSchema(liquibaseSchema);
-//        return liquibase;
-//    }
+    @Bean
+    public SpringLiquibase liquibase(DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection();
+             Statement stmt = connection.createStatement()) {
+            stmt.execute("CREATE SCHEMA IF NOT EXISTS migration;");
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось создать схему migration", e);
+        }
+        SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setDataSource(dataSource);
+        liquibase.setChangeLog(liquibaseChangeLog);
+        liquibase.setDefaultSchema(defaultSchema);
+        liquibase.setLiquibaseSchema(liquibaseSchema);
+        return liquibase;
+    }
 
     /**
      * Создает и настраивает утилиту для работы с JSON Web Tokens (JWT).
@@ -90,4 +90,5 @@ public class AppConfig {
     public JwtUtil jwtUtil() {
         return new JwtUtil(jwtSecretKey);
     }
+
 }
