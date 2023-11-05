@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.model.dto.AmountDTO;
 import ru.zenclass.ylab.model.dto.TransactionDTO;
 import ru.zenclass.ylab.model.dto.TransactionHistoryDTO;
@@ -19,6 +20,7 @@ import ru.zenclass.ylab.service.TransactionService;
 @RestController
 @RequestMapping("/transactions")
 @Tag(name = "Управление транзакциями")
+@Loggable
 public class TransactionController {
 
     private final TransactionService transactionService;

@@ -5,7 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.zenclass.ylab.aop.annotations.Loggable;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.exception.AuthenticationException;
 import ru.zenclass.ylab.exception.PlayerAlreadyExistException;
 import ru.zenclass.ylab.exception.PlayerNotFoundException;

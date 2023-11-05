@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.exception.JwtException;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.service.PlayerService;
@@ -15,6 +16,7 @@ import java.util.Optional;
  * Этот интерцептор проверяет наличие и валидность JWT-токена в заголовке запроса.
  */
 @Component
+@Loggable
 public class JwtInterceptor implements HandlerInterceptor {
 
     private final PlayerService playerService;

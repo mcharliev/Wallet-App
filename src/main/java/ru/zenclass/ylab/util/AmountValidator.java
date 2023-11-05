@@ -1,6 +1,7 @@
 package ru.zenclass.ylab.util;
 
 import org.springframework.stereotype.Component;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.model.dto.AmountDTO;
 
 import jakarta.validation.ConstraintViolation;
@@ -13,6 +14,7 @@ import java.util.Set;
  * Компонент для валидации объектов типа {@link AmountDTO}.
  */
 @Component
+@Loggable
 public class AmountValidator implements DTOValidator<AmountDTO> {
     private final Validator validator;
 

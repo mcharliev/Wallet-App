@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ru.zenclass.ylab.aop.annotations.Loggable;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.model.entity.Transaction;
 import ru.zenclass.ylab.model.enums.TransactionType;
 import ru.zenclass.ylab.repository.TransactionRepository;
@@ -19,8 +19,8 @@ import java.util.List;
  * Репозиторий для работы с транзакциями в базе данных.
  * Предоставляет функции для добавления транзакций и получения транзакций для определенного игрока.
  */
-@Loggable
 @Repository
+@Loggable
 public class TransactionRepositoryImpl implements TransactionRepository {
 
     private final DataSource dataSource;

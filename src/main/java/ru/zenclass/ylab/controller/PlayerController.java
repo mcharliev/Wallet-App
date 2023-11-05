@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.model.dto.LoginResponseDTO;
 import ru.zenclass.ylab.model.dto.PlayerBalanceDTO;
 import ru.zenclass.ylab.model.dto.PlayerDTO;
@@ -19,6 +20,7 @@ import ru.zenclass.ylab.service.PlayerService;
 @RestController
 @RequestMapping("/players")
 @Tag(name = "Управление игроками")
+@Loggable
 public class PlayerController {
 
     private final PlayerService playerService;

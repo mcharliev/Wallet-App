@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ru.zenclass.ylab.aop.annotations.Loggable;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.model.entity.PlayerAudit;
 import ru.zenclass.ylab.repository.PlayerAuditRepository;
 
@@ -16,8 +16,8 @@ import java.util.List;
 /**
  * Реализация репозитория аудита игроков.
  */
-@Loggable
 @Repository
+@Loggable
 public class PlayerAuditRepositoryImpl implements PlayerAuditRepository {
     private final DataSource dataSource;
     private final Logger log = LoggerFactory.getLogger(PlayerAuditRepositoryImpl.class);

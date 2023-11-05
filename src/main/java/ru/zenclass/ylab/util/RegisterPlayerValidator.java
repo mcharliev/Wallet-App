@@ -1,6 +1,7 @@
 package ru.zenclass.ylab.util;
 
 import org.springframework.stereotype.Component;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.model.dto.RegisterPlayerDTO;
 
 import jakarta.validation.ConstraintViolation;
@@ -14,6 +15,7 @@ import java.util.Set;
  * Использует валидацию, основанную на аннотациях, для проверки корректности данных.
  */
 @Component
+@Loggable
 public class RegisterPlayerValidator implements DTOValidator<RegisterPlayerDTO> {
     private final Validator validator;
 

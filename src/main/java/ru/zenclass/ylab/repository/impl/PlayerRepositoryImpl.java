@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ru.zenclass.ylab.aop.annotations.Loggable;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
 
@@ -20,8 +20,8 @@ import java.util.Optional;
  * Репозиторий для работы с объектами типа {@link Player} в базе данных.
  * Предоставляет функции для добавления, поиска и обновления информации об игроках.
  */
-@Loggable
 @Repository
+@Loggable
 public class PlayerRepositoryImpl implements PlayerRepository {
     private final DataSource dataSource;
 
