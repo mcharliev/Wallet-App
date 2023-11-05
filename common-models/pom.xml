@@ -11,7 +11,7 @@
   </parent>
 
   <groupId>ru.zenclass.ylab</groupId>
-  <artifactId>audit-starter</artifactId>
+  <artifactId>common-models</artifactId>
   <version>1.0.0</version>
 
   <properties>
@@ -27,11 +27,6 @@
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
       <version>1.9.19</version>
-    </dependency>
-    <dependency>
-    <groupId>ru.zenclass.ylab</groupId>
-    <artifactId>common-models</artifactId>
-    <version>1.0.0</version>
     </dependency>
   </dependencies>
 

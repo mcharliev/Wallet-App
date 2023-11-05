@@ -138,15 +138,34 @@
             <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
         </dependency>
         <dependency>
-            <groupId>ru.zenclass.ylab</groupId>
-            <artifactId>loggable-starter</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.zenclass.ylab</groupId>
+            <artifactId>loggable-starter</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.zenclass.ylab</groupId>
+            <artifactId>audit-starter</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>6.1.0-RC2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ru.zenclass.ylab</groupId>
+            <artifactId>common-models</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

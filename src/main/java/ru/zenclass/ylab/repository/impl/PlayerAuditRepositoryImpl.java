@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.model.entity.PlayerAudit;
 import ru.zenclass.ylab.repository.PlayerAuditRepository;
@@ -38,6 +39,7 @@ public class PlayerAuditRepositoryImpl implements PlayerAuditRepository {
      * @param playerAudit Запись аудита игрока, тип {@link PlayerAudit}.
      * @throws RuntimeException Если произошла ошибка при добавлении записи аудита.
      */
+    @Transactional
     public void addPlayerAudit(PlayerAudit playerAudit) {
         String sql = "INSERT INTO wallet_service.audit_actions (player_id, action_type, action_data, details) VALUES (?, ?, ?, ?)";
 

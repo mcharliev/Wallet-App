@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.aop.aspects;
+package ru.zenclass.ylab.audit.aop;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.enums.PlayerActionType;
-import ru.zenclass.ylab.service.PlayerAuditService;
+
 
 /**
  * Аспект для аудита действий игрока с транзакциями
@@ -21,11 +21,10 @@ public class TransactionAuditAspect {
 
     private static final Logger log = LoggerFactory.getLogger(TransactionAuditAspect.class);
 
-    private final PlayerAuditService playerAuditService;
+    private final AuditContract auditContract;
 
-    @Autowired
-    public TransactionAuditAspect(PlayerAuditService playerAuditService) {
-        this.playerAuditService = playerAuditService;
+    public TransactionAuditAspect(AuditContract auditContract) {
+        this.auditContract = auditContract;
     }
 
     /**
@@ -46,9 +45,10 @@ public class TransactionAuditAspect {
         Object result = joinPoint.proceed();
         Object[] args = joinPoint.getArgs();
         if (args[0] instanceof Player player) {
-            logAction(player.getUsername(), PlayerActionType.DEBIT_TRANSACTION_SUCCESS);
-            playerAuditService.logPlayerAction(player.getId(), PlayerActionType.DEBIT_TRANSACTION_SUCCESS.toString(),
-                    createLogMessage(player.getUsername(), "успешно совершил дебетовую операцию"));
+            String actionMessage = "успешно совершил дебетовую операцию";
+            log.info(createLogMessage(player.getUsername(), actionMessage));
+            auditContract.logPlayerAction(player.getId(), PlayerActionType.DEBIT_TRANSACTION_SUCCESS.toString(),
+                    createLogMessage(player.getUsername(), actionMessage));
         }
         return result;
     }
@@ -71,9 +71,10 @@ public class TransactionAuditAspect {
         Object result = joinPoint.proceed();
         Object[] args = joinPoint.getArgs();
         if (args[0] instanceof Player player) {
-            logAction(player.getUsername(), PlayerActionType.CREDIT_TRANSACTION_SUCCESS);
-            playerAuditService.logPlayerAction(player.getId(), PlayerActionType.CREDIT_TRANSACTION_SUCCESS.toString(),
-                    createLogMessage(player.getUsername(), "успешно совершил кредитную операцию"));
+            String actionMessage = "успешно совершил кредитную операцию";
+            log.info(createLogMessage(player.getUsername(), actionMessage));
+            auditContract.logPlayerAction(player.getId(), PlayerActionType.CREDIT_TRANSACTION_SUCCESS.toString(),
+                    createLogMessage(player.getUsername(), actionMessage));
         }
         return result;
     }
@@ -96,22 +97,14 @@ public class TransactionAuditAspect {
         Object result = joinPoint.proceed();
         Object[] args = joinPoint.getArgs();
         if (args[0] instanceof Player player) {
-            logAction(player.getUsername(), PlayerActionType.VIEW_TRANSACTION_HISTORY);
-            playerAuditService.logPlayerAction(player.getId(), PlayerActionType.VIEW_TRANSACTION_HISTORY.toString(),
-                    createLogMessage(player.getUsername(), "просмотрел свою историю транзакций"));
+            String actionMessage = "просмотрел свою историю транзакций";
+            log.info(createLogMessage(player.getUsername(), actionMessage));
+            auditContract.logPlayerAction(player.getId(), PlayerActionType.VIEW_TRANSACTION_HISTORY.toString(),
+                    createLogMessage(player.getUsername(), actionMessage));
         }
         return result;
     }
 
-    /**
-     * Метод для логирования действий игрока.
-     *
-     * @param username   Имя пользователя.
-     * @param actionType Тип действия игрока.
-     */
-    private void logAction(String username, PlayerActionType actionType) {
-        log.info(createLogMessage(username, actionType.getAction()));
-    }
 
     /**
      * Метод для создания сообщения в логе.
