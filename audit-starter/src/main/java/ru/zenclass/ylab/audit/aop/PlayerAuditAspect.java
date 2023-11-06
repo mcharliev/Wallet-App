@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 
 /**
- * Аспект для аудита действий игрока
+ * Компонент для аудита действий игрока.
  */
 @Aspect
 @Component
@@ -35,11 +35,20 @@ public class PlayerAuditAspect {
         this.auditContract = auditContract;
     }
 
-
+    /**
+     * Точка среза для метода registerNewPlayer.
+     */
     @Pointcut("execution(* ru.zenclass.ylab.service.impl.PlayerServiceImpl.registerNewPlayer(..))")
     public void registerNewPlayer() {
     }
 
+    /**
+     * Аспект для аудита регистрации игрока.
+     *
+     * @param joinPoint Присоединяемая точка выполнения.
+     * @return Результат выполнения метода. Возвращается объект типа {@link PlayerDTO}.
+     * @throws Throwable Возможное исключение, тип {@link Throwable}.
+     */
     @Around("registerNewPlayer()")
     public Object logRegistration(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
@@ -50,10 +59,20 @@ public class PlayerAuditAspect {
         return result;
     }
 
+    /**
+     * Точка среза для метода authenticateAndGenerateToken.
+     */
     @Pointcut("execution(* ru.zenclass.ylab.service.impl.PlayerServiceImpl.authenticateAndGenerateToken(..))")
     public void authenticateAndGenerateToken() {
     }
 
+    /**
+     * Аспект для аудита аутентификации игрока.
+     *
+     * @param joinPoint Присоединяемая точка выполнения.
+     * @return Результат выполнения метода. Возвращается объект типа {@link LoginResponseDTO}.
+     * @throws Throwable Возможное исключение, тип {@link Throwable}.
+     */
     @Around("authenticateAndGenerateToken()")
     public Object logLogin(ProceedingJoinPoint joinPoint) throws Throwable {
 
@@ -78,12 +97,20 @@ public class PlayerAuditAspect {
         return result;
     }
 
-
+    /**
+     * Точка среза для метода getPlayerBalanceInfo.
+     */
     @Pointcut("execution(* ru.zenclass.ylab.service.impl.PlayerServiceImpl.getPlayerBalanceInfo(..))")
     public void getPlayerBalanceInfoMethod() {
     }
 
-
+    /**
+     * Аспект для аудита запроса баланса игроком.
+     *
+     * @param joinPoint Присоединяемая точка выполнения.
+     * @return Результат выполнения метода. Возвращается объект типа {@link PlayerBalanceDTO}.
+     * @throws Throwable Возможное исключение, тип {@link Throwable}.
+     */
     @Around("getPlayerBalanceInfoMethod()")
     public Object logGetPlayerBalanceInfo(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
@@ -95,7 +122,12 @@ public class PlayerAuditAspect {
         return result;
     }
 
-
+    /**
+     * Логирует действие игрока.
+     *
+     * @param username   Имя пользователя.
+     * @param actionType Тип действия пользователя (регистрация, аутентификация, запрос баланса).
+     */
     private void logAction(String username, PlayerActionType actionType) {
         switch (actionType) {
             case REGISTRATION -> log.info(createLogMessage(username, "успешно зарегистрировался"));
@@ -104,7 +136,13 @@ public class PlayerAuditAspect {
         }
     }
 
-
+    /**
+     * Создает сообщение действий игрока
+     *
+     * @param username Имя пользователя.
+     * @param action   Действие пользователя.
+     * @return Строка с сообщением для логирования.
+     */
     private String createLogMessage(String username, String action) {
         return "Пользователь " + username + " " + action;
     }

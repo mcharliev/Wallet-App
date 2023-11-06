@@ -33,6 +33,9 @@
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
+        <loggable-starter.version>1.0.0</loggable-starter.version>
+        <audit-starter.version>1.0.0</audit-starter.version>
+        <common-models.version>1.0.0</common-models.version>
     </properties>
 
     <dependencies>
@@ -146,26 +149,20 @@
         <dependency>
             <groupId>ru.zenclass.ylab</groupId>
             <artifactId>loggable-starter</artifactId>
-            <version>1.0.0</version>
+            <version>${loggable-starter.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ru.zenclass.ylab</groupId>
             <artifactId>audit-starter</artifactId>
-            <version>1.0.0</version>
+            <version>${audit-starter.version}</version>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>6.1.0-RC2</version>
         </dependency>
 
         <dependency>
             <groupId>ru.zenclass.ylab</groupId>
             <artifactId>common-models</artifactId>
-            <version>1.0.0</version>
+            <version>${common-models.version}</version>
         </dependency>
     </dependencies>
 

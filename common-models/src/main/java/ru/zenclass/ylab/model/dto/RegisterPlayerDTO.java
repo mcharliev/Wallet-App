@@ -2,25 +2,25 @@ package ru.zenclass.ylab.model.dto;
 
 
 
-//import io.swagger.v3.oas.annotations.media.Schema;
-//import jakarta.validation.constraints.NotNull;
-//import jakarta.validation.constraints.Size;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * Класс, представляющий собой объект передачи данных (DTO) для регистрации игрока.
  */
 public class RegisterPlayerDTO {
 
-//    @NotNull(message = "Имя пользователя обязательно для заполнения.")
-//    @Size(min = 4, max = 50, message = "Имя пользователя должно содержать от 4 до 50 символов.")
-//    @Schema(description = "Имя пользователя", example = "Johny")
+    @NotNull(message = "Имя пользователя обязательно для заполнения.")
+    @Size(min = 4, max = 50, message = "Имя пользователя должно содержать от 4 до 50 символов.")
+    @Schema(description = "Имя пользователя", example = "Johny")
     private String username;
 
-//    @NotNull(message = "Пароль обязателен для заполнения.")
-//    @Size(min = 6, message = "Пароль должен содержать не менее 8 символов.")
-//    @Schema(description = "Пароль пользователя", example = "123456")
+    @NotNull(message = "Пароль обязателен для заполнения.")
+    @Size(min = 6, message = "Пароль должен содержать не менее 8 символов.")
+    @Schema(description = "Пароль пользователя", example = "123456")
     private String password;
 
 

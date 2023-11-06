@@ -14,7 +14,7 @@ import ru.zenclass.ylab.model.dto.TransactionHistoryDTO;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.entity.Transaction;
 import ru.zenclass.ylab.model.enums.TransactionType;
-import ru.zenclass.ylab.model.mapper.TransactionMapper;
+import ru.zenclass.ylab.mapper.TransactionMapper;
 import ru.zenclass.ylab.repository.TransactionRepository;
 import ru.zenclass.ylab.service.PlayerService;
 import ru.zenclass.ylab.service.TransactionService;

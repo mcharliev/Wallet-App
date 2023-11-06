@@ -16,6 +16,8 @@
 
   <properties>
     <java.version>17</java.version>
+    <aspectjweaver.version>1.9.19</aspectjweaver.version>
+    <common-models.version>1.0.0</common-models.version>
   </properties>
 
   <dependencies>
@@ -26,28 +28,15 @@
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
-      <version>1.9.19</version>
+      <version>${aspectjweaver.version}</version>
     </dependency>
     <dependency>
-    <groupId>ru.zenclass.ylab</groupId>
-    <artifactId>common-models</artifactId>
-    <version>1.0.0</version>
+      <groupId>ru.zenclass.ylab</groupId>
+      <artifactId>common-models</artifactId>
+      <version>${common-models.version}</version>
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-          <executable>false</executable>
-          <attach>false</attach>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
   <repositories>
     <repository>

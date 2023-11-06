@@ -6,14 +6,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.enums.PlayerActionType;
 
 
 /**
- * Аспект для аудита действий игрока с транзакциями
+ * Компонент для аудита действий игрока с транзакциями
  */
 @Aspect
 @Component

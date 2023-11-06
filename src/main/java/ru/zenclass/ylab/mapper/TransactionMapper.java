@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.model.mapper;
+package ru.zenclass.ylab.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
  * его завершении и времени выполнения.
  */
 @Aspect
-@Component
 public class LoggableAspect {
     private static final Logger log = LoggerFactory.getLogger(LoggableAspect.class);
 

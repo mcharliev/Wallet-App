@@ -16,6 +16,8 @@
 
   <properties>
     <java.version>17</java.version>
+    <!-- Добавление версий зависимостей в блок properties -->
+    <aspectjweaver.version>1.9.19</aspectjweaver.version>
   </properties>
 
   <dependencies>
@@ -26,23 +28,10 @@
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
-      <version>1.9.19</version>
+      <version>${aspectjweaver.version}</version>
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-          <executable>false</executable>
-          <attach>false</attach>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
   <repositories>
     <repository>
