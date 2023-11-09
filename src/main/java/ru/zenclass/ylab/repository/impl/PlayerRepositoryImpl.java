@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ru.zenclass.ylab.aop.annotations.Loggable;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.repository.PlayerRepository;
 
@@ -20,8 +20,8 @@ import java.util.Optional;
  * Репозиторий для работы с объектами типа {@link Player} в базе данных.
  * Предоставляет функции для добавления, поиска и обновления информации об игроках.
  */
-@Loggable
 @Repository
+@Loggable
 public class PlayerRepositoryImpl implements PlayerRepository {
     private final DataSource dataSource;
 
@@ -44,21 +44,17 @@ public class PlayerRepositoryImpl implements PlayerRepository {
      * @throws RuntimeException Если произошла ошибка при добавлении игрока.
      */
     public void addPlayer(Player player) {
-        // SQL-запрос для вставки нового игрока в таблицу.
         String sql = "INSERT INTO wallet_service.players (id, username, password, balance) VALUES (nextval('wallet_service.players_seq'), ?, ?, ?) RETURNING id";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            // Установка значений для параметров SQL-запроса.
             preparedStatement.setString(1, player.getUsername());
             preparedStatement.setString(2, player.getPassword());
             preparedStatement.setBigDecimal(3, player.getBalance());
 
-            // Выполнение запроса и обработка результата.
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    // Устанавливаем ID, сгенерированный базой данных, для объекта игрока.
                     long generatedId = resultSet.getLong(1);
                     player.setId(generatedId);
                 }
@@ -76,21 +72,18 @@ public class PlayerRepositoryImpl implements PlayerRepository {
      * @throws RuntimeException Если произошла ошибка при поиске игрока.
      */
     public Optional<Player> findPlayerById(Long id) {
-        // SQL-запрос для поиска игрока по ID.
         String sql = "SELECT * FROM wallet_service.players WHERE id = ?";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            // Установка ID игрока как параметра для запроса.
             preparedStatement.setLong(1, id);
 
-            // Выполнение запроса и проверка, существует ли такой игрок.
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return Optional.of(getPlayer(resultSet));
                 } else {
-                    return Optional.empty(); // Если игрок не найден, возвращаем пустой Optional.
+                    return Optional.empty();
                 }
             }
         } catch (SQLException e) {
@@ -107,16 +100,13 @@ public class PlayerRepositoryImpl implements PlayerRepository {
      * @throws RuntimeException Если произошла ошибка при поиске игрока.
      */
     public Optional<Player> findPlayerByUsername(String username) {
-        // SQL-запрос для поиска игрока по имени пользователя.
         String sql = "SELECT * FROM wallet_service.players WHERE username = ?";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            // Устанавливаем имя пользователя как параметр для запроса.
             preparedStatement.setString(1, username);
 
-            // Выполнение запроса и проверка, существует ли такой игрок.
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return Optional.of(getPlayer(resultSet));
@@ -127,7 +117,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             throw new RuntimeException("Ошибка при поиске игрока по имени: " + username, e);
         }
 
-        return Optional.empty(); // Если игрок не найден, возвращаем пустой Optional.
+        return Optional.empty();
     }
 
     /**
@@ -137,13 +127,11 @@ public class PlayerRepositoryImpl implements PlayerRepository {
      * @throws RuntimeException Если произошла ошибка при обновлении игрока.
      */
     public void updatePlayer(Player player) {
-        // SQL-запрос для обновления баланса игрока.
         String sql = "UPDATE wallet_service.players SET balance = ? WHERE id = ?";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            // Устанавливаем новый баланс и ID игрока для обновления.
             preparedStatement.setBigDecimal(1, player.getBalance());
             preparedStatement.setLong(2, player.getId());
             preparedStatement.executeUpdate();

@@ -1,4 +1,4 @@
-package ru.zenclass.ylab.aop.annotations;
+package ru.zenclass.ylab.aop.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

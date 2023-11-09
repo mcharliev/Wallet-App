@@ -1,6 +1,5 @@
 package ru.zenclass.ylab.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 import java.math.BigDecimal;
@@ -9,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * Класс, представляющий собой объект передачи данных (DTO) для игрока.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class PlayerDTO {
 
     private Long id;

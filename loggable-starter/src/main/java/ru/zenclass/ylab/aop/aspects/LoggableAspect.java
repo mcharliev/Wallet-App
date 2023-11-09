@@ -14,14 +14,13 @@ import org.springframework.stereotype.Component;
  * его завершении и времени выполнения.
  */
 @Aspect
-@Component
 public class LoggableAspect {
     private static final Logger log = LoggerFactory.getLogger(LoggableAspect.class);
 
     /**
      * Точка среза для для классов, аннотированных {@code @Loggable}.
      */
-    @Pointcut("within(@ru.zenclass.ylab.aop.annotations.Loggable *) && execution(* *(..))")
+    @Pointcut("within(@ru.zenclass.ylab.aop.annotation.Loggable *) && execution(* *(..))")
     public void annotatedByLoggable() {
 
     }

@@ -2,9 +2,11 @@ package ru.zenclass.ylab.service.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
 import ru.zenclass.ylab.configuration.AppConfig;
 import ru.zenclass.ylab.exception.AuthenticationException;
@@ -26,7 +28,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ContextConfiguration(classes = AppConfig.class)
+@ExtendWith(MockitoExtension.class)
 class PlayerServiceTest {
 
     @Mock
@@ -51,8 +53,6 @@ class PlayerServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         id = 1L;
         username = "player1";
         password = "pass123";

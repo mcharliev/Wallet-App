@@ -1,10 +1,10 @@
 package ru.zenclass.ylab.service.impl;
 
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.zenclass.ylab.aop.annotations.Loggable;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 import ru.zenclass.ylab.exception.NoTransactionsFoundException;
 import ru.zenclass.ylab.exception.NotEnoughMoneyException;
 import ru.zenclass.ylab.exception.ValidationException;
@@ -14,8 +14,7 @@ import ru.zenclass.ylab.model.dto.TransactionHistoryDTO;
 import ru.zenclass.ylab.model.entity.Player;
 import ru.zenclass.ylab.model.entity.Transaction;
 import ru.zenclass.ylab.model.enums.TransactionType;
-import ru.zenclass.ylab.model.mapper.TransactionMapper;
-import ru.zenclass.ylab.util.AmountValidator;
+import ru.zenclass.ylab.mapper.TransactionMapper;
 import ru.zenclass.ylab.repository.TransactionRepository;
 import ru.zenclass.ylab.service.PlayerService;
 import ru.zenclass.ylab.service.TransactionService;

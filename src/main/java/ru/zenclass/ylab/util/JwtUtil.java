@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.zenclass.ylab.aop.annotation.Loggable;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.function.Function;
 /**
  * Утилитный класс для операций с JSON Web Token (JWT), таких как создание, проверка и извлечение данных.
  */
+@Loggable
 public class JwtUtil {
     private final String SECRET_KEY;
     private static Logger log = LoggerFactory.getLogger(JwtUtil.class);

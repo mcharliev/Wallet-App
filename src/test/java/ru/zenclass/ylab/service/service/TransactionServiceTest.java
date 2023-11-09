@@ -1,6 +1,7 @@
 package ru.zenclass.ylab.service.service;
 
 
+import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +22,7 @@ import ru.zenclass.ylab.service.PlayerService;
 import ru.zenclass.ylab.service.impl.TransactionServiceImpl;
 import ru.zenclass.ylab.util.DTOValidator;
 
-import javax.validation.ConstraintViolation;
+
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;

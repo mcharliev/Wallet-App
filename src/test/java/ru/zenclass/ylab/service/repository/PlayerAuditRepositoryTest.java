@@ -1,62 +1,39 @@
 package ru.zenclass.ylab.service.repository;
 
-import liquibase.integration.spring.SpringLiquibase;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.zenclass.ylab.configuration.AppConfig;
 import ru.zenclass.ylab.model.entity.PlayerAudit;
 import ru.zenclass.ylab.model.enums.PlayerActionType;
 import ru.zenclass.ylab.repository.PlayerAuditRepository;
-import ru.zenclass.ylab.service.config.TestDataSourceConfig;
 
-import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SpringJUnitConfig(classes = {AppConfig.class, TestDataSourceConfig.class})
+@SpringBootTest
 @Testcontainers
-@WebAppConfiguration
 public class PlayerAuditRepositoryTest {
 
     @Container
     private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    private DataSource dataSource;
 
     @Autowired
     private PlayerAuditRepository playerAuditRepository;
 
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.password", postgres::getPassword);
-        registry.add("spring.datasource.username", postgres::getUsername);
-    }
-
-    @BeforeEach
-    void setUp() {
-        SpringLiquibase liquibase = applicationContext.getBean(SpringLiquibase.class);
-        try {
-            liquibase.afterPropertiesSet();
-        } catch (Exception e) {
-            throw new RuntimeException("Ошибка при запуске миграций Liquibase", e);
-        }
+        registry.add("database.url", postgres::getJdbcUrl);
+        registry.add("database.password", postgres::getPassword);
+        registry.add("database.username", postgres::getUsername);
     }
 
     @Test
